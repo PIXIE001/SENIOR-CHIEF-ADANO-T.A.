@@ -2,176 +2,302 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>S.C.A.G.S.S Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.C.A.G.S.S Staff Portal — Admin</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
 body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#f1f5f9;
- color:#17324d
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f8fc;
+  color:#172033;
 }
+
 header{
- height:70px;
- background:#063f70;
- color:white;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:0 25px
-}
-header h1{font-size:19px;margin:0}
-.logout{
- background:white;
- color:#064f82;
- border:0;
- padding:11px 16px;
- border-radius:8px;
- font-weight:bold
-}
-.layout{
- display:grid;
- grid-template-columns:230px 1fr;
- min-height:calc(100vh - 70px)
-}
-aside{
- background:#fff;
- border-right:1px solid #ddd;
- padding:18px
-}
-.nav{
- display:block;
- width:100%;
- text-align:left;
- padding:13px;
- margin-bottom:7px;
- border:0;
- background:white;
- border-radius:8px;
- cursor:pointer;
- color:#24445e;
- font-weight:bold
-}
-.nav.active,.nav:hover{
- background:#e8f4fc;
- color:#0878c9
-}
-main{padding:25px;overflow:auto}
-.page{display:none}
-.page.active{display:block}
-.cards{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:15px
-}
-.card{
- background:white;
- padding:20px;
- border-radius:14px;
- box-shadow:0 4px 15px #00000010
-}
-.card h3{
- margin:0 0 10px;
- font-size:13px;
- color:#6a7c8c
-}
-.number{
- font-size:28px;
- font-weight:bold;
- color:#0878c9
-}
-.panel{
- background:white;
- margin-top:20px;
- padding:20px;
- border-radius:14px;
- box-shadow:0 4px 15px #00000010;
- overflow:auto
-}
-table{
- width:100%;
- border-collapse:collapse;
- min-width:700px
-}
-th,td{
- padding:11px;
- border-bottom:1px solid #e7edf2;
- text-align:left;
- font-size:13px
-}
-th{background:#edf5fa}
-button{
- cursor:pointer
-}
-.btn{
- border:0;
- border-radius:7px;
- padding:9px 13px;
- font-weight:bold
-}
-.primary{background:#0878c9;color:white}
-.green{background:#14784d;color:white}
-.red{background:#b22d2d;color:white}
-.gray{background:#e7edf2;color:#28465c}
-.badge{
- padding:5px 8px;
- border-radius:20px;
- font-size:11px;
- font-weight:bold;
- background:#edf6fc
-}
-.success{color:#087238}
-.danger{color:#a00000}
-form{
- display:grid;
- gap:12px;
- max-width:600px
-}
-input,select,textarea{
- padding:12px;
- border:1px solid #ccd9e2;
- border-radius:8px;
- font-size:14px
-}
-textarea{min-height:110px}
-.filters{
- display:flex;
- gap:10px;
- flex-wrap:wrap;
- margin-bottom:15px
-}
-.filters input{max-width:180px}
-.reportbox{
- background:#f7fafc;
- padding:15px;
- border-radius:9px;
- margin-bottom:15px
-}
-pre{
- white-space:pre-wrap;
- font-family:Arial;
- line-height:1.5
-}
-@media(max-width:900px){
- .layout{grid-template-columns:1fr}
- aside{
+  background:#0876d1;
+  color:white;
+  padding:18px 25px;
   display:flex;
-  overflow:auto;
-  gap:5px;
-  border-right:0;
-  border-bottom:1px solid #ddd
- }
- .nav{min-width:max-content}
- .cards{grid-template-columns:repeat(2,1fr)}
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
 }
-@media(max-width:500px){
- main{padding:12px}
- .cards{grid-template-columns:1fr 1fr}
+
+header h1{
+  font-size:22px;
+}
+
+header small{
+  opacity:.9;
+}
+
+button{
+  border:none;
+  padding:10px 15px;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.logout{
+  background:white;
+  color:#0876d1;
+}
+
+.layout{
+  display:flex;
+  min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+  width:230px;
+  background:#fff;
+  border-right:1px solid #ddd;
+  padding:20px 12px;
+}
+
+.sidebar button{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:transparent;
+  margin-bottom:7px;
+  color:#243044;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+  background:#e7f3ff;
+  color:#0876d1;
+}
+
+main{
+  flex:1;
+  padding:25px;
+  overflow:auto;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+h2{
+  margin-bottom:18px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+
+.card h3{
+  color:#667085;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.card strong{
+  font-size:30px;
+  color:#0876d1;
+}
+
+.panel{
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+
+th{
+  background:#f4f8fc;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid #ccd5df;
+  border-radius:7px;
+  margin-top:6px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.primary{
+  background:#0876d1;
+  color:white;
+}
+
+.success{
+  background:#198754;
+  color:white;
+}
+
+.warning{
+  background:#f59e0b;
+  color:white;
+}
+
+.danger{
+  background:#dc3545;
+  color:white;
+}
+
+.secondary{
+  background:#e9eef4;
+  color:#263445;
+}
+
+.message{
+  padding:12px;
+  border-radius:7px;
+  margin-bottom:15px;
+  display:none;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.success-msg{
+  background:#d1e7dd;
+  color:#0f5132;
+}
+
+.message.error-msg{
+  background:#f8d7da;
+  color:#842029;
+}
+
+.badge{
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.badge.pending{
+  background:#fff3cd;
+  color:#664d03;
+}
+
+.badge.active{
+  background:#d1e7dd;
+  color:#0f5132;
+}
+
+.badge.inactive{
+  background:#f8d7da;
+  color:#842029;
+}
+
+.action-group{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.gps-box{
+  background:#eef8ff;
+  padding:15px;
+  border-radius:8px;
+  margin-top:10px;
+}
+
+.ai-result{
+  white-space:pre-wrap;
+  line-height:1.6;
+  background:#f7f9fc;
+  padding:15px;
+  border-radius:8px;
+  margin-top:15px;
+}
+
+@media(max-width:900px){
+  .cards{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:700px){
+  header{
+    padding:15px;
+  }
+
+  header h1{
+    font-size:17px;
+  }
+
+  .layout{
+    display:block;
+  }
+
+  .sidebar{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:8px;
+    border-right:none;
+    border-bottom:1px solid #ddd;
+  }
+
+  .sidebar button{
+    min-width:max-content;
+    margin:0 5px 0 0;
+  }
+
+  main{
+    padding:15px;
+  }
+
+  .cards{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
@@ -179,1329 +305,1374 @@ pre{
 <body>
 
 <header>
- <div>
-  <h1>S.C.A.G.S.S ADMINISTRATION</h1>
- </div>
- <button class="logout" onclick="logout()">LOG OUT</button>
+  <div>
+    <h1>S.C.A.G.S.S STAFF PORTAL</h1>
+    <small>Administrator Control Centre</small>
+  </div>
+
+  <button class="logout" onclick="logout()">Logout</button>
 </header>
 
 <div class="layout">
 
-<aside>
+  <aside class="sidebar">
 
-<button class="nav active" onclick="showPage('dashboard',this)">
-Dashboard
-</button>
+    <button class="active" onclick="showSection('dashboard',this)">
+      Dashboard
+    </button>
 
-<button class="nav" onclick="showPage('pending',this)">
-Pending Approval
-</button>
+    <button onclick="showSection('staff',this)">
+      Staff Management
+    </button>
 
-<button class="nav" onclick="showPage('staff',this)">
-Staff Management
-</button>
+    <button onclick="showSection('attendance',this)">
+      Attendance
+    </button>
 
-<button class="nav" onclick="showPage('attendance',this)">
-Live Attendance
-</button>
+    <button onclick="showSection('gps',this)">
+      GPS Monitor
+    </button>
 
-<button class="nav" onclick="showPage('gps',this)">
-GPS Monitor
-</button>
+    <button onclick="showSection('reports',this)">
+      Reports & Exports
+    </button>
 
-<button class="nav" onclick="showPage('reports',this)">
-Reports & Exports
-</button>
+    <button onclick="showSection('ai',this)">
+      AI Assistant
+    </button>
 
-<button class="nav" onclick="showPage('lessons',this)">
-Lesson Attendance
-</button>
+    <button onclick="showSection('settings',this)">
+      School Settings
+    </button>
 
-<button class="nav" onclick="showPage('ai',this)">
-AI Assistant
-</button>
+  </aside>
 
-</aside>
+  <main>
 
-<main>
+    <div id="message" class="message"></div>
 
-<!-- DASHBOARD -->
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section active">
 
-<section id="dashboard" class="page active">
+      <h2>Dashboard Overview</h2>
 
-<h2>Dashboard</h2>
+      <div class="cards">
 
-<div class="cards">
+        <div class="card">
+          <h3>Total Staff</h3>
+          <strong id="totalStaff">0</strong>
+        </div>
 
-<div class="card">
-<h3>TOTAL TEACHERS</h3>
-<div class="number" id="totalTeachers">0</div>
-</div>
+        <div class="card">
+          <h3>Pending Approval</h3>
+          <strong id="pendingStaff">0</strong>
+        </div>
 
-<div class="card">
-<h3>PENDING</h3>
-<div class="number" id="pendingCount">0</div>
-</div>
+        <div class="card">
+          <h3>Today's Attendance</h3>
+          <strong id="todayAttendance">0</strong>
+        </div>
 
-<div class="card">
-<h3>CLOCKED IN</h3>
-<div class="number" id="clockedIn">0</div>
-</div>
+        <div class="card">
+          <h3>GPS Records</h3>
+          <strong id="gpsRecords">0</strong>
+        </div>
 
-<div class="card">
-<h3>GPS VERIFIED</h3>
-<div class="number" id="gpsVerified">0</div>
-</div>
+      </div>
 
-</div>
+      <div class="panel">
+        <h3>System Status</h3>
+        <p id="systemStatus">Checking server...</p>
+      </div>
 
-<div class="panel">
+    </section>
 
-<h3>System Status</h3>
 
-<p id="systemStatus">
-Loading...
-</p>
+    <!-- STAFF -->
+    <section id="staff" class="section">
 
-<button class="btn primary" onclick="refreshAll()">
-REFRESH DATA
-</button>
+      <h2>Staff Management</h2>
 
-</div>
+      <div class="panel">
 
-</section>
+        <h3>Registered Staff</h3>
 
+        <br>
 
-<!-- PENDING -->
+        <div class="table-wrap">
 
-<section id="pending" class="page">
+          <table>
 
-<h2>Pending Teacher Registrations</h2>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-<div class="panel">
+            <tbody id="staffTable"></tbody>
 
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Username</th>
-<th>Email</th>
-<th>Phone</th>
-<th>Registered</th>
-<th>Action</th>
-</tr>
-</thead>
+          </table>
 
-<tbody id="pendingBody">
-<tr>
-<td colspan="6">Loading...</td>
-</tr>
-</tbody>
+        </div>
 
-</table>
+      </div>
 
-</div>
+    </section>
 
-</section>
 
+    <!-- ATTENDANCE -->
+    <section id="attendance" class="section">
 
-<!-- STAFF -->
+      <h2>Staff Attendance</h2>
 
-<section id="staff" class="page">
+      <div class="panel">
 
-<h2>Staff Management</h2>
+        <div class="action-group">
 
-<div class="panel">
+          <button class="primary" onclick="loadAttendance()">
+            Refresh Attendance
+          </button>
 
-<table>
+        </div>
 
-<thead>
-<tr>
-<th>Name</th>
-<th>Username</th>
-<th>Email</th>
-<th>Phone</th>
-<th>Role</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
+        <br>
 
-<tbody id="staffBody">
-<tr>
-<td colspan="7">Loading...</td>
-</tr>
-</tbody>
+        <div class="table-wrap">
 
-</table>
+          <table>
 
-</div>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Staff</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Status</th>
+                <th>GPS</th>
+              </tr>
+            </thead>
 
-</section>
+            <tbody id="attendanceTable"></tbody>
 
+          </table>
 
-<!-- ATTENDANCE -->
+        </div>
 
-<section id="attendance" class="page">
+      </div>
 
-<h2>Live Attendance</h2>
+    </section>
 
-<div class="panel">
 
-<div class="filters">
+    <!-- GPS -->
+    <section id="gps" class="section">
 
-<input
- type="date"
- id="attendanceDate"
- onchange="loadAttendance()"
->
+      <h2>GPS Monitor</h2>
 
-<button class="btn primary" onclick="loadAttendance()">
-REFRESH
-</button>
+      <div class="panel">
 
-</div>
+        <p>
+          This monitor shows the GPS information recorded when staff
+          clock in or clock out.
+        </p>
 
-<table>
+        <br>
 
-<thead>
-<tr>
-<th>Teacher</th>
-<th>Date</th>
-<th>Clock In</th>
-<th>Clock Out</th>
-<th>Status</th>
-<th>GPS</th>
-</tr>
-</thead>
+        <button class="primary" onclick="loadGPS()">
+          Refresh GPS Records
+        </button>
 
-<tbody id="attendanceBody">
-<tr>
-<td colspan="6">Loading...</td>
-</tr>
-</tbody>
+        <br><br>
 
-</table>
+        <div class="table-wrap">
 
-</div>
+          <table>
 
-</section>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Staff</th>
+                <th>Event</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Accuracy</th>
+                <th>Distance</th>
+              </tr>
+            </thead>
 
+            <tbody id="gpsTable"></tbody>
 
-<!-- GPS -->
+          </table>
 
-<section id="gps" class="page">
+        </div>
 
-<h2>Teacher GPS Monitor</h2>
+      </div>
 
-<div class="panel">
+    </section>
 
-<div id="schoolGPS">
-Loading school GPS...
-</div>
 
-<br>
+    <!-- REPORTS -->
+    <section id="reports" class="section">
 
-<table>
+      <h2>Reports & Exports</h2>
 
-<thead>
-<tr>
-<th>Teacher</th>
-<th>Date</th>
-<th>Clock In Location</th>
-<th>In Distance</th>
-<th>Clock Out Location</th>
-<th>Out Distance</th>
-<th>Accuracy</th>
-<th>Verification</th>
-</tr>
-</thead>
+      <div class="panel">
 
-<tbody id="gpsBody">
-<tr>
-<td colspan="8">Loading...</td>
-</tr>
-</tbody>
+        <h3>Individual Teacher Report</h3>
 
-</table>
+        <br>
 
-</div>
+        <label>Select Teacher</label>
 
-</section>
+        <select id="reportTeacher">
+          <option value="">Select teacher</option>
+        </select>
 
+        <br><br>
 
-<!-- REPORTS -->
+        <div class="action-group">
 
-<section id="reports" class="page">
+          <button class="primary" onclick="generateReport()">
+            Generate Report
+          </button>
 
-<h2>Teacher Reports</h2>
+          <button class="success" onclick="exportExcel()">
+            Export Excel
+          </button>
 
-<div class="panel">
+          <button class="secondary" onclick="exportCSV()">
+            Export CSV
+          </button>
 
-<label>Select Teacher</label>
+          <button class="warning" onclick="exportPDF()">
+            Export PDF
+          </button>
 
-<select id="reportTeacher">
-<option value="">Select teacher...</option>
-</select>
+        </div>
 
-<div class="filters">
+        <div id="reportOutput"></div>
 
-<input type="date" id="reportFrom">
-<input type="date" id="reportTo">
+      </div>
 
-<button class="btn primary" onclick="generateReport()">
-GENERATE
-</button>
+    </section>
 
-</div>
 
-<div id="reportResult"></div>
+    <!-- AI -->
+    <section id="ai" class="section">
 
-</div>
+      <h2>AI Assistant</h2>
 
-</section>
+      <div class="panel">
 
+        <h3>Attendance Analysis</h3>
 
-<!-- LESSONS -->
+        <p>
+          Ask the portal to analyse the current staff attendance records.
+        </p>
 
-<section id="lessons" class="page">
+        <br>
 
-<h2>Lesson Attendance</h2>
+        <button class="primary" onclick="runAIAnalysis()">
+          Analyse Attendance
+        </button>
 
-<div class="panel">
+        <div id="aiResult" class="ai-result">
+          AI analysis will appear here.
+        </div>
 
-<form id="lessonForm">
+      </div>
 
-<input
- id="lessonTeacher"
- placeholder="Teacher name"
- required
->
+    </section>
 
-<input
- id="lessonClass"
- placeholder="Class"
- required
->
 
-<input
- id="lessonSubject"
- placeholder="Subject"
- required
->
+    <!-- SETTINGS -->
+    <section id="settings" class="section">
 
-<input
- id="lessonDate"
- type="date"
- required
->
+      <h2>School GPS Settings</h2>
 
-<input
- id="lessonPresent"
- type="number"
- min="0"
- placeholder="Present"
- required
->
+      <div class="panel">
 
-<input
- id="lessonAbsent"
- type="number"
- min="0"
- placeholder="Absent"
- required
->
+        <div class="form-grid">
 
-<textarea
- id="lessonNotes"
- placeholder="Notes"
-></textarea>
+          <div>
+            <label>School Latitude</label>
+            <input id="schoolLat" type="number" step="any">
+          </div>
 
-<button class="btn primary" type="submit">
-SAVE LESSON ATTENDANCE
-</button>
+          <div>
+            <label>School Longitude</label>
+            <input id="schoolLon" type="number" step="any">
+          </div>
 
-</form>
+          <div>
+            <label>Geofence Radius (metres)</label>
+            <input id="schoolRadius" type="number">
+          </div>
 
-<div id="lessonMessage"></div>
+        </div>
 
-</div>
+        <br>
 
-</section>
+        <button class="primary" onclick="saveGPSSettings()">
+          Save GPS Settings
+        </button>
 
+      </div>
 
-<!-- AI -->
+    </section>
 
-<section id="ai" class="page">
+  </main>
 
-<h2>AI Attendance Assistant</h2>
-
-<div class="panel">
-
-<p>
-Ask the attendance assistant for an analysis of the current
-attendance data.
-</p>
-
-<textarea
- id="aiQuestion"
- placeholder="Example: Give me a summary of today's staff attendance."
-></textarea>
-
-<br><br>
-
-<button class="btn primary" onclick="askAI()">
-ANALYZE
-</button>
-
-<div id="aiResult" class="reportbox">
-No analysis yet.
-</div>
-
-</div>
-
-</section>
-
-</main>
 </div>
 
 
 <script>
 
-let staff=[];
+let staffData = [];
+let attendanceData = [];
+let gpsData = [];
+let reportData = null;
+
+
+function showMessage(text,type="success-msg"){
+
+  const box=document.getElementById("message");
+
+  box.textContent=text;
+
+  box.className="message show "+type;
+
+  setTimeout(()=>{
+    box.className="message";
+  },5000);
+
+}
+
+
+function showSection(id,button){
+
+  document.querySelectorAll(".section").forEach(section=>{
+    section.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".sidebar button").forEach(btn=>{
+    btn.classList.remove("active");
+  });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+  if(id==="dashboard") loadDashboard();
+  if(id==="staff") loadStaff();
+  if(id==="attendance") loadAttendance();
+  if(id==="gps") loadGPS();
+  if(id==="reports") loadStaff();
+  if(id==="settings") loadSettings();
+
+}
+
 
 async function api(url,options={}){
 
- const response=await fetch("/api"+url,{
-  credentials:"include",
-  ...options,
-  headers:{
-   "Content-Type":"application/json",
-   ...(options.headers||{})
+  const response=await fetch(url,{
+    credentials:"include",
+    ...options,
+    headers:{
+      "Content-Type":"application/json",
+      ...(options.headers||{})
+    }
+  });
+
+  let data;
+
+  try{
+    data=await response.json();
+  }catch{
+    throw new Error("Server returned an invalid response.");
   }
- });
 
- const text=await response.text();
+  if(!response.ok){
+    throw new Error(data.error||data.message||"Request failed.");
+  }
 
- let data;
-
- try{
-  data=JSON.parse(text);
- }catch{
-  throw new Error(
-   "Server returned HTTP "+response.status
-  );
- }
-
- if(!response.ok){
-  throw new Error(
-   data.message||"Request failed."
-  );
- }
-
- return data;
-}
-
-
-function showPage(id,button){
-
- document.querySelectorAll(".page")
-  .forEach(p=>p.classList.remove("active"));
-
- document.getElementById(id)
-  .classList.add("active");
-
- document.querySelectorAll(".nav")
-  .forEach(b=>b.classList.remove("active"));
-
- button.classList.add("active");
-
- if(id==="dashboard")loadSummary();
- if(id==="pending")loadStaff();
- if(id==="staff")loadStaff();
- if(id==="attendance")loadAttendance();
- if(id==="gps")loadGPS();
- if(id==="reports")loadReportTeachers();
-
-}
-
-
-function fmt(value){
-
- if(!value)return "—";
-
- return new Date(value).toLocaleString([],{
-  dateStyle:"short",
-  timeStyle:"short"
- });
-
+  return data;
 }
 
 
 async function checkAdmin(){
 
- try{
+  try{
 
-  const data=await api("/me");
+    const data=await api("/api/me");
 
-  const role=
-   String(data.user.role||"")
-    .trim()
-    .toLowerCase();
+    const role=String(data.user?.role||"").toLowerCase();
 
-  if(role!=="admin"){
-   location.href="/staff.html";
-   return false;
+    if(role!=="admin"){
+      window.location.href="/";
+      return false;
+    }
+
+    return true;
+
+  }catch(error){
+
+    window.location.href="/";
+    return false;
+
   }
-
-  document.getElementById("systemStatus").textContent=
-   "Administrator session active. System online.";
-
-  return true;
-
- }catch(error){
-
-  location.href="/";
-  return false;
-
- }
 
 }
 
 
-async function loadSummary(){
+async function loadDashboard(){
 
- try{
+  try{
 
-  const data=await api("/admin/summary");
+    const data=await api("/api/admin/summary");
 
-  document.getElementById("totalTeachers").textContent=
-   data.summary.total_staff;
+    document.getElementById("totalStaff").textContent=
+      data.total_staff ?? data.totalStaff ?? 0;
 
-  document.getElementById("pendingCount").textContent=
-   data.summary.pending;
+    document.getElementById("pendingStaff").textContent=
+      data.pending_staff ?? data.pendingStaff ?? 0;
 
-  document.getElementById("clockedIn").textContent=
-   data.summary.clocked_in;
+    document.getElementById("todayAttendance").textContent=
+      data.today_attendance ?? data.todayAttendance ?? 0;
 
-  document.getElementById("gpsVerified").textContent=
-   data.summary.gps_verified;
+    document.getElementById("gpsRecords").textContent=
+      data.gps_records ?? data.gpsRecords ?? 0;
 
- }catch(error){
+    document.getElementById("systemStatus").textContent=
+      "S.C.A.G.S.S Staff Portal is online.";
 
-  document.getElementById("systemStatus").textContent=
-   error.message;
+  }catch(error){
 
- }
+    document.getElementById("systemStatus").textContent=
+      error.message;
+
+  }
 
 }
 
 
 async function loadStaff(){
 
- try{
+  try{
 
-  const data=await api("/admin/staff");
+    const data=await api("/api/admin/staff");
 
-  staff=data.staff||[];
+    staffData=data.staff||data||[];
 
-  const pending=
-   staff.filter(s=>
-    String(s.role).toLowerCase()==="teacher" &&
-    !s.active
-   );
+    const table=document.getElementById("staffTable");
 
-  document.getElementById("pendingBody").innerHTML=
-   pending.length
-   ? pending.map(s=>`
-     <tr>
-      <td>${escapeHTML(s.full_name)}</td>
-      <td>${escapeHTML(s.username)}</td>
-      <td>${escapeHTML(s.email||"")}</td>
-      <td>${escapeHTML(s.phone||"")}</td>
-      <td>${fmt(s.created_at)}</td>
-      <td>
-       <button class="btn green"
-        onclick="setStatus(${s.id},true)">
-        APPROVE
-       </button>
-      </td>
-     </tr>
-    `).join("")
-   : `<tr><td colspan="6">
-      No pending registrations.
-      </td></tr>`;
+    table.innerHTML="";
 
-  document.getElementById("staffBody").innerHTML=
-   staff.length
-   ? staff.map(s=>`
-     <tr>
-      <td>${escapeHTML(s.full_name)}</td>
-      <td>${escapeHTML(s.username)}</td>
-      <td>${escapeHTML(s.email||"")}</td>
-      <td>${escapeHTML(s.phone||"")}</td>
-      <td>${escapeHTML(s.role)}</td>
-      <td>
-       <span class="badge">
-        ${s.active?"ACTIVE":"PENDING/INACTIVE"}
-       </span>
-      </td>
-      <td>
+    const teacherSelect=document.getElementById("reportTeacher");
 
-       ${
-        String(s.role).toLowerCase()==="admin"
-        ? "ADMIN"
-        : `
-        <button class="btn ${
-         s.active?"red":"green"
-        }"
-        onclick="setStatus(${s.id},${!s.active})">
-         ${s.active?"DEACTIVATE":"ACTIVATE"}
-        </button>
+    if(teacherSelect){
+      teacherSelect.innerHTML=
+        '<option value="">Select teacher</option>';
+    }
 
-        <button class="btn red"
-        onclick="deleteStaff(${s.id})">
-         DELETE
-        </button>
-        `
-       }
+    staffData.forEach(staff=>{
 
-      </td>
-     </tr>
-    `).join("")
-   : `<tr><td colspan="7">
-      No staff found.
-      </td></tr>`;
+      const status=staff.active
+        ? '<span class="badge active">Active</span>'
+        : '<span class="badge inactive">Inactive</span>';
 
-  populateReportTeachers();
+      const row=document.createElement("tr");
 
- }catch(error){
+      row.innerHTML=`
 
-  document.getElementById("pendingBody").innerHTML=
-   `<tr><td colspan="6">${error.message}</td></tr>`;
+        <td>${staff.id??""}</td>
 
- }
+        <td>${escapeHTML(staff.full_name??"")}</td>
+
+        <td>${escapeHTML(staff.username??"")}</td>
+
+        <td>${escapeHTML(staff.email??"")}</td>
+
+        <td>${escapeHTML(staff.phone??"")}</td>
+
+        <td>${escapeHTML(staff.role??"")}</td>
+
+        <td>${status}</td>
+
+        <td>
+
+          <div class="action-group">
+
+            ${
+              !staff.active
+              ?
+              `<button class="success"
+                onclick="changeStaffStatus(${staff.id},true)">
+                Approve
+              </button>`
+              :
+              `<button class="warning"
+                onclick="changeStaffStatus(${staff.id},false)">
+                Deactivate
+              </button>`
+            }
+
+            <button class="danger"
+              onclick="deleteStaff(${staff.id})">
+              Delete
+            </button>
+
+          </div>
+
+        </td>
+      `;
+
+      table.appendChild(row);
+
+      if(
+        teacherSelect &&
+        String(staff.role).toLowerCase()==="teacher"
+      ){
+
+        const option=document.createElement("option");
+
+        option.value=staff.id;
+
+        option.textContent=staff.full_name;
+
+        teacherSelect.appendChild(option);
+
+      }
+
+    });
+
+  }catch(error){
+
+    showMessage(error.message,"error-msg");
+
+  }
 
 }
 
 
-async function setStatus(id,active){
+async function changeStaffStatus(id,active){
 
- if(!confirm(
-  active
-   ? "Approve/activate this teacher?"
-   : "Deactivate this teacher?"
- ))return;
+  try{
 
- try{
+    await api(`/api/admin/staff/${id}/status`,{
+      method:"PATCH",
+      body:JSON.stringify({active})
+    });
 
-  const data=await api(
-   "/admin/staff/"+id+"/status",
-   {
-    method:"PATCH",
-    body:JSON.stringify({active})
-   }
-  );
+    showMessage(
+      active
+      ? "Staff member approved."
+      : "Staff member deactivated."
+    );
 
-  alert(data.message);
+    await loadStaff();
+    await loadDashboard();
 
-  await loadStaff();
-  await loadSummary();
+  }catch(error){
 
- }catch(error){
+    showMessage(error.message,"error-msg");
 
-  alert(error.message);
-
- }
+  }
 
 }
 
 
 async function deleteStaff(id){
 
- if(!confirm(
-  "Delete this staff account permanently?"
- ))return;
+  if(!confirm("Delete this staff member permanently?")){
+    return;
+  }
 
- try{
+  try{
 
-  const data=await api(
-   "/admin/staff/"+id,
-   {method:"DELETE"}
-  );
+    await api(`/api/admin/staff/${id}`,{
+      method:"DELETE"
+    });
 
-  alert(data.message);
+    showMessage("Staff member deleted.");
 
-  await loadStaff();
-  await loadSummary();
+    await loadStaff();
+    await loadDashboard();
 
- }catch(error){
+  }catch(error){
 
-  alert(error.message);
+    showMessage(error.message,"error-msg");
 
- }
+  }
 
 }
 
 
 async function loadAttendance(){
 
- try{
+  try{
 
-  const data=await api("/admin/attendance");
+    const data=await api("/api/admin/attendance");
 
-  let rows=data.attendance||[];
+    attendanceData=data.attendance||data||[];
 
-  const date=
-   document.getElementById("attendanceDate").value;
+    const table=document.getElementById("attendanceTable");
 
-  if(date){
-   rows=rows.filter(
-    r=>r.attendance_date===date
-   );
+    table.innerHTML="";
+
+    attendanceData.forEach(item=>{
+
+      const row=document.createElement("tr");
+
+      row.innerHTML=`
+
+        <td>${item.attendance_date||""}</td>
+
+        <td>${escapeHTML(
+          item.staff?.full_name ||
+          item.full_name ||
+          item.username ||
+          ""
+        )}</td>
+
+        <td>${formatDate(item.clock_in)}</td>
+
+        <td>${formatDate(item.clock_out)}</td>
+
+        <td>${escapeHTML(item.status||"")}</td>
+
+        <td>
+          ${
+            item.gps_verified
+            ?
+            '<span class="badge active">Verified</span>'
+            :
+            '<span class="badge inactive">Not verified</span>'
+          }
+        </td>
+
+      `;
+
+      table.appendChild(row);
+
+    });
+
+  }catch(error){
+
+    showMessage(error.message,"error-msg");
+
   }
-
-  document.getElementById("attendanceBody").innerHTML=
-   rows.length
-   ? rows.map(r=>`
-     <tr>
-      <td>${escapeHTML(r.staff_name)}</td>
-      <td>${r.attendance_date}</td>
-      <td>${fmt(r.clock_in)}</td>
-      <td>${fmt(r.clock_out)}</td>
-      <td>${escapeHTML(r.status||"—")}</td>
-      <td>
-       <span class="badge">
-        ${r.gps_verified?"VERIFIED":"NOT VERIFIED"}
-       </span>
-      </td>
-     </tr>
-    `).join("")
-   : `<tr><td colspan="6">
-      No attendance records found.
-      </td></tr>`;
-
- }catch(error){
-
-  document.getElementById("attendanceBody").innerHTML=
-   `<tr><td colspan="6">${error.message}</td></tr>`;
-
- }
 
 }
 
 
 async function loadGPS(){
 
- try{
+  try{
 
-  const data=await api("/admin/gps");
+    const data=await api("/api/admin/gps");
 
-  const school=data.school;
+    gpsData=data.gps||data||[];
 
-  document.getElementById("schoolGPS").innerHTML=
-   `<b>School GPS:</b>
-    ${school.latitude},
-    ${school.longitude}
-    &nbsp; | &nbsp;
-    <b>Allowed radius:</b>
-    ${school.radius} metres`;
+    const table=document.getElementById("gpsTable");
 
-  const rows=data.gps||[];
+    table.innerHTML="";
 
-  document.getElementById("gpsBody").innerHTML=
-   rows.length
-   ? rows.map(r=>`
-     <tr>
-      <td>${escapeHTML(r.staff_name)}</td>
-      <td>${r.date}</td>
+    gpsData.forEach(item=>{
 
-      <td>
-       ${
-        r.clock_in_lat!=null
-        ? r.clock_in_lat.toFixed(6)+
-          ", "+
-          r.clock_in_lon.toFixed(6)
-        : "—"
-       }
-      </td>
+      let staffName=
+        item.staff?.full_name ||
+        item.full_name ||
+        item.username ||
+        "";
 
-      <td>
-       ${
-        r.clock_in_distance!=null
-        ? Math.round(r.clock_in_distance)+" m"
-        : "—"
-       }
-      </td>
+      if(item.clock_in_lat!=null){
 
-      <td>
-       ${
-        r.clock_out_lat!=null
-        ? r.clock_out_lat.toFixed(6)+
-          ", "+
-          r.clock_out_lon.toFixed(6)
-        : "—"
-       }
-      </td>
+        addGPSRow(
+          table,
+          item,
+          staffName,
+          "Clock In",
+          item.clock_in_lat,
+          item.clock_in_lon,
+          item.clock_in_accuracy,
+          item.clock_in_distance
+        );
 
-      <td>
-       ${
-        r.clock_out_distance!=null
-        ? Math.round(r.clock_out_distance)+" m"
-        : "—"
-       }
-      </td>
+      }
 
-      <td>
-       ${
-        r.clock_in_accuracy!=null
-        ? Math.round(r.clock_in_accuracy)+" m"
-        : "—"
-       }
-      </td>
+      if(item.clock_out_lat!=null){
 
-      <td>
-       <span class="badge">
-        ${r.gps_verified?"VERIFIED":"NOT VERIFIED"}
-       </span>
-      </td>
+        addGPSRow(
+          table,
+          item,
+          staffName,
+          "Clock Out",
+          item.clock_out_lat,
+          item.clock_out_lon,
+          item.clock_out_accuracy,
+          item.clock_out_distance
+        );
 
-     </tr>
-    `).join("")
-   : `<tr><td colspan="8">
-      No GPS attendance records yet.
-      </td></tr>`;
+      }
 
- }catch(error){
+    });
 
-  document.getElementById("gpsBody").innerHTML=
-   `<tr><td colspan="8">${error.message}</td></tr>`;
+  }catch(error){
 
- }
+    showMessage(error.message,"error-msg");
+
+  }
 
 }
 
 
-function populateReportTeachers(){
+function addGPSRow(
+  table,
+  item,
+  staffName,
+  event,
+  lat,
+  lon,
+  accuracy,
+  distance
+){
 
- const select=
-  document.getElementById("reportTeacher");
+  const row=document.createElement("tr");
 
- const teachers=
-  staff.filter(
-   s=>String(s.role).toLowerCase()==="teacher"
-  );
+  row.innerHTML=`
 
- select.innerHTML=
-  `<option value="">Select teacher...</option>`+
-  teachers.map(t=>
-   `<option value="${t.id}">
-    ${escapeHTML(t.full_name)}
-   </option>`
-  ).join("");
+    <td>${item.attendance_date||""}</td>
 
-}
+    <td>${escapeHTML(staffName)}</td>
 
+    <td>${event}</td>
 
-async function loadReportTeachers(){
+    <td>${lat ?? ""}</td>
 
- if(!staff.length){
-  await loadStaff();
- }
+    <td>${lon ?? ""}</td>
 
- populateReportTeachers();
+    <td>${accuracy!=null ? accuracy+" m" : ""}</td>
+
+    <td>${distance!=null ? distance+" m" : ""}</td>
+
+  `;
+
+  table.appendChild(row);
 
 }
 
 
 async function generateReport(){
 
- const id=
-  document.getElementById("reportTeacher").value;
+  const id=document.getElementById("reportTeacher").value;
 
- const from=
-  document.getElementById("reportFrom").value;
+  if(!id){
 
- const to=
-  document.getElementById("reportTo").value;
+    showMessage("Select a teacher first.","error-msg");
 
- if(!id){
+    return;
 
-  alert("Select a teacher first.");
-
-  return;
-
- }
-
- try{
-
-  let url="/admin/reports/teacher/"+id;
-
-  const params=[];
-
-  if(from)
-   params.push(
-    "from="+encodeURIComponent(from)
-   );
-
-  if(to)
-   params.push(
-    "to="+encodeURIComponent(to)
-   );
-
-  if(params.length)
-   url+="?"+params.join("&");
-
-  const data=await api(url);
-
-  const teacher=data.teacher;
-  const summary=data.summary;
-  const rows=data.attendance||[];
-
-  window.currentReport={
-   teacher,
-   summary,
-   attendance:rows
-  };
-
-  document.getElementById("reportResult").innerHTML=`
-
-   <div class="reportbox">
-
-    <h3>${escapeHTML(teacher.full_name)}</h3>
-
-    <p>
-     Username:
-     <b>${escapeHTML(teacher.username)}</b>
-    </p>
-
-    <p>
-     Email:
-     ${escapeHTML(teacher.email||"")}
-    </p>
-
-    <p>
-     Phone:
-     ${escapeHTML(teacher.phone||"")}
-    </p>
-
-    <hr>
-
-    <p>
-     Total Days:
-     <b>${summary.total_days}</b>
-    </p>
-
-    <p>
-     Present:
-     <b>${summary.present}</b>
-    </p>
-
-    <p>
-     GPS Verified:
-     <b>${summary.gps_verified}</b>
-    </p>
-
-   </div>
-
-   <button class="btn primary"
-    onclick="downloadPDF()">
-    DOWNLOAD PDF
-   </button>
-
-   <button class="btn green"
-    onclick="downloadExcel()">
-    DOWNLOAD EXCEL
-   </button>
-
-   <button class="btn gray"
-    onclick="downloadCSV()">
-    DOWNLOAD CSV
-   </button>
-
-   <div class="panel">
-
-   <table>
-
-   <thead>
-    <tr>
-     <th>Date</th>
-     <th>Clock In</th>
-     <th>Clock Out</th>
-     <th>Status</th>
-     <th>GPS</th>
-    </tr>
-   </thead>
-
-   <tbody>
-
-   ${
-    rows.map(r=>`
-     <tr>
-      <td>${r.attendance_date}</td>
-      <td>${fmt(r.clock_in)}</td>
-      <td>${fmt(r.clock_out)}</td>
-      <td>${escapeHTML(r.status||"")}</td>
-      <td>${r.gps_verified?"YES":"NO"}</td>
-     </tr>
-    `).join("")
-   }
-
-   </tbody>
-
-   </table>
-
-   </div>
-  `;
-
- }catch(error){
-
-  alert(error.message);
-
- }
-
-}
-
-
-function downloadCSV(){
-
- const report=window.currentReport;
-
- if(!report)return;
-
- let csv=
-  "Date,Clock In,Clock Out,Status,GPS Verified,In Distance,Out Distance\n";
-
- report.attendance.forEach(r=>{
-
-  csv+=
-   [
-    r.attendance_date,
-    r.clock_in||"",
-    r.clock_out||"",
-    r.status||"",
-    r.gps_verified?"YES":"NO",
-    r.clock_in_distance??"",
-    r.clock_out_distance??""
-   ]
-   .map(v=>`"${String(v).replace(/"/g,'""')}"`)
-   .join(",")+
-   "\n";
-
- });
-
- const blob=new Blob(
-  [csv],
-  {type:"text/csv;charset=utf-8"}
- );
-
- downloadBlob(
-  blob,
-  report.teacher.full_name+"_attendance.csv"
- );
-
-}
-
-
-function downloadExcel(){
-
- const report=window.currentReport;
-
- if(!report)return;
-
- const rows=report.attendance.map(r=>({
-  Date:r.attendance_date,
-  Clock_In:r.clock_in||"",
-  Clock_Out:r.clock_out||"",
-  Status:r.status||"",
-  GPS_Verified:r.gps_verified?"YES":"NO",
-  Clock_In_Distance:r.clock_in_distance||"",
-  Clock_Out_Distance:r.clock_out_distance||""
- }));
-
- const worksheet=
-  XLSX.utils.json_to_sheet(rows);
-
- const workbook=
-  XLSX.utils.book_new();
-
- XLSX.utils.book_append_sheet(
-  workbook,
-  worksheet,
-  "Attendance"
- );
-
- XLSX.writeFile(
-  workbook,
-  report.teacher.full_name+"_attendance.xlsx"
- );
-
-}
-
-
-function downloadPDF(){
-
- const report=window.currentReport;
-
- if(!report)return;
-
- const {jsPDF} = window.jspdf;
-
- const doc=new jsPDF();
-
- doc.setFontSize(17);
-
- doc.text(
-  "S.C.A.G.S.S STAFF ATTENDANCE REPORT",
-  15,
-  20
- );
-
- doc.setFontSize(11);
-
- doc.text(
-  "Teacher: "+report.teacher.full_name,
-  15,
-  32
- );
-
- doc.text(
-  "Username: "+report.teacher.username,
-  15,
-  39
- );
-
- doc.text(
-  "Total Days: "+report.summary.total_days,
-  15,
-  49
- );
-
- doc.text(
-  "Present: "+report.summary.present,
-  15,
-  56
- );
-
- doc.text(
-  "GPS Verified: "+report.summary.gps_verified,
-  15,
-  63
- );
-
- let y=75;
-
- report.attendance.forEach(r=>{
-
-  if(y>275){
-   doc.addPage();
-   y=20;
   }
 
+  try{
+
+    const data=await api(`/api/admin/reports/teacher/${id}`);
+
+    reportData=data;
+
+    const output=document.getElementById("reportOutput");
+
+    output.innerHTML=`
+
+      <div class="panel">
+
+        <h3>Teacher Report</h3>
+
+        <br>
+
+        <p><strong>Name:</strong>
+        ${escapeHTML(
+          data.teacher?.full_name ||
+          data.staff?.full_name ||
+          ""
+        )}</p>
+
+        <p><strong>Username:</strong>
+        ${escapeHTML(
+          data.teacher?.username ||
+          data.staff?.username ||
+          ""
+        )}</p>
+
+        <p><strong>Email:</strong>
+        ${escapeHTML(
+          data.teacher?.email ||
+          data.staff?.email ||
+          ""
+        )}</p>
+
+        <br>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Date</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Status</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              ${renderReportRows(data)}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }catch(error){
+
+    showMessage(error.message,"error-msg");
+
+  }
+
+}
+
+
+function renderReportRows(data){
+
+  const rows=
+    data.attendance ||
+    data.records ||
+    [];
+
+  if(!rows.length){
+
+    return `
+      <tr>
+        <td colspan="4">
+          No attendance records found.
+        </td>
+      </tr>
+    `;
+
+  }
+
+  return rows.map(item=>`
+
+    <tr>
+
+      <td>${item.attendance_date||""}</td>
+
+      <td>${formatDate(item.clock_in)}</td>
+
+      <td>${formatDate(item.clock_out)}</td>
+
+      <td>${escapeHTML(item.status||"")}</td>
+
+    </tr>
+
+  `).join("");
+
+}
+
+
+function exportCSV(){
+
+  if(!reportData){
+
+    showMessage("Generate a report first.","error-msg");
+
+    return;
+
+  }
+
+  const rows=
+    reportData.attendance ||
+    reportData.records ||
+    [];
+
+  const csvRows=[
+    ["Date","Clock In","Clock Out","Status"]
+  ];
+
+  rows.forEach(item=>{
+
+    csvRows.push([
+      item.attendance_date||"",
+      item.clock_in||"",
+      item.clock_out||"",
+      item.status||""
+    ]);
+
+  });
+
+  const csv=csvRows
+    .map(row=>row.map(csvEscape).join(","))
+    .join("\n");
+
+  downloadFile(
+    csv,
+    "staff-attendance-report.csv",
+    "text/csv"
+  );
+
+}
+
+
+function exportExcel(){
+
+  if(!reportData){
+
+    showMessage("Generate a report first.","error-msg");
+
+    return;
+
+  }
+
+  if(typeof XLSX==="undefined"){
+
+    showMessage(
+      "Excel library could not be loaded.",
+      "error-msg"
+    );
+
+    return;
+
+  }
+
+  const rows=
+    reportData.attendance ||
+    reportData.records ||
+    [];
+
+  const data=[
+    ["Date","Clock In","Clock Out","Status"]
+  ];
+
+  rows.forEach(item=>{
+
+    data.push([
+      item.attendance_date||"",
+      item.clock_in||"",
+      item.clock_out||"",
+      item.status||""
+    ]);
+
+  });
+
+  const worksheet=XLSX.utils.aoa_to_sheet(data);
+
+  const workbook=XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Attendance"
+  );
+
+  XLSX.writeFile(
+    workbook,
+    "staff-attendance-report.xlsx"
+  );
+
+}
+
+
+function exportPDF(){
+
+  if(!reportData){
+
+    showMessage("Generate a report first.","error-msg");
+
+    return;
+
+  }
+
+  if(!window.jspdf){
+
+    showMessage(
+      "PDF library could not be loaded.",
+      "error-msg"
+    );
+
+    return;
+
+  }
+
+  const {jsPDF}=window.jspdf;
+
+  const doc=new jsPDF();
+
+  const teacher=
+    reportData.teacher ||
+    reportData.staff ||
+    {};
+
+  doc.setFontSize(18);
+
   doc.text(
-   `${r.attendance_date} | In: ${
-    r.clock_in
-     ? new Date(r.clock_in).toLocaleTimeString()
-     : "-"
-   } | Out: ${
-    r.clock_out
-     ? new Date(r.clock_out).toLocaleTimeString()
-     : "-"
-   } | GPS: ${
-    r.gps_verified?"YES":"NO"
-   }`,
-   12,
-   y
+    "S.C.A.G.S.S STAFF ATTENDANCE REPORT",
+    15,
+    20
+  );
+
+  doc.setFontSize(11);
+
+  doc.text(
+    `Teacher: ${teacher.full_name||""}`,
+    15,
+    32
+  );
+
+  doc.text(
+    `Username: ${teacher.username||""}`,
+    15,
+    40
+  );
+
+  doc.text(
+    `Email: ${teacher.email||""}`,
+    15,
+    48
+  );
+
+  let y=62;
+
+  doc.text(
+    "Date",
+    15,
+    y
+  );
+
+  doc.text(
+    "Clock In",
+    55,
+    y
+  );
+
+  doc.text(
+    "Clock Out",
+    105,
+    y
+  );
+
+  doc.text(
+    "Status",
+    155,
+    y
   );
 
   y+=8;
 
- });
+  const rows=
+    reportData.attendance ||
+    reportData.records ||
+    [];
 
- doc.save(
-  report.teacher.full_name+"_attendance.pdf"
- );
+  rows.forEach(item=>{
 
-}
+    if(y>280){
 
+      doc.addPage();
 
-function downloadBlob(blob,name){
+      y=20;
 
- const url=
-  URL.createObjectURL(blob);
+    }
 
- const a=document.createElement("a");
+    doc.text(
+      String(item.attendance_date||""),
+      15,
+      y
+    );
 
- a.href=url;
- a.download=name;
+    doc.text(
+      shortDate(item.clock_in),
+      55,
+      y
+    );
 
- document.body.appendChild(a);
- a.click();
+    doc.text(
+      shortDate(item.clock_out),
+      105,
+      y
+    );
 
- a.remove();
+    doc.text(
+      String(item.status||""),
+      155,
+      y
+    );
 
- URL.revokeObjectURL(url);
+    y+=8;
 
-}
+  });
 
-
-document.getElementById("lessonForm")
-.addEventListener("submit",async function(e){
-
- e.preventDefault();
-
- const box=
-  document.getElementById("lessonMessage");
-
- try{
-
-  const data=await api(
-   "/admin/lessons",
-   {
-    method:"POST",
-    body:JSON.stringify({
-     teacher_name:
-      document.getElementById("lessonTeacher").value,
-
-     class_name:
-      document.getElementById("lessonClass").value,
-
-     subject:
-      document.getElementById("lessonSubject").value,
-
-     attendance_date:
-      document.getElementById("lessonDate").value,
-
-     present:
-      Number(
-       document.getElementById("lessonPresent").value
-      ),
-
-     absent:
-      Number(
-       document.getElementById("lessonAbsent").value
-      ),
-
-     notes:
-      document.getElementById("lessonNotes").value
-    })
-   }
+  doc.save(
+    "staff-attendance-report.pdf"
   );
 
-  box.innerHTML=
-   `<p class="success">${data.message}</p>`;
-
-  this.reset();
-
- }catch(error){
-
-  box.innerHTML=
-   `<p class="danger">${error.message}</p>`;
-
- }
-
-});
+}
 
 
-async function askAI(){
+async function runAIAnalysis(){
 
- const question=
-  document.getElementById("aiQuestion").value.trim();
+  const box=document.getElementById("aiResult");
 
- if(!question){
+  box.textContent="Analysing attendance...";
 
-  alert("Enter a question first.");
+  try{
 
-  return;
+    const data=await api("/api/admin/ai/analyze",{
+      method:"POST",
+      body:JSON.stringify({})
+    });
 
- }
+    box.textContent=
+      data.analysis ||
+      data.result ||
+      JSON.stringify(data,null,2);
 
- const result=
-  document.getElementById("aiResult");
+  }catch(error){
 
- result.textContent="Analyzing attendance data...";
+    box.textContent=
+      "AI analysis failed: "+error.message;
 
- try{
-
-  const data=await api(
-   "/admin/ai/analyze",
-   {
-    method:"POST",
-    body:JSON.stringify({question})
-   }
-  );
-
-  const a=data.analysis;
-
-  result.innerHTML=`
-   <h3>Attendance Analysis</h3>
-
-   <p><b>Overview</b><br>
-   ${escapeHTML(a.overview)}</p>
-
-   <p><b>Attendance</b><br>
-   ${escapeHTML(a.attendance)}</p>
-
-   <p><b>GPS</b><br>
-   ${escapeHTML(a.gps)}</p>
-
-   <p><b>Recommendation</b><br>
-   ${escapeHTML(a.recommendation)}</p>
-  `;
-
- }catch(error){
-
-  result.textContent=error.message;
-
- }
+  }
 
 }
 
 
-async function refreshAll(){
+async function loadSettings(){
 
- await loadSummary();
- await loadStaff();
- await loadAttendance();
- await loadGPS();
+  try{
 
- alert("Dashboard refreshed.");
+    const data=await api("/api/admin/settings/gps");
+
+    const settings=
+      data.settings ||
+      data ||
+      {};
+
+    document.getElementById("schoolLat").value=
+      settings.latitude ?? "";
+
+    document.getElementById("schoolLon").value=
+      settings.longitude ?? "";
+
+    document.getElementById("schoolRadius").value=
+      settings.radius ?? 500;
+
+  }catch(error){
+
+    showMessage(error.message,"error-msg");
+
+  }
+
+}
+
+
+async function saveGPSSettings(){
+
+  const latitude=
+    Number(document.getElementById("schoolLat").value);
+
+  const longitude=
+    Number(document.getElementById("schoolLon").value);
+
+  const radius=
+    Number(document.getElementById("schoolRadius").value);
+
+  if(
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    !Number.isFinite(radius)
+  ){
+
+    showMessage(
+      "Enter valid GPS settings.",
+      "error-msg"
+    );
+
+    return;
+
+  }
+
+  try{
+
+    await api("/api/admin/settings/gps",{
+      method:"PUT",
+      body:JSON.stringify({
+        latitude,
+        longitude,
+        radius
+      })
+    });
+
+    showMessage(
+      "GPS settings saved successfully."
+    );
+
+  }catch(error){
+
+    showMessage(error.message,"error-msg");
+
+  }
 
 }
 
 
 async function logout(){
 
- try{
-  await api("/auth/logout",{method:"POST"});
- }catch{}
+  try{
+    await api("/api/auth/logout",{
+      method:"POST"
+    });
+  }catch(error){}
 
- location.href="/";
+  window.location.href="/";
+
+}
+
+
+function formatDate(value){
+
+  if(!value){
+    return "";
+  }
+
+  try{
+
+    return new Date(value).toLocaleString(
+      "en-KE",
+      {
+        dateStyle:"short",
+        timeStyle:"short"
+      }
+    );
+
+  }catch{
+    return value;
+  }
+
+}
+
+
+function shortDate(value){
+
+  if(!value){
+    return "";
+  }
+
+  try{
+
+    return new Date(value).toLocaleString(
+      "en-KE",
+      {
+        dateStyle:"short",
+        timeStyle:"short"
+      }
+    );
+
+  }catch{
+    return value;
+  }
 
 }
 
 
 function escapeHTML(value){
 
- return String(value??"")
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
 
-(async function(){
+function csvEscape(value){
 
- const ok=await checkAdmin();
+  const text=String(value??"");
 
- if(!ok)return;
+  if(
+    text.includes(",") ||
+    text.includes('"') ||
+    text.includes("\n")
+  ){
 
- await refreshAll();
+    return `"${text.replaceAll('"','""')}"`;
 
-})();
+  }
+
+  return text;
+
+}
+
+
+function downloadFile(
+  content,
+  filename,
+  type
+){
+
+  const blob=new Blob(
+    [content],
+    {type}
+  );
+
+  const url=URL.createObjectURL(blob);
+
+  const link=document.createElement("a");
+
+  link.href=url;
+
+  link.download=filename;
+
+  link.click();
+
+  URL.revokeObjectURL(url);
+
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async ()=>{
+
+    const allowed=await checkAdmin();
+
+    if(!allowed){
+      return;
+    }
+
+    await loadDashboard();
+
+  }
+);
 
 </script>
 
