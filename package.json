@@ -1,12 +1,12 @@
 {
   "name": "scagss-staff-portal",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "S.C.A.G.S.S Staff Attendance Portal",
-  "main": "api/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node api/index.js",
-    "dev": "node api/index.js"
+    "start": "node index.js",
+    "dev": "node index.js"
   },
   "engines": {
     "node": ">=20"
