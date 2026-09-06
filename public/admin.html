@@ -1,8 +1,12 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>S.C.A.G.S.S Staff Portal — Administration</title><style>
+
+<title>S.C.A.G.S.S Admin Portal</title>
+
+<style>
 *{
   box-sizing:border-box;
   margin:0;
@@ -10,67 +14,64 @@
 }
 
 :root{
-  --blue:#0757a0;
-  --dark-blue:#063b70;
-  --light-blue:#eaf4ff;
-  --border:#dbe5ef;
-  --text:#17212b;
-  --muted:#687684;
-  --white:#ffffff;
-  --green:#16864a;
-  --red:#c93434;
-  --orange:#d98300;
-  --shadow:0 8px 25px rgba(20,50,80,.08);
+  --blue:#0b4f9c;
+  --blue-dark:#06356d;
+  --blue-light:#eaf4ff;
+  --white:#fff;
+  --bg:#f4f7fb;
+  --text:#172033;
+  --muted:#718096;
+  --border:#dfe6ef;
+  --green:#15803d;
+  --green-bg:#eaf8ef;
+  --red:#c62828;
+  --red-bg:#fff0f0;
+  --orange:#b77900;
+  --orange-bg:#fff7df;
+  --shadow:0 10px 30px rgba(20,45,80,.08);
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f4f7fa;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--bg);
   color:var(--text);
-  min-height:100vh;
 }
 
 /* =========================
-   APP
+   LAYOUT
 ========================= */
 
 .app{
-  display:flex;
   min-height:100vh;
+  display:flex;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
-
 .sidebar{
-  width:245px;
-  background:linear-gradient(180deg,#064b89,#062f59);
+  width:250px;
+  min-height:100vh;
+  background:linear-gradient(180deg,#06356d,#0b4f9c);
   color:white;
   position:fixed;
-  top:0;
   left:0;
+  top:0;
   bottom:0;
-  z-index:100;
-  display:flex;
-  flex-direction:column;
+  z-index:50;
 }
 
 .brand{
-  height:78px;
+  height:90px;
+  padding:20px;
   display:flex;
   align-items:center;
   gap:12px;
-  padding:15px 18px;
-  border-bottom:1px solid rgba(255,255,255,.15);
+  border-bottom:1px solid rgba(255,255,255,.12);
 }
 
-.logo{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  background:white;
-  color:var(--blue);
+.brand-mark{
+  width:48px;
+  height:48px;
+  border-radius:13px;
+  background:rgba(255,255,255,.14);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -78,53 +79,63 @@ body{
   font-size:15px;
 }
 
-.brand-text strong{
+.brand strong{
   display:block;
-  font-size:15px;
+  font-size:14px;
 }
 
-.brand-text span{
+.brand span{
+  display:block;
   font-size:11px;
-  opacity:.8;
+  opacity:.7;
+  margin-top:3px;
 }
 
 .nav{
-  padding:20px 12px;
-  flex:1;
+  padding:18px 12px;
 }
 
 .nav button{
   width:100%;
   border:0;
   background:transparent;
-  color:#dcecff;
+  color:#dceaff;
   text-align:left;
   padding:13px 14px;
-  border-radius:8px;
+  border-radius:10px;
   margin-bottom:5px;
   cursor:pointer;
-  font-size:14px;
+  font-size:13px;
+  font-weight:650;
 }
 
 .nav button:hover,
 .nav button.active{
-  background:rgba(255,255,255,.14);
+  background:rgba(255,255,255,.13);
   color:white;
 }
 
-.nav-label{
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  opacity:.55;
-  padding:15px 14px 8px;
+.nav-icon{
+  display:inline-block;
+  width:28px;
+  font-weight:900;
 }
 
-.sidebar-footer{
-  padding:15px;
-  border-top:1px solid rgba(255,255,255,.15);
-  font-size:11px;
-  color:#c9d9ea;
+.sidebar-bottom{
+  position:absolute;
+  bottom:20px;
+  left:15px;
+  right:15px;
+}
+
+.logout{
+  width:100%;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:white;
+  cursor:pointer;
 }
 
 /* =========================
@@ -132,12 +143,12 @@ body{
 ========================= */
 
 .main{
-  margin-left:245px;
-  width:calc(100% - 245px);
+  margin-left:250px;
+  width:calc(100% - 250px);
 }
 
 .topbar{
-  height:78px;
+  height:76px;
   background:white;
   border-bottom:1px solid var(--border);
   display:flex;
@@ -146,49 +157,50 @@ body{
   padding:0 30px;
   position:sticky;
   top:0;
-  z-index:50;
+  z-index:30;
 }
 
-.page-title h1{
-  font-size:22px;
-  color:#17324c;
+.page-title{
+  font-size:20px;
+  font-weight:800;
 }
 
-.page-title p{
-  color:var(--muted);
+.page-subtitle{
   font-size:12px;
-  margin-top:4px;
+  color:var(--muted);
+  margin-top:3px;
 }
 
 .admin-user{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
 }
 
-.status-dot{
-  width:9px;
-  height:9px;
+.avatar{
+  width:40px;
+  height:40px;
   border-radius:50%;
-  background:#1ca35c;
+  background:var(--blue-light);
+  color:var(--blue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
 }
 
-.user-name{
+.admin-name{
   font-size:13px;
-  font-weight:bold;
+  font-weight:800;
 }
 
-.logout{
-  border:1px solid var(--border);
-  background:white;
-  border-radius:6px;
-  padding:8px 13px;
-  cursor:pointer;
-  color:#555;
+.admin-role{
+  font-size:11px;
+  color:var(--muted);
 }
 
 .content{
-  padding:28px 30px 50px;
+  padding:28px;
 }
 
 /* =========================
@@ -217,57 +229,111 @@ body{
 .card{
   background:white;
   border:1px solid var(--border);
-  border-radius:10px;
+  border-radius:15px;
   padding:20px;
   box-shadow:var(--shadow);
 }
 
-.card-title{
-  font-size:12px;
+.card-label{
   color:var(--muted);
-  margin-bottom:10px;
+  font-size:12px;
+  font-weight:700;
 }
 
 .card-number{
-  font-size:29px;
-  font-weight:bold;
-  color:#143b61;
+  font-size:31px;
+  font-weight:900;
+  margin-top:8px;
 }
 
-.card-sub{
+.card-note{
   margin-top:7px;
   font-size:11px;
   color:var(--muted);
 }
 
+.card.pending .card-number{
+  color:var(--orange);
+}
+
+.card.present .card-number{
+  color:var(--green);
+}
+
 /* =========================
-   PANELS
+   PANEL
 ========================= */
 
 .panel{
   background:white;
   border:1px solid var(--border);
-  border-radius:10px;
+  border-radius:15px;
   box-shadow:var(--shadow);
   margin-bottom:22px;
   overflow:hidden;
 }
 
 .panel-header{
-  padding:17px 20px;
+  min-height:65px;
+  padding:18px 20px;
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:15px;
 }
 
-.panel-header h2{
+.panel-title{
   font-size:15px;
-  color:#173b5e;
+  font-weight:850;
 }
 
-.panel-body{
-  padding:20px;
+.panel-description{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn{
+  border:0;
+  border-radius:9px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:800;
+}
+
+.btn-primary{
+  background:var(--blue);
+  color:white;
+}
+
+.btn-primary:hover{
+  background:var(--blue-dark);
+}
+
+.btn-success{
+  background:var(--green-bg);
+  color:var(--green);
+}
+
+.btn-danger{
+  background:var(--red-bg);
+  color:var(--red);
+}
+
+.btn-warning{
+  background:var(--orange-bg);
+  color:var(--orange);
+}
+
+.btn-light{
+  background:#f1f5f9;
+  color:#334155;
 }
 
 /* =========================
@@ -281,207 +347,198 @@ body{
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:700px;
+  min-width:850px;
 }
 
 th{
-  background:#f7fafd;
-  color:#657584;
   text-align:left;
+  padding:13px 18px;
+  background:#f8fafc;
+  color:#64748b;
   font-size:11px;
   text-transform:uppercase;
   letter-spacing:.4px;
-  padding:12px;
-  border-bottom:1px solid var(--border);
 }
 
 td{
-  padding:13px 12px;
-  border-bottom:1px solid #edf1f4;
-  font-size:13px;
-}
-
-tr:hover td{
-  background:#fafcff;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.btn{
-  border:0;
-  border-radius:6px;
-  padding:9px 13px;
-  cursor:pointer;
+  padding:15px 18px;
+  border-top:1px solid #edf1f5;
   font-size:12px;
-  font-weight:bold;
 }
 
-.btn-primary{
-  background:var(--blue);
-  color:white;
+.staff-name{
+  font-weight:800;
 }
 
-.btn-primary:hover{
-  background:var(--dark-blue);
-}
-
-.btn-secondary{
-  background:#edf4fb;
-  color:#145487;
-}
-
-.btn-danger{
-  background:#fff0f0;
-  color:var(--red);
-}
-
-.btn-success{
-  background:#eaf8f0;
-  color:var(--green);
-}
-
-.btn-small{
-  padding:6px 9px;
+.staff-email{
+  color:var(--muted);
+  margin-top:3px;
   font-size:11px;
 }
 
-/* =========================
-   BADGES
-========================= */
-
 .badge{
   display:inline-block;
-  padding:5px 8px;
+  padding:5px 9px;
   border-radius:20px;
   font-size:10px;
-  font-weight:bold;
+  font-weight:900;
 }
 
-.badge-green{
-  background:#eaf8f0;
-  color:#16864a;
+.badge.pending{
+  color:var(--orange);
+  background:var(--orange-bg);
 }
 
-.badge-red{
-  background:#fff0f0;
-  color:#c93434;
+.badge.approved{
+  color:var(--green);
+  background:var(--green-bg);
 }
 
-.badge-orange{
-  background:#fff5e6;
-  color:#b86d00;
+.badge.inactive{
+  color:var(--red);
+  background:var(--red-bg);
 }
 
-.badge-blue{
-  background:#eaf4ff;
-  color:#0757a0;
+.badge.admin{
+  color:var(--blue);
+  background:var(--blue-light);
 }
 
-/* =========================
-   FORMS
-========================= */
-
-.form-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
-}
-
-.form-group{
+.actions{
   display:flex;
-  flex-direction:column;
   gap:6px;
-}
-
-.form-group.full{
-  grid-column:1/-1;
-}
-
-.form-group label{
-  font-size:12px;
-  font-weight:bold;
-  color:#455563;
-}
-
-input,
-select{
-  width:100%;
-  padding:11px 12px;
-  border:1px solid #ccd7e1;
-  border-radius:6px;
-  outline:none;
-  background:white;
-  font-size:13px;
-}
-
-input:focus,
-select:focus{
-  border-color:var(--blue);
-}
-
-/* =========================
-   TOOLBAR
-========================= */
-
-.toolbar{
-  display:flex;
-  gap:10px;
   flex-wrap:wrap;
-  align-items:center;
-}
-
-.toolbar input,
-.toolbar select{
-  width:auto;
-  min-width:160px;
 }
 
 /* =========================
-   LIVE BAR
+   ATTENDANCE
 ========================= */
 
-.live-bar{
-  background:#eaf8f0;
-  border:1px solid #c8ead7;
-  color:#146b3d;
-  padding:11px 15px;
-  border-radius:7px;
-  margin-bottom:20px;
-  font-size:12px;
+.attendance-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
 }
 
-.live-bar strong{
-  margin-right:8px;
+.attendance-item{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+}
+
+.attendance-name{
+  font-weight:850;
+  font-size:14px;
+}
+
+.attendance-detail{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.7;
 }
 
 /* =========================
    GPS
 ========================= */
 
-.gps-grid{
+.gps-map{
+  min-height:400px;
+  background:
+    linear-gradient(135deg,#edf5fc,#dceaf8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+}
+
+.gps-center{
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  border:2px dashed var(--blue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--blue);
+  font-weight:900;
+  background:rgba(255,255,255,.65);
+}
+
+.gps-table{
+  padding:20px;
+}
+
+/* =========================
+   REPORTS
+========================= */
+
+.form-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:15px;
+  padding:20px;
 }
 
-.gps-box{
-  background:#f8fbfe;
-  border:1px solid var(--border);
-  border-radius:7px;
-  padding:15px;
-}
-
-.gps-box label{
-  font-size:10px;
-  color:var(--muted);
+.field label{
   display:block;
-  margin-bottom:5px;
+  font-size:11px;
+  font-weight:800;
+  margin-bottom:7px;
 }
 
-.gps-box strong{
-  font-size:14px;
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  min-height:42px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:9px 11px;
+  outline:none;
+  font-size:12px;
+  background:white;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(11,79,156,.08);
+}
+
+/* =========================
+   AI
+========================= */
+
+.ai-box{
+  padding:25px;
+}
+
+.ai-response{
+  min-height:180px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+  color:#475569;
+  font-size:13px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  margin-bottom:15px;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.settings-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  padding:20px;
 }
 
 /* =========================
@@ -491,229 +548,89 @@ select:focus{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(10,30,50,.55);
+  background:rgba(5,25,50,.55);
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:300;
   padding:20px;
+  z-index:100;
 }
 
 .modal.show{
   display:flex;
 }
 
-.modal-box{
+.modal-card{
+  width:100%;
+  max-width:520px;
   background:white;
-  width:min(850px,100%);
-  max-height:90vh;
-  overflow:auto;
-  border-radius:12px;
+  border-radius:18px;
   box-shadow:0 25px 70px rgba(0,0,0,.25);
+  overflow:hidden;
 }
 
 .modal-header{
-  padding:18px 22px;
+  padding:20px;
   border-bottom:1px solid var(--border);
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 }
 
-.modal-header h2{
-  font-size:17px;
+.modal-title{
+  font-weight:900;
 }
 
 .close{
-  border:0;
-  background:#f2f4f6;
   width:32px;
   height:32px;
-  border-radius:50%;
+  border:0;
+  border-radius:8px;
+  background:#f1f5f9;
   cursor:pointer;
 }
 
 .modal-body{
-  padding:22px;
-}
-
-/* =========================
-   PROFILE
-========================= */
-
-.profile-head{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  margin-bottom:22px;
-}
-
-.avatar{
-  width:62px;
-  height:62px;
-  border-radius:50%;
-  background:var(--light-blue);
-  color:var(--blue);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  font-size:20px;
-}
-
-.profile-name{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.profile-role{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-}
-
-.info-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:25px;
-}
-
-.info-box{
-  border:1px solid var(--border);
-  padding:13px;
-  border-radius:7px;
-}
-
-.info-box label{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  margin-bottom:5px;
-}
-
-.info-box strong{
-  font-size:13px;
-}
-
-/* =========================
-   AI
-========================= */
-
-.ai-layout{
-  display:grid;
-  grid-template-columns:1fr 300px;
-  gap:20px;
-}
-
-.ai-chat{
-  min-height:430px;
-  display:flex;
-  flex-direction:column;
-}
-
-.ai-messages{
-  flex:1;
   padding:20px;
-  overflow:auto;
-  min-height:330px;
-  background:#f8fafc;
 }
 
-.ai-message{
-  max-width:80%;
-  padding:11px 13px;
-  border-radius:8px;
-  margin-bottom:12px;
-  font-size:13px;
-  line-height:1.5;
-}
-
-.ai-message.bot{
-  background:white;
-  border:1px solid var(--border);
-}
-
-.ai-message.user{
-  background:#eaf4ff;
-  margin-left:auto;
-  color:#154d7e;
-}
-
-.ai-input{
-  display:flex;
-  gap:8px;
-  padding:12px;
+.modal-footer{
+  padding:15px 20px;
   border-top:1px solid var(--border);
-}
-
-.ai-input input{
-  flex:1;
-}
-
-.ai-tools{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:18px;
-}
-
-.ai-tools h3{
-  font-size:14px;
-  margin-bottom:14px;
-}
-
-.ai-tool{
-  width:100%;
-  text-align:left;
-  border:1px solid var(--border);
-  background:white;
-  padding:10px;
-  border-radius:6px;
-  margin-bottom:8px;
-  cursor:pointer;
-  font-size:12px;
-}
-
-.ai-tool:hover{
-  background:#f5f9fd;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
 }
 
 /* =========================
-   REPORT
+   ALERT
 ========================= */
 
-.report-controls{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr auto;
-  gap:10px;
-  align-items:end;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-
-.message{
-  padding:11px 14px;
-  border-radius:6px;
-  margin-bottom:15px;
-  font-size:12px;
+.alert{
   display:none;
+  padding:12px 14px;
+  border-radius:9px;
+  font-size:12px;
+  margin-bottom:15px;
 }
 
-.message.show{
+.alert.show{
   display:block;
 }
 
-.message.success{
-  background:#eaf8f0;
-  color:#176b3d;
+.alert.success{
+  color:var(--green);
+  background:var(--green-bg);
 }
 
-.message.error{
-  background:#fff0f0;
-  color:#a92828;
+.alert.error{
+  color:var(--red);
+  background:var(--red-bg);
+}
+
+.alert.warning{
+  color:var(--orange);
+  background:var(--orange-bg);
 }
 
 /* =========================
@@ -721,32 +638,25 @@ select:focus{
 ========================= */
 
 @media(max-width:1100px){
+
   .cards{
     grid-template-columns:repeat(2,1fr);
   }
 
-  .gps-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .ai-layout{
-    grid-template-columns:1fr;
-  }
-
-  .report-controls{
+  .attendance-grid{
     grid-template-columns:1fr 1fr;
   }
+
+  .form-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
 }
 
 @media(max-width:800px){
+
   .sidebar{
     width:70px;
-  }
-
-  .brand-text,
-  .nav-label,
-  .sidebar-footer{
-    display:none;
   }
 
   .brand{
@@ -754,13 +664,19 @@ select:focus{
     padding:10px;
   }
 
-  .nav button{
-    text-align:center;
-    font-size:0;
+  .brand > div:last-child,
+  .nav button span:not(.nav-icon),
+  .sidebar-bottom{
+    display:none;
   }
 
-  .nav button::first-letter{
-    font-size:18px;
+  .nav button{
+    text-align:center;
+    padding:14px 5px;
+  }
+
+  .nav-icon{
+    width:auto;
   }
 
   .main{
@@ -776,1170 +692,444 @@ select:focus{
     padding:0 18px;
   }
 
-  .form-grid,
-  .info-grid{
+  .admin-name,
+  .admin-role{
+    display:none;
+  }
+
+  .settings-grid{
     grid-template-columns:1fr;
   }
+
 }
 
 @media(max-width:600px){
+
   .cards{
     grid-template-columns:1fr;
   }
 
-  .gps-grid{
+  .attendance-grid{
     grid-template-columns:1fr;
   }
 
-  .report-controls{
+  .form-grid{
     grid-template-columns:1fr;
   }
 
-  .page-title h1{
-    font-size:17px;
+  .page-title{
+    font-size:16px;
   }
 
-  .user-name{
-    display:none;
-  }
 }
-</style></head><body><div class="app"><!-- ================= SIDEBAR ================= --><aside class="sidebar">  <div class="brand">
-    <div class="logo">SAG</div><div class="brand-text">
-  <strong>S.C.A.G.S.S</strong>
-  <span>Staff Portal</span>
-</div>
+</style>
+</head>
 
-  </div>  <nav class="nav"><div class="nav-label">Main</div>
+<body>
 
-<button class="active" onclick="showSection('dashboard',this)">
-  ◈ &nbsp; Dashboard
-</button>
+<div class="app">
 
-<button onclick="showSection('live',this)">
-  ◉ &nbsp; Live Attendance
-</button>
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
 
-<button onclick="showSection('staff',this)">
-  ◇ &nbsp; Staff Management
-</button>
+<aside class="sidebar">
 
-<div class="nav-label">Management</div>
+  <div class="brand">
 
-<button onclick="showSection('gps',this)">
-  ◎ &nbsp; GPS Monitor
-</button>
+    <div class="brand-mark">
+      SAG
+    </div>
 
-<button onclick="showSection('reports',this)">
-  ▣ &nbsp; Reports
-</button>
+    <div>
+      <strong>S.C.A.G.S.S</strong>
+      <span>Staff Administration</span>
+    </div>
 
-<button onclick="showSection('ai',this)">
-  ✦ &nbsp; AI Assistant
-</button>
+  </div>
 
-<button onclick="showSection('settings',this)">
-  ⚙ &nbsp; Settings
-</button>
 
-  </nav>  <div class="sidebar-footer">
-    S.C.A.G.S.S<br>
-    Administration Portal V2
-  </div></aside><!-- ================= MAIN ================= --><main class="main"><header class="topbar">  <div class="page-title">
-    <h1 id="pageTitle">Administration Dashboard</h1>
-    <p>S.C.A.G.S.S Staff Attendance Management System</p>
-  </div>  <div class="admin-user">
-    <span class="status-dot"></span>
-    <span class="user-name" id="adminName">Administrator</span>
-    <button class="logout" onclick="logout()">Logout</button>
-  </div></header><div class="content"><div id="globalMessage" class="message"></div><!-- ================= DASHBOARD ================= --><section id="dashboard" class="section active">  <div class="live-bar">
-    <strong>● LIVE MONITORING</strong>
-    Attendance information is automatically refreshed.
-  </div>  <div class="cards"><div class="card">
-  <div class="card-title">ACTIVE TEACHERS</div>
-  <div class="card-number" id="totalStaff">0</div>
-  <div class="card-sub">Registered teaching staff</div>
-</div>
+  <nav class="nav">
 
-<div class="card">
-  <div class="card-title">PRESENT TODAY</div>
-  <div class="card-number" id="presentCount">0</div>
-  <div class="card-sub">Successfully clocked in</div>
-</div>
-
-<div class="card">
-  <div class="card-title">LATE TODAY</div>
-  <div class="card-number" id="lateCount">0</div>
-  <div class="card-sub">Clocked in after reporting time</div>
-</div>
-
-<div class="card">
-  <div class="card-title">CLOCKED OUT</div>
-  <div class="card-number" id="clockedOutCount">0</div>
-  <div class="card-sub">Completed attendance</div>
-</div>
-
-  </div>  <div class="panel"><div class="panel-header">
-  <h2>Today's Attendance</h2>
-
-  <button class="btn btn-secondary btn-small"
-          onclick="showSection('live')">
-    View Live Attendance
-  </button>
-</div>
-
-<div class="panel-body table-wrap">
-
-  <table>
-
-    <thead>
-      <tr>
-        <th>Teacher</th>
-        <th>Email</th>
-        <th>Clock In</th>
-        <th>Clock Out</th>
-        <th>GPS</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-
-    <tbody id="dashboardAttendance">
-      <tr>
-        <td colspan="6">Loading...</td>
-      </tr>
-    </tbody>
-
-  </table>
-
-</div>
-
-  </div></section><!-- ================= LIVE ================= --><section id="live" class="section">  <div class="panel"><div class="panel-header">
-
-  <h2>Live Staff Attendance & GPS</h2>
-
-  <div class="toolbar">
-    <button class="btn btn-secondary btn-small"
-            onclick="loadLiveAttendance()">
-      Refresh
+    <button class="active" onclick="showSection('dashboard',this)">
+      <span class="nav-icon">01</span>
+      <span>Dashboard</span>
     </button>
-  </div>
 
-</div>
+    <button onclick="showSection('attendance',this)">
+      <span class="nav-icon">02</span>
+      <span>Live Attendance</span>
+    </button>
 
-<div class="panel-body table-wrap">
+    <button onclick="showSection('staff',this)">
+      <span class="nav-icon">03</span>
+      <span>Staff Management</span>
+    </button>
 
-  <table>
+    <button onclick="showSection('gps',this)">
+      <span class="nav-icon">04</span>
+      <span>GPS Monitor</span>
+    </button>
 
-    <thead>
-      <tr>
-        <th>Teacher</th>
-        <th>Contact</th>
-        <th>Clock In</th>
-        <th>Clock Out</th>
-        <th>GPS Status</th>
-        <th>Distance</th>
-        <th>Status</th>
-      </tr>
-    </thead>
+    <button onclick="showSection('reports',this)">
+      <span class="nav-icon">05</span>
+      <span>Reports</span>
+    </button>
 
-    <tbody id="liveAttendance">
-      <tr>
-        <td colspan="7">Loading...</td>
-      </tr>
-    </tbody>
+    <button onclick="showSection('ai',this)">
+      <span class="nav-icon">06</span>
+      <span>AI Assistant</span>
+    </button>
 
-  </table>
+    <button onclick="showSection('settings',this)">
+      <span class="nav-icon">07</span>
+      <span>Settings</span>
+    </button>
 
-</div>
+  </nav>
 
-  </div></section><!-- ================= STAFF ================= --><section id="staff" class="section">  <div class="panel"><div class="panel-header">
 
-  <h2>Staff Management</h2>
+  <div class="sidebar-bottom">
 
-  <button class="btn btn-primary"
-          onclick="openRegistration()">
-    + Register Teacher
-  </button>
-
-</div>
-
-<div class="panel-body">
-
-  <div class="toolbar" style="margin-bottom:18px">
-
-    <input
-      id="staffSearch"
-      placeholder="Search teacher name..."
-      oninput="filterStaff()">
-
-    <select id="staffStatusFilter"
-            onchange="filterStaff()">
-      <option value="">All Staff</option>
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
-    </select>
-
-  </div>
-
-  <div class="table-wrap">
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Teacher</th>
-          <th>Email</th>
-          <th>Contact</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Registered</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-
-      <tbody id="staffTable">
-        <tr>
-          <td colspan="7">Loading...</td>
-        </tr>
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
-
-  </div></section><!-- ================= GPS ================= --><section id="gps" class="section">  <div class="panel"><div class="panel-header">
-  <h2>Teacher GPS Monitoring</h2>
-
-  <button class="btn btn-secondary btn-small"
-          onclick="loadGPS()">
-    Refresh GPS
-  </button>
-</div>
-
-<div class="panel-body table-wrap">
-
-  <table>
-
-    <thead>
-      <tr>
-        <th>Teacher</th>
-        <th>Clock Event</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-        <th>Accuracy</th>
-        <th>Distance</th>
-        <th>Verification</th>
-        <th>Time</th>
-      </tr>
-    </thead>
-
-    <tbody id="gpsTable">
-      <tr>
-        <td colspan="8">Loading...</td>
-      </tr>
-    </tbody>
-
-  </table>
-
-</div>
-
-  </div></section><!-- ================= REPORTS ================= --><section id="reports" class="section">  <div class="panel"><div class="panel-header">
-  <h2>Individual Teacher Reports</h2>
-</div>
-
-<div class="panel-body">
-
-  <div class="report-controls">
-
-    <div class="form-group">
-      <label>Teacher</label>
-      <select id="reportStaff">
-        <option value="">Select teacher</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>From</label>
-      <input type="date" id="reportFrom">
-    </div>
-
-    <div class="form-group">
-      <label>To</label>
-      <input type="date" id="reportTo">
-    </div>
-
-    <button class="btn btn-primary"
-            onclick="generateIndividualReport()">
-      Generate
+    <button class="logout" onclick="logout()">
+      Logout
     </button>
 
   </div>
 
-</div>
+</aside>
 
-  </div>  <div id="reportResult"></div></section><!-- ================= AI ================= --><section id="ai" class="section">  <div class="ai-layout"><div class="panel ai-chat">
 
-  <div class="panel-header">
-    <h2>S.C.A.G.S.S AI Assistant</h2>
-  </div>
+<!-- =====================================================
+     MAIN
+====================================================== -->
 
-  <div class="ai-messages" id="aiMessages">
+<main class="main">
 
-    <div class="ai-message bot">
-      Hello. I am the S.C.A.G.S.S Staff Portal Assistant.
-      I can help you analyse attendance, identify late
-      teachers, prepare summaries and assist with reports.
+  <header class="topbar">
+
+    <div>
+      <div class="page-title" id="pageTitle">
+        Dashboard
+      </div>
+
+      <div class="page-subtitle">
+        S.C.A.G.S.S Staff Attendance Management
+      </div>
+    </div>
+
+
+    <div class="admin-user">
+
+      <div class="avatar" id="adminAvatar">
+        A
+      </div>
+
+      <div>
+
+        <div class="admin-name" id="adminName">
+          Administrator
+        </div>
+
+        <div class="admin-role">
+          System Administrator
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <div class="content">
+
+
+<!-- =====================================================
+     DASHBOARD
+====================================================== -->
+
+<section id="dashboard" class="section active">
+
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-label">
+        TOTAL TEACHERS
+      </div>
+
+      <div class="card-number" id="totalStaff">
+        0
+      </div>
+
+      <div class="card-note">
+        Registered teaching staff
+      </div>
+    </div>
+
+
+    <div class="card pending">
+      <div class="card-label">
+        PENDING APPROVAL
+      </div>
+
+      <div class="card-number" id="pendingStaff">
+        0
+      </div>
+
+      <div class="card-note">
+        Awaiting administrator approval
+      </div>
+    </div>
+
+
+    <div class="card present">
+      <div class="card-label">
+        CLOCKED IN TODAY
+      </div>
+
+      <div class="card-number" id="checkedIn">
+        0
+      </div>
+
+      <div class="card-note">
+        Current attendance
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="card-label">
+        GPS VERIFIED
+      </div>
+
+      <div class="card-number" id="gpsVerified">
+        0
+      </div>
+
+      <div class="card-note">
+        Verified attendance records
+      </div>
     </div>
 
   </div>
 
-  <div class="ai-input">
 
-    <input
-      id="aiInput"
-      placeholder="Ask about staff attendance..."
-      onkeydown="if(event.key==='Enter') sendAI()">
+  <div class="panel">
 
-    <button class="btn btn-primary"
-            onclick="sendAI()">
-      Send
-    </button>
+    <div class="panel-header">
 
-  </div>
+      <div>
+        <div class="panel-title">
+          Pending Teacher Registrations
+        </div>
 
-</div>
+        <div class="panel-description">
+          Review and approve newly registered teachers.
+        </div>
+      </div>
 
-<div class="ai-tools">
+      <button
+        class="btn btn-primary"
+        onclick="showSectionByName('staff')"
+      >
+        Manage Staff
+      </button>
 
-  <h3>Quick Assistance</h3>
-
-  <button class="ai-tool"
-          onclick="quickAI('Give me a summary of today attendance.')">
-    Today's attendance summary
-  </button>
-
-  <button class="ai-tool"
-          onclick="quickAI('Which teachers were late today?')">
-    Find late teachers
-  </button>
-
-  <button class="ai-tool"
-          onclick="quickAI('Which teachers have not clocked out today?')">
-    Missing clock-outs
-  </button>
-
-  <button class="ai-tool"
-          onclick="quickAI('Give me the current attendance statistics.')">
-    Attendance statistics
-  </button>
-
-  <button class="ai-tool"
-          onclick="quickAI('Explain the current GPS attendance situation.')">
-    GPS situation
-  </button>
-
-</div>
-
-  </div></section><!-- ================= SETTINGS ================= --><section id="settings" class="section">  <div class="panel"><div class="panel-header">
-  <h2>School GPS Settings</h2>
-</div>
-
-<div class="panel-body">
-
-  <div class="form-grid">
-
-    <div class="form-group">
-      <label>School Latitude</label>
-      <input id="gpsLatitude" type="number" step="any">
     </div>
 
-    <div class="form-group">
-      <label>School Longitude</label>
-      <input id="gpsLongitude" type="number" step="any">
-    </div>
+    <div class="table-wrap">
 
-    <div class="form-group">
-      <label>Allowed Radius (metres)</label>
-      <input id="gpsRadius" type="number" min="1">
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Teacher</th>
+            <th>Contact</th>
+            <th>Registered</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="pendingTable">
+
+        </tbody>
+
+      </table>
+
     </div>
 
   </div>
 
-  <br>
+</section>
 
-  <button class="btn btn-primary"
-          onclick="saveGPSSettings()">
-    Save GPS Settings
-  </button>
 
-</div>
+<!-- =====================================================
+     ATTENDANCE
+====================================================== -->
 
-  </div></section></div>
-</main>
-</div><!-- =====================================================
-     REGISTRATION MODAL
-===================================================== --><div class="modal" id="registrationModal">  <div class="modal-box"><div class="modal-header">
+<section id="attendance" class="section">
 
-  <h2>Register Teacher</h2>
+  <div class="panel">
 
-  <button class="close"
-          onclick="closeModal('registrationModal')">
-    ×
-  </button>
+    <div class="panel-header">
 
-</div>
+      <div>
+        <div class="panel-title">
+          Live Attendance
+        </div>
 
-<div class="modal-body">
-
-  <div id="registrationMessage" class="message"></div>
-
-  <form id="registrationForm">
-
-    <div class="form-grid">
-
-      <div class="form-group full">
-
-        <label>Teacher's Full Name *</label>
-
-        <input
-          id="regFullName"
-          required
-          placeholder="Enter teacher's actual full name">
-
+        <div class="panel-description">
+          Today's teacher clock-in and clock-out records.
+        </div>
       </div>
 
-      <div class="form-group">
+      <button
+        class="btn btn-primary"
+        onclick="loadAttendance()"
+      >
+        Refresh
+      </button>
 
-        <label>Email Address *</label>
+    </div>
 
-        <input
-          id="regEmail"
-          type="email"
-          required
-          placeholder="teacher@example.com">
+    <div class="table-wrap">
 
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Teacher</th>
+            <th>Clock In</th>
+            <th>Clock Out</th>
+            <th>GPS</th>
+            <th>Status</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="attendanceTable">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     STAFF
+====================================================== -->
+
+<section id="staff" class="section">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <div class="panel-title">
+          Staff Management
+        </div>
+
+        <div class="panel-description">
+          Review teacher registrations and manage staff accounts.
+        </div>
       </div>
 
-      <div class="form-group">
+      <button
+        class="btn btn-primary"
+        onclick="loadStaff()"
+      >
+        Refresh Staff
+      </button>
 
-        <label>Phone / Contact *</label>
+    </div>
 
-        <input
-          id="regPhone"
-          required
-          placeholder="07XXXXXXXX">
 
+    <div id="staffAlert" class="alert"></div>
+
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Teacher</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Registered</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="staffTable">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     GPS
+====================================================== -->
+
+<section id="gps" class="section">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <div class="panel-title">
+          GPS Attendance Monitor
+        </div>
+
+        <div class="panel-description">
+          Monitor teacher location verification during attendance.
+        </div>
       </div>
 
-      <div class="form-group">
+      <button
+        class="btn btn-primary"
+        onclick="loadGPS()"
+      >
+        Refresh
+      </button>
 
-        <label>Password *</label>
+    </div>
 
-        <input
-          id="regPassword"
-          type="password"
-          minlength="8"
-          required
-          placeholder="Minimum 8 characters">
 
-      </div>
+    <div class="gps-map">
 
-      <div class="form-group">
-
-        <label>Confirm Password *</label>
-
-        <input
-          id="regPasswordConfirm"
-          type="password"
-          minlength="8"
-          required
-          placeholder="Confirm password">
-
+      <div class="gps-center">
+        SCHOOL<br>
+        GPS ZONE
       </div>
 
     </div>
 
-    <br>
 
-    <button class="btn btn-primary"
-            type="submit">
-      Register Teacher
-    </button>
-
-  </form>
-
-</div>
-
-  </div></div><!-- =====================================================
-     PROFILE MODAL
-===================================================== --><div class="modal" id="profileModal">  <div class="modal-box"><div class="modal-header">
-
-  <h2>Teacher Profile</h2>
-
-  <button class="close"
-          onclick="closeModal('profileModal')">
-    ×
-  </button>
-
-</div>
-
-<div class="modal-body" id="profileContent">
-  Loading...
-</div>
-
-  </div></div><script>
-
-/* =====================================================
-   API
-===================================================== */
-
-async function api(url, options = {}){
-
-  const response = await fetch(url,{
-    credentials:"include",
-    ...options,
-    headers:{
-      "Content-Type":"application/json",
-      ...(options.headers || {})
-    }
-  });
-
-  let data = {};
-
-  try{
-    data = await response.json();
-  }catch(e){}
-
-  if(!response.ok){
-    throw new Error(data.message || "Request failed");
-  }
-
-  return data;
-}
-
-/* =====================================================
-   CURRENT ADMIN
-===================================================== */
-
-async function loadMe(){
-
-  try{
-
-    const data = await api("/api/me");
-
-    if(data.user){
-
-      document.getElementById("adminName").textContent =
-        data.user.full_name || data.user.username;
-
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-
-}
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-const titles = {
-  dashboard:"Administration Dashboard",
-  live:"Live Attendance",
-  staff:"Staff Management",
-  gps:"GPS Monitoring",
-  reports:"Individual Reports",
-  ai:"AI Assistant",
-  settings:"System Settings"
-};
-
-function showSection(id,button){
-
-  document.querySelectorAll(".section")
-    .forEach(section=>section.classList.remove("active"));
-
-  const section = document.getElementById(id);
-
-  if(section){
-    section.classList.add("active");
-  }
-
-  document.querySelectorAll(".nav button")
-    .forEach(btn=>btn.classList.remove("active"));
-
-  if(button){
-    button.classList.add("active");
-  }
-
-  document.getElementById("pageTitle").textContent =
-    titles[id] || "Administration Dashboard";
-
-  if(id==="dashboard"){
-    loadSummary();
-    loadLiveAttendance();
-  }
-
-  if(id==="live"){
-    loadLiveAttendance();
-  }
-
-  if(id==="staff"){
-    loadStaff();
-  }
-
-  if(id==="gps"){
-    loadGPS();
-  }
-
-  if(id==="reports"){
-    loadReportStaff();
-  }
-
-  if(id==="settings"){
-    loadGPSSettings();
-  }
-
-}
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-function showMessage(text,type="success",target="globalMessage"){
-
-  const box = document.getElementById(target);
-
-  if(!box) return;
-
-  box.textContent = text;
-
-  box.className = "message show " + type;
-
-  setTimeout(()=>{
-    box.className = "message";
-  },5000);
-
-}
-
-/* =====================================================
-   SUMMARY
-===================================================== */
-
-async function loadSummary(){
-
-  try{
-
-    const data = await api("/api/admin/summary");
-
-    const summary = data.summary || data;
-
-    document.getElementById("totalStaff").textContent =
-      summary.totalStaff ??
-      summary.totalTeachers ??
-      0;
-
-    document.getElementById("presentCount").textContent =
-      summary.present ??
-      summary.presentToday ??
-      0;
-
-    document.getElementById("lateCount").textContent =
-      summary.late ??
-      summary.lateToday ??
-      0;
-
-    document.getElementById("clockedOutCount").textContent =
-      summary.clockedOut ??
-      summary.clockedOutToday ??
-      0;
-
-  }catch(error){
-
-    console.error("Summary error:",error);
-
-  }
-
-}
-
-/* =====================================================
-   LIVE ATTENDANCE
-===================================================== */
-
-async function loadLiveAttendance(){
-
-  try{
-
-    const data = await api("/api/admin/attendance/today");
-
-    const rows =
-      data.attendance ||
-      data.rows ||
-      data.data ||
-      [];
-
-    renderAttendance(rows,"liveAttendance");
-    renderAttendance(rows,"dashboardAttendance");
-
-  }catch(error){
-
-    console.error(error);
-
-    document.getElementById("liveAttendance").innerHTML =
-      `<tr><td colspan="7">${escapeHTML(error.message)}</td></tr>`;
-
-  }
-
-}
-
-function renderAttendance(rows,target){
-
-  const tbody = document.getElementById(target);
-
-  if(!tbody) return;
-
-  if(!rows.length){
-
-    tbody.innerHTML =
-      `<tr><td colspan="${target==="liveAttendance"?7:6}">
-        No attendance records today.
-      </td></tr>`;
-
-    return;
-  }
-
-  tbody.innerHTML = rows.map(row=>{
-
-    const staff = row.staff || row;
-
-    const name =
-      row.full_name ||
-      staff.full_name ||
-      "Unknown";
-
-    const email =
-      row.email ||
-      staff.email ||
-      "—";
-
-    const phone =
-      row.phone ||
-      staff.phone ||
-      "—";
-
-    const clockIn =
-      formatDateTime(row.clock_in);
-
-    const clockOut =
-      formatDateTime(row.clock_out);
-
-    const gps =
-      row.gps_verified
-      ? `<span class="badge badge-green">Verified</span>`
-      : `<span class="badge badge-red">Not verified</span>`;
-
-    const status =
-      row.status === "Late"
-      ? `<span class="badge badge-orange">Late</span>`
-      : row.clock_in
-      ? `<span class="badge badge-green">Present</span>`
-      : `<span class="badge badge-red">Absent</span>`;
-
-    if(target==="dashboardAttendance"){
-
-      return `
-      <tr>
-        <td><strong>${escapeHTML(name)}</strong></td>
-        <td>${escapeHTML(email)}</td>
-        <td>${clockIn}</td>
-        <td>${clockOut}</td>
-        <td>${gps}</td>
-        <td>${status}</td>
-      </tr>`;
-
-    }
-
-    return `
-    <tr>
-      <td><strong>${escapeHTML(name)}</strong></td>
-      <td>${escapeHTML(phone)}</td>
-      <td>${clockIn}</td>
-      <td>${clockOut}</td>
-      <td>${gps}</td>
-      <td>${formatDistance(
-        row.clock_in_distance ??
-        row.clock_out_distance
-      )}</td>
-      <td>${status}</td>
-    </tr>`;
-
-  }).join("");
-
-}
-
-/* =====================================================
-   STAFF
-===================================================== */
-
-let staffCache = [];
-
-async function loadStaff(){
-
-  try{
-
-    const data = await api("/api/admin/staff");
-
-    staffCache =
-      data.staff ||
-      data.rows ||
-      data.data ||
-      [];
-
-    renderStaff(staffCache);
-
-    populateReportStaff();
-
-  }catch(error){
-
-    console.error(error);
-
-    document.getElementById("staffTable").innerHTML =
-      `<tr><td colspan="7">${escapeHTML(error.message)}</td></tr>`;
-
-  }
-
-}
-
-function renderStaff(rows){
-
-  const tbody = document.getElementById("staffTable");
-
-  if(!rows.length){
-
-    tbody.innerHTML =
-      `<tr><td colspan="7">No staff found.</td></tr>`;
-
-    return;
-  }
-
-  tbody.innerHTML = rows.map(staff=>{
-
-    const active =
-      staff.active !== false;
-
-    return `
-    <tr>
-
-      <td>
-        <strong>${escapeHTML(staff.full_name || "Unnamed")}</strong>
-      </td>
-
-      <td>${escapeHTML(staff.email || "—")}</td>
-
-      <td>${escapeHTML(staff.phone || "—")}</td>
-
-      <td>
-        <span class="badge badge-blue">
-          ${escapeHTML(staff.role || "teacher")}
-        </span>
-      </td>
-
-      <td>
-        ${
-          active
-          ? `<span class="badge badge-green">Active</span>`
-          : `<span class="badge badge-red">Inactive</span>`
-        }
-      </td>
-
-      <td>${formatDate(staff.created_at)}</td>
-
-      <td>
-
-        <button class="btn btn-secondary btn-small"
-                onclick="viewProfile(${staff.id})">
-          Profile
-        </button>
-
-        <button
-          class="btn ${
-            active ? "btn-danger" : "btn-success"
-          } btn-small"
-          onclick="toggleStaff(${staff.id},${active})">
-          ${active ? "Deactivate" : "Activate"}
-        </button>
-
-      </td>
-
-    </tr>`;
-
-  }).join("");
-
-}
-
-function filterStaff(){
-
-  const search =
-    document.getElementById("staffSearch")
-      .value
-      .toLowerCase();
-
-  const status =
-    document.getElementById("staffStatusFilter")
-      .value;
-
-  const filtered = staffCache.filter(staff=>{
-
-    const name =
-      (staff.full_name || "").toLowerCase();
-
-    const matchesSearch =
-      !search || name.includes(search);
-
-    const active =
-      staff.active !== false;
-
-    const matchesStatus =
-      !status ||
-      (status==="active" && active) ||
-      (status==="inactive" && !active);
-
-    return matchesSearch && matchesStatus;
-
-  });
-
-  renderStaff(filtered);
-
-}
-
-async function toggleStaff(id,active){
-
-  const action =
-    active ? "deactivate" : "activate";
-
-  if(!confirm(`Are you sure you want to ${action} this account?`)){
-    return;
-  }
-
-  try{
-
-    await api(`/api/admin/staff/${id}/status`,{
-      method:"PATCH",
-      body:JSON.stringify({
-        active:!active
-      })
-    });
-
-    showMessage(
-      `Staff account ${action}d successfully.`,
-      "success"
-    );
-
-    loadStaff();
-
-  }catch(error){
-
-    showMessage(error.message,"error");
-
-  }
-
-}
-
-/* =====================================================
-   REGISTRATION
-===================================================== */
-
-function openRegistration(){
-
-  document.getElementById("registrationForm").reset();
-
-  document.getElementById("registrationModal")
-    .classList.add("show");
-
-}
-
-document.getElementById("registrationForm")
-.addEventListener("submit",async function(event){
-
-  event.preventDefault();
-
-  const full_name =
-    document.getElementById("regFullName").value.trim();
-
-  const email =
-    document.getElementById("regEmail").value.trim();
-
-  const phone =
-    document.getElementById("regPhone").value.trim();
-
-  const password =
-    document.getElementById("regPassword").value;
-
-  const confirmPassword =
-    document.getElementById("regPasswordConfirm").value;
-
-  if(password !== confirmPassword){
-
-    showMessage(
-      "Passwords do not match.",
-      "error",
-      "registrationMessage"
-    );
-
-    return;
-  }
-
-  try{
-
-    /*
-      IMPORTANT:
-      The backend will create the internal username.
-      The visible teacher identity is the actual full name.
-    */
-
-    const data = await api("/api/admin/staff",{
-      method:"POST",
-      body:JSON.stringify({
-        full_name,
-        email,
-        phone,
-        password,
-        role:"teacher"
-      })
-    });
-
-    showMessage(
-      data.message || "Teacher registered successfully.",
-      "success",
-      "registrationMessage"
-    );
-
-    document.getElementById("registrationForm").reset();
-
-    loadStaff();
-
-    setTimeout(()=>{
-      closeModal("registrationModal");
-    },1200);
-
-  }catch(error){
-
-    showMessage(
-      error.message,
-      "error",
-      "registrationMessage"
-    );
-
-  }
-
-});
-
-/* =====================================================
-   PROFILE
-===================================================== */
-
-async function viewProfile(id){
-
-  document.getElementById("profileModal")
-    .classList.add("show");
-
-  const content =
-    document.getElementById("profileContent");
-
-  content.innerHTML = "Loading teacher profile...";
-
-  try{
-
-    const data =
-      await api(`/api/admin/staff/${id}`);
-
-    const staff =
-      data.staff ||
-      data.profile ||
-      data;
-
-    const attendance =
-      data.attendance ||
-      [];
-
-    const name =
-      staff.full_name || "Unknown Teacher";
-
-    const initials =
-      getInitials(name);
-
-    content.innerHTML = `
-
-      <div class="profile-head">
-
-        <div class="avatar">
-          ${escapeHTML(initials)}
-        </div>
-
-        <div>
-
-          <div class="profile-name">
-            ${escapeHTML(name)}
-          </div>
-
-          <div class="profile-role">
-            ${escapeHTML(staff.role || "Teacher")}
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="info-grid">
-
-        <div class="info-box">
-          <label>EMAIL</label>
-          <strong>
-            ${escapeHTML(staff.email || "Not provided")}
-          </strong>
-        </div>
-
-        <div class="info-box">
-          <label>CONTACT</label>
-          <strong>
-            ${escapeHTML(staff.phone || "Not provided")}
-          </strong>
-        </div>
-
-        <div class="info-box">
-          <label>ACCOUNT STATUS</label>
-          <strong>
-            ${
-              staff.active !== false
-              ? "Active"
-              : "Inactive"
-            }
-          </strong>
-        </div>
-
-        <div class="info-box">
-          <label>STAFF ID</label>
-          <strong>${escapeHTML(String(staff.id))}</strong>
-        </div>
-
-        <div class="info-box">
-          <label>REGISTERED</label>
-          <strong>${formatDate(staff.created_at)}</strong>
-        </div>
-
-        <div class="info-box">
-          <label>ROLE</label>
-          <strong>${escapeHTML(staff.role || "teacher")}</strong>
-        </div>
-
-      </div>
-
-      <h3 style="margin-bottom:12px">
-        Attendance History
-      </h3>
+    <div class="gps-table">
 
       <div class="table-wrap">
 
@@ -1948,42 +1138,16 @@ async function viewProfile(id){
           <thead>
 
             <tr>
-              <th>Date</th>
-              <th>Clock In</th>
-              <th>Clock Out</th>
-              <th>Status</th>
-              <th>GPS</th>
+              <th>Teacher</th>
+              <th>Clock In Location</th>
+              <th>Distance</th>
+              <th>Accuracy</th>
+              <th>Verification</th>
             </tr>
 
           </thead>
 
-          <tbody>
-
-            ${
-              attendance.length
-              ? attendance.map(a=>`
-
-                <tr>
-                  <td>${formatDate(a.attendance_date)}</td>
-                  <td>${formatDateTime(a.clock_in)}</td>
-                  <td>${formatDateTime(a.clock_out)}</td>
-                  <td>${escapeHTML(a.status || "—")}</td>
-                  <td>
-                    ${
-                      a.gps_verified
-                      ? `<span class="badge badge-green">Verified</span>`
-                      : `<span class="badge badge-red">No</span>`
-                    }
-                  </td>
-                </tr>
-
-              `).join("")
-              : `<tr>
-                  <td colspan="5">
-                    No attendance history available.
-                  </td>
-                </tr>`
-            }
+          <tbody id="gpsTable">
 
           </tbody>
 
@@ -1991,82 +1155,1353 @@ async function viewProfile(id){
 
       </div>
 
-      <br>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     REPORTS
+====================================================== -->
+
+<section id="reports" class="section">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <div class="panel-title">
+          Individual Staff Report
+        </div>
+
+        <div class="panel-description">
+          Generate attendance reports for individual teachers.
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="form-grid">
+
+      <div class="field">
+
+        <label>
+          TEACHER
+        </label>
+
+        <select id="reportStaff">
+
+          <option value="">
+            Select teacher
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          FROM
+        </label>
+
+        <input
+          type="date"
+          id="reportFrom"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          TO
+        </label>
+
+        <input
+          type="date"
+          id="reportTo"
+        >
+
+      </div>
+
+
+      <div style="display:flex;align-items:end;">
+
+        <button
+          class="btn btn-primary"
+          style="width:100%;height:42px;"
+          onclick="generateReport()"
+        >
+          Generate Report
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="panel"
+    id="reportResult"
+    style="display:none;"
+  >
+
+    <div class="panel-header">
+
+      <div>
+        <div class="panel-title">
+          Report
+        </div>
+
+        <div class="panel-description" id="reportStaffName">
+        </div>
+      </div>
 
       <button
         class="btn btn-primary"
-        onclick="prepareIndividualReport(${staff.id})">
-        Generate Individual Report
+        onclick="printReport()"
+      >
+        Print / Save PDF
       </button>
 
-    `;
+    </div>
+
+
+    <div id="reportContent">
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     AI
+====================================================== -->
+
+<section id="ai" class="section">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <div class="panel-title">
+          S.C.A.G.S.S AI Assistant
+        </div>
+
+        <div class="panel-description">
+          Administrative assistance for attendance and staff management.
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="ai-box">
+
+      <div class="ai-response" id="aiResponse">
+        Ask the AI Assistant about staff attendance,
+        pending registrations, reports or administrative tasks.
+      </div>
+
+
+      <div style="display:flex;gap:10px;">
+
+        <input
+          id="aiQuestion"
+          placeholder="Ask a question..."
+          style="
+            flex:1;
+            height:45px;
+            border:1px solid var(--border);
+            border-radius:9px;
+            padding:10px;
+          "
+        >
+
+        <button
+          class="btn btn-primary"
+          onclick="askAI()"
+        >
+          Ask AI
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     SETTINGS
+====================================================== -->
+
+<section id="settings" class="section">
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <div>
+        <div class="panel-title">
+          GPS Settings
+        </div>
+
+        <div class="panel-description">
+          Configure the school's attendance verification zone.
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="settings-grid">
+
+      <div class="field">
+
+        <label>
+          SCHOOL LATITUDE
+        </label>
+
+        <input
+          id="gpsLatitude"
+          type="number"
+          step="any"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          SCHOOL LONGITUDE
+        </label>
+
+        <input
+          id="gpsLongitude"
+          type="number"
+          step="any"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          ATTENDANCE RADIUS (METRES)
+        </label>
+
+        <input
+          id="gpsRadius"
+          type="number"
+          min="1"
+        >
+
+      </div>
+
+    </div>
+
+
+    <div style="padding:0 20px 20px;">
+
+      <button
+        class="btn btn-primary"
+        onclick="saveGPSSettings()"
+      >
+        Save GPS Settings
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+  </div>
+
+</main>
+
+</div>
+
+
+<!-- =====================================================
+     APPROVAL MODAL
+====================================================== -->
+
+<div
+  class="modal"
+  id="approvalModal"
+>
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <div class="modal-title">
+        Teacher Registration
+      </div>
+
+      <button
+        class="close"
+        onclick="closeModal('approvalModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div id="approvalDetails">
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        class="btn btn-light"
+        onclick="closeModal('approvalModal')"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="btn btn-danger"
+        id="rejectButton"
+      >
+        Reject
+      </button>
+
+      <button
+        class="btn btn-primary"
+        id="approveButton"
+      >
+        Approve
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   GLOBALS
+========================================================= */
+
+const API = "/api";
+
+let currentStaff = [];
+
+let selectedStaffId = null;
+
+
+/* =========================================================
+   API HELPER
+========================================================= */
+
+async function apiFetch(url, options = {}){
+
+  const response = await fetch(
+    API + url,
+    {
+      credentials:"include",
+      ...options,
+      headers:{
+        "Content-Type":"application/json",
+        ...(options.headers || {})
+      }
+    }
+  );
+
+  let data;
+
+  try{
+    data = await response.json();
+  }catch{
+    throw new Error(
+      "The server returned an invalid response."
+    );
+  }
+
+  if(response.status === 401){
+
+    window.location.href = "/";
+
+    throw new Error("Session expired.");
+  }
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      "Request failed."
+    );
+  }
+
+  return data;
+}
+
+
+/* =========================================================
+   SECTION NAVIGATION
+========================================================= */
+
+const titles = {
+  dashboard:"Dashboard",
+  attendance:"Live Attendance",
+  staff:"Staff Management",
+  gps:"GPS Monitor",
+  reports:"Reports",
+  ai:"AI Assistant",
+  settings:"Settings"
+};
+
+
+function showSection(name, button){
+
+  document.querySelectorAll(".section")
+    .forEach(section=>{
+      section.classList.remove("active");
+    });
+
+  const target = document.getElementById(name);
+
+  if(target){
+    target.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav button")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+  document.getElementById("pageTitle").textContent =
+    titles[name] || "Dashboard";
+
+
+  if(name === "dashboard"){
+    loadDashboard();
+  }
+
+  if(name === "attendance"){
+    loadAttendance();
+  }
+
+  if(name === "staff"){
+    loadStaff();
+  }
+
+  if(name === "gps"){
+    loadGPS();
+  }
+
+  if(name === "reports"){
+    loadReportTeachers();
+  }
+
+  if(name === "settings"){
+    loadGPSSettings();
+  }
+}
+
+
+function showSectionByName(name){
+
+  const button = [...document.querySelectorAll(".nav button")]
+    .find(btn =>
+      btn.textContent.toLowerCase().includes(name)
+    );
+
+  showSection(name,button);
+}
+
+
+/* =========================================================
+   ME
+========================================================= */
+
+async function loadMe(){
+
+  try{
+
+    const data = await apiFetch("/me");
+
+    if(data.user.role !== "admin"){
+
+      window.location.href = "/staff.html";
+
+      return;
+    }
+
+    document.getElementById("adminName").textContent =
+      data.user.full_name || "Administrator";
+
+    const firstLetter =
+      (data.user.full_name || "A")
+      .charAt(0)
+      .toUpperCase();
+
+    document.getElementById("adminAvatar").textContent =
+      firstLetter;
 
   }catch(error){
 
-    content.innerHTML =
-      `<div class="message show error">
-        ${escapeHTML(error.message)}
-      </div>`;
+    console.error(error);
 
   }
-
 }
 
-/* =====================================================
-   REPORTS
-===================================================== */
 
-function loadReportStaff(){
+/* =========================================================
+   DASHBOARD
+========================================================= */
 
-  if(!staffCache.length){
-    loadStaff();
+async function loadDashboard(){
+
+  try{
+
+    const data =
+      await apiFetch("/admin/summary");
+
+    const summary = data.summary || {};
+
+    document.getElementById("totalStaff").textContent =
+      summary.total_staff || 0;
+
+    document.getElementById("pendingStaff").textContent =
+      summary.pending_staff || 0;
+
+    document.getElementById("checkedIn").textContent =
+      summary.checked_in || 0;
+
+    document.getElementById("gpsVerified").textContent =
+      summary.gps_verified || 0;
+
+
+    await loadStaff();
+
+    renderPendingTable();
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+}
+
+
+/* =========================================================
+   STAFF
+========================================================= */
+
+async function loadStaff(){
+
+  try{
+
+    const data =
+      await apiFetch("/admin/staff");
+
+    currentStaff =
+      data.staff || [];
+
+    renderStaffTable();
+
+    renderPendingTable();
+
+    populateReportStaff();
+
+  }catch(error){
+
+    showAlert(
+      "staffAlert",
+      error.message,
+      "error"
+    );
+
+  }
+}
+
+
+function renderStaffTable(){
+
+  const table =
+    document.getElementById("staffTable");
+
+  table.innerHTML = "";
+
+  if(currentStaff.length === 0){
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center;padding:35px;color:#718096;">
+          No staff records found.
+        </td>
+      </tr>
+    `;
+
     return;
   }
 
-  populateReportStaff();
+
+  currentStaff.forEach(staff=>{
+
+    const tr =
+      document.createElement("tr");
+
+    const status =
+      staff.role === "admin"
+        ? `<span class="badge admin">ADMIN</span>`
+        : staff.active === true
+          ? `<span class="badge approved">APPROVED</span>`
+          : `<span class="badge pending">PENDING</span>`;
+
+
+    let actions = "";
+
+    if(staff.role === "teacher"){
+
+      if(staff.active === true){
+
+        actions = `
+          <button
+            class="btn btn-light"
+            onclick="viewStaff(${staff.id})"
+          >
+            View
+          </button>
+
+          <button
+            class="btn btn-danger"
+            onclick="changeStaffStatus(${staff.id},false)"
+          >
+            Deactivate
+          </button>
+        `;
+
+      }else{
+
+        actions = `
+          <button
+            class="btn btn-primary"
+            onclick="openApproval(${staff.id})"
+          >
+            Review
+          </button>
+        `;
+
+      }
+
+    }else{
+
+      actions = `
+        <button
+          class="btn btn-light"
+          onclick="viewStaff(${staff.id})"
+        >
+          View
+        </button>
+      `;
+    }
+
+
+    tr.innerHTML = `
+
+      <td>
+
+        <div class="staff-name">
+          ${escapeHTML(staff.full_name || "")}
+        </div>
+
+        <div class="staff-email">
+          ${escapeHTML(staff.username || "")}
+        </div>
+
+      </td>
+
+
+      <td>
+        ${escapeHTML(staff.email || "—")}
+      </td>
+
+
+      <td>
+        ${escapeHTML(staff.phone || "—")}
+      </td>
+
+
+      <td>
+        ${escapeHTML(staff.role || "")}
+      </td>
+
+
+      <td>
+        ${formatDate(staff.created_at)}
+      </td>
+
+
+      <td>
+        ${status}
+      </td>
+
+
+      <td>
+        <div class="actions">
+          ${actions}
+        </div>
+      </td>
+
+    `;
+
+
+    table.appendChild(tr);
+
+  });
 
 }
+
+
+/* =========================================================
+   PENDING TABLE
+========================================================= */
+
+function renderPendingTable(){
+
+  const table =
+    document.getElementById("pendingTable");
+
+  table.innerHTML = "";
+
+
+  const pending =
+    currentStaff.filter(
+      staff =>
+        staff.role === "teacher" &&
+        staff.active !== true
+    );
+
+
+  if(pending.length === 0){
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="5"
+          style="text-align:center;padding:35px;color:#718096;">
+          No pending teacher registrations.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  pending.forEach(staff=>{
+
+    const tr =
+      document.createElement("tr");
+
+
+    tr.innerHTML = `
+
+      <td>
+
+        <div class="staff-name">
+          ${escapeHTML(staff.full_name || "")}
+        </div>
+
+        <div class="staff-email">
+          ${escapeHTML(staff.email || "")}
+        </div>
+
+      </td>
+
+
+      <td>
+        ${escapeHTML(staff.phone || "—")}
+      </td>
+
+
+      <td>
+        ${formatDate(staff.created_at)}
+      </td>
+
+
+      <td>
+        <span class="badge pending">
+          PENDING
+        </span>
+      </td>
+
+
+      <td>
+
+        <button
+          class="btn btn-primary"
+          onclick="openApproval(${staff.id})"
+        >
+          Review
+        </button>
+
+      </td>
+
+    `;
+
+    table.appendChild(tr);
+
+  });
+
+}
+
+
+/* =========================================================
+   APPROVAL MODAL
+========================================================= */
+
+function openApproval(id){
+
+  const staff =
+    currentStaff.find(
+      item => Number(item.id) === Number(id)
+    );
+
+  if(!staff){
+    return;
+  }
+
+  selectedStaffId = staff.id;
+
+
+  document.getElementById("approvalDetails").innerHTML = `
+
+    <div style="
+      display:grid;
+      gap:13px;
+    ">
+
+      <div>
+        <div style="
+          color:#718096;
+          font-size:11px;
+          font-weight:800;
+        ">
+          FULL NAME
+        </div>
+
+        <div style="
+          font-size:18px;
+          font-weight:900;
+          margin-top:4px;
+        ">
+          ${escapeHTML(staff.full_name || "")}
+        </div>
+      </div>
+
+
+      <div>
+        <div style="
+          color:#718096;
+          font-size:11px;
+          font-weight:800;
+        ">
+          EMAIL
+        </div>
+
+        <div style="margin-top:4px;">
+          ${escapeHTML(staff.email || "—")}
+        </div>
+      </div>
+
+
+      <div>
+        <div style="
+          color:#718096;
+          font-size:11px;
+          font-weight:800;
+        ">
+          PHONE
+        </div>
+
+        <div style="margin-top:4px;">
+          ${escapeHTML(staff.phone || "—")}
+        </div>
+      </div>
+
+
+      <div>
+        <div style="
+          color:#718096;
+          font-size:11px;
+          font-weight:800;
+        ">
+          REGISTRATION DATE
+        </div>
+
+        <div style="margin-top:4px;">
+          ${formatDate(staff.created_at)}
+        </div>
+      </div>
+
+
+      <div style="
+        padding:12px;
+        background:#fff7df;
+        color:#8a6500;
+        border-radius:9px;
+        font-size:12px;
+      ">
+        This teacher is currently pending approval.
+        Approving the account will allow the teacher to log
+        into the staff portal and use GPS attendance.
+      </div>
+
+    </div>
+  `;
+
+
+  document.getElementById("approveButton").onclick =
+    () => changeStaffStatus(id,true);
+
+
+  document.getElementById("rejectButton").onclick =
+    () => changeStaffStatus(id,false);
+
+
+  document.getElementById("approvalModal")
+    .classList.add("show");
+}
+
+
+function closeModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal){
+    modal.classList.remove("show");
+  }
+
+  selectedStaffId = null;
+}
+
+
+/* =========================================================
+   APPROVE / REJECT
+========================================================= */
+
+async function changeStaffStatus(id,active){
+
+  const action =
+    active
+      ? "approve this teacher"
+      : "deactivate/reject this teacher";
+
+  if(!confirm(`Are you sure you want to ${action}?`)){
+    return;
+  }
+
+
+  try{
+
+    await apiFetch(
+      `/admin/staff/${id}/status`,
+      {
+        method:"PATCH",
+        body:JSON.stringify({
+          active
+        })
+      }
+    );
+
+
+    closeModal("approvalModal");
+
+
+    await loadStaff();
+
+    await loadDashboard();
+
+
+    showAlert(
+      "staffAlert",
+      active
+        ? "Teacher approved successfully."
+        : "Teacher account deactivated.",
+      active ? "success" : "warning"
+    );
+
+
+  }catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+
+/* =========================================================
+   VIEW STAFF
+========================================================= */
+
+function viewStaff(id){
+
+  const staff =
+    currentStaff.find(
+      item => Number(item.id) === Number(id)
+    );
+
+  if(!staff){
+    return;
+  }
+
+  alert(
+`Teacher Profile
+
+Name: ${staff.full_name || "—"}
+Email: ${staff.email || "—"}
+Phone: ${staff.phone || "—"}
+Username: ${staff.username || "—"}
+Role: ${staff.role || "—"}
+Status: ${staff.active ? "APPROVED" : "PENDING"}
+Registered: ${formatDate(staff.created_at)}`
+  );
+}
+
+
+/* =========================================================
+   ATTENDANCE
+========================================================= */
+
+async function loadAttendance(){
+
+  const table =
+    document.getElementById("attendanceTable");
+
+  table.innerHTML = `
+    <tr>
+      <td colspan="5"
+        style="text-align:center;padding:30px;">
+        Loading attendance...
+      </td>
+    </tr>
+  `;
+
+
+  try{
+
+    const data =
+      await apiFetch("/admin/attendance/today");
+
+    const rows =
+      data.attendance || [];
+
+    table.innerHTML = "";
+
+
+    if(rows.length === 0){
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="5"
+            style="text-align:center;padding:35px;color:#718096;">
+            No attendance records today.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    rows.forEach(row=>{
+
+      const staff =
+        row.staff || {};
+
+      const tr =
+        document.createElement("tr");
+
+
+      tr.innerHTML = `
+
+        <td>
+          <div class="staff-name">
+            ${escapeHTML(staff.full_name || "Unknown")}
+          </div>
+
+          <div class="staff-email">
+            ${escapeHTML(staff.email || "")}
+          </div>
+        </td>
+
+
+        <td>
+          ${formatTime(row.clock_in)}
+        </td>
+
+
+        <td>
+          ${formatTime(row.clock_out)}
+        </td>
+
+
+        <td>
+          ${
+            row.gps_verified
+              ? `<span class="badge approved">VERIFIED</span>`
+              : `<span class="badge pending">NOT VERIFIED</span>`
+          }
+        </td>
+
+
+        <td>
+          ${
+            row.clock_out
+              ? `<span class="badge approved">COMPLETED</span>`
+              : `<span class="badge admin">CLOCKED IN</span>`
+          }
+        </td>
+
+      `;
+
+
+      table.appendChild(tr);
+
+    });
+
+
+  }catch(error){
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="5"
+          style="text-align:center;padding:30px;color:#c62828;">
+          ${escapeHTML(error.message)}
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   GPS
+========================================================= */
+
+async function loadGPS(){
+
+  const table =
+    document.getElementById("gpsTable");
+
+  table.innerHTML = `
+    <tr>
+      <td colspan="5"
+        style="text-align:center;padding:30px;">
+        Loading GPS records...
+      </td>
+    </tr>
+  `;
+
+
+  try{
+
+    const data =
+      await apiFetch("/admin/gps/today");
+
+    const rows =
+      data.gps || [];
+
+    table.innerHTML = "";
+
+
+    if(rows.length === 0){
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="5"
+            style="text-align:center;padding:35px;color:#718096;">
+            No GPS attendance records today.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    rows.forEach(row=>{
+
+      const staff =
+        row.staff || {};
+
+      const tr =
+        document.createElement("tr");
+
+
+      tr.innerHTML = `
+
+        <td>
+          <div class="staff-name">
+            ${escapeHTML(staff.full_name || "Unknown")}
+          </div>
+
+          <div class="staff-email">
+            ${escapeHTML(staff.email || "")}
+          </div>
+        </td>
+
+
+        <td>
+          ${
+            row.clock_in_lat != null &&
+            row.clock_in_lon != null
+              ? `${Number(row.clock_in_lat).toFixed(6)},
+                 ${Number(row.clock_in_lon).toFixed(6)}`
+              : "—"
+          }
+        </td>
+
+
+        <td>
+          ${
+            row.clock_in_distance != null
+              ? `${Math.round(row.clock_in_distance)} m`
+              : "—"
+          }
+        </td>
+
+
+        <td>
+          ${
+            row.clock_in_accuracy != null
+              ? `±${Math.round(row.clock_in_accuracy)} m`
+              : "—"
+          }
+        </td>
+
+
+        <td>
+          ${
+            row.gps_verified
+              ? `<span class="badge approved">VERIFIED</span>`
+              : `<span class="badge pending">NOT VERIFIED</span>`
+          }
+        </td>
+
+      `;
+
+
+      table.appendChild(tr);
+
+    });
+
+
+  }catch(error){
+
+    table.innerHTML = `
+      <tr>
+        <td colspan="5"
+          style="text-align:center;padding:30px;color:#c62828;">
+          ${escapeHTML(error.message)}
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   REPORT TEACHERS
+========================================================= */
 
 function populateReportStaff(){
 
   const select =
     document.getElementById("reportStaff");
 
-  if(!select) return;
+  if(!select){
+    return;
+  }
 
   select.innerHTML =
-    `<option value="">Select teacher</option>` +
-    staffCache
-      .filter(s=>
-        s.role !== "admin" &&
-        s.active !== false
-      )
-      .map(s=>
-        `<option value="${s.id}">
-          ${escapeHTML(s.full_name)}
-        </option>`
-      )
-      .join("");
+    `<option value="">Select teacher</option>`;
+
+
+  currentStaff
+    .filter(staff => staff.role === "teacher")
+    .forEach(staff=>{
+
+      const option =
+        document.createElement("option");
+
+      option.value = staff.id;
+
+      option.textContent =
+        staff.full_name;
+
+      select.appendChild(option);
+
+    });
 
 }
 
-function prepareIndividualReport(id){
 
-  closeModal("profileModal");
+async function loadReportTeachers(){
 
-  showSection(
-    "reports",
-    document.querySelector(
-      '.nav button[onclick*="reports"]'
-    )
-  );
+  if(currentStaff.length === 0){
 
-  document.getElementById("reportStaff").value =
-    id;
+    await loadStaff();
+
+  }else{
+
+    populateReportStaff();
+
+  }
 
 }
 
-async function generateIndividualReport(){
+
+/* =========================================================
+   REPORT
+========================================================= */
+
+let lastReport = null;
+
+
+async function generateReport(){
 
   const staffId =
     document.getElementById("reportStaff").value;
@@ -2077,153 +2512,97 @@ async function generateIndividualReport(){
   const to =
     document.getElementById("reportTo").value;
 
+
   if(!staffId){
 
-    showMessage(
-      "Please select a teacher.",
-      "error"
-    );
+    alert("Please select a teacher.");
 
     return;
   }
 
+
   try{
 
-    let url =
-      `/api/admin/report?staff_id=${encodeURIComponent(staffId)}`;
+    const params =
+      new URLSearchParams();
+
+    params.set("staff_id",staffId);
 
     if(from){
-      url += `&from=${encodeURIComponent(from)}`;
+      params.set("from",from);
     }
 
     if(to){
-      url += `&to=${encodeURIComponent(to)}`;
+      params.set("to",to);
     }
 
-    const data = await api(url);
 
-    const report =
-      data.report ||
-      data;
+    const data =
+      await apiFetch(
+        `/admin/report?${params.toString()}`
+      );
 
-    displayReport(report);
 
-  }catch(error){
+    lastReport = data;
 
-    showMessage(
-      error.message,
-      "error"
-    );
 
-  }
+    const staff =
+      data.staff || {};
 
-}
+    const attendance =
+      data.attendance || [];
 
-function displayReport(report){
 
-  const box =
-    document.getElementById("reportResult");
+    document.getElementById("reportStaffName")
+      .textContent =
+        `${staff.full_name || ""} • ${staff.email || ""}`;
 
-  const rows =
-    report.attendance ||
-    report.rows ||
-    [];
 
-  const staff =
-    report.staff ||
-    {};
+    let html = `
 
-  box.innerHTML = `
+      <div style="padding:20px;">
 
-    <div class="panel">
+        <div style="
+          display:grid;
+          grid-template-columns:repeat(3,1fr);
+          gap:12px;
+          margin-bottom:20px;
+        ">
 
-      <div class="panel-header">
+          <div class="card">
+            <div class="card-label">
+              RECORDS
+            </div>
 
-        <h2>
-          Individual Attendance Report
-        </h2>
-
-        <button
-          class="btn btn-primary"
-          onclick="window.print()">
-          Print / Save PDF
-        </button>
-
-      </div>
-
-      <div class="panel-body">
-
-        <div class="profile-head">
-
-          <div class="avatar">
-            ${escapeHTML(
-              getInitials(
-                staff.full_name || "Teacher"
-              )
-            )}
+            <div class="card-number">
+              ${attendance.length}
+            </div>
           </div>
 
-          <div>
 
-            <div class="profile-name">
-              ${escapeHTML(
-                staff.full_name || "Teacher"
-              )}
+          <div class="card">
+            <div class="card-label">
+              GPS VERIFIED
             </div>
 
-            <div class="profile-role">
-              ${escapeHTML(
-                staff.email || "No email"
-              )}
-              &nbsp; | &nbsp;
-              ${escapeHTML(
-                staff.phone || "No contact"
-              )}
+            <div class="card-number">
+              ${attendance.filter(x=>x.gps_verified).length}
+            </div>
+          </div>
+
+
+          <div class="card">
+            <div class="card-label">
+              CLOCKED OUT
             </div>
 
+            <div class="card-number">
+              ${attendance.filter(x=>x.clock_out).length}
+            </div>
           </div>
 
         </div>
 
-        <div class="cards">
-
-          <div class="card">
-            <div class="card-title">
-              DAYS PRESENT
-            </div>
-            <div class="card-number">
-              ${report.days_present ?? 0}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              LATE DAYS
-            </div>
-            <div class="card-number">
-              ${report.late_days ?? 0}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              MISSING CLOCK-OUT
-            </div>
-            <div class="card-number">
-              ${report.missing_clock_out ?? 0}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              ATTENDANCE RATE
-            </div>
-            <div class="card-number">
-              ${report.attendance_percentage ?? 0}%
-            </div>
-          </div>
-
-        </div>
 
         <div class="table-wrap">
 
@@ -2235,43 +2614,64 @@ function displayReport(report){
                 <th>Date</th>
                 <th>Clock In</th>
                 <th>Clock Out</th>
-                <th>Status</th>
                 <th>GPS</th>
               </tr>
 
             </thead>
 
             <tbody>
+    `;
 
+
+    if(attendance.length === 0){
+
+      html += `
+        <tr>
+          <td colspan="4"
+            style="text-align:center;padding:30px;color:#718096;">
+            No attendance records found.
+          </td>
+        </tr>
+      `;
+
+    }else{
+
+      attendance.forEach(row=>{
+
+        html += `
+
+          <tr>
+
+            <td>
+              ${escapeHTML(row.attendance_date || "—")}
+            </td>
+
+            <td>
+              ${formatTime(row.clock_in)}
+            </td>
+
+            <td>
+              ${formatTime(row.clock_out)}
+            </td>
+
+            <td>
               ${
-                rows.length
-                ? rows.map(row=>`
-
-                  <tr>
-                    <td>${formatDate(row.attendance_date)}</td>
-                    <td>${formatDateTime(row.clock_in)}</td>
-                    <td>${formatDateTime(row.clock_out)}</td>
-                    <td>${escapeHTML(row.status || "—")}</td>
-                    <td>
-                      ${
-                        row.gps_verified
-                        ? `<span class="badge badge-green">
-                            Verified
-                           </span>`
-                        : `<span class="badge badge-red">
-                            Not verified
-                           </span>`
-                      }
-                    </td>
-                  </tr>
-
-                `).join("")
-                : `<tr>
-                    <td colspan="5">
-                      No attendance records found.
-                    </td>
-                  </tr>`
+                row.gps_verified
+                  ? `<span class="badge approved">VERIFIED</span>`
+                  : `<span class="badge pending">NO</span>`
               }
+            </td>
+
+          </tr>
+
+        `;
+
+      });
+
+    }
+
+
+    html += `
 
             </tbody>
 
@@ -2281,133 +2681,223 @@ function displayReport(report){
 
       </div>
 
-    </div>
+    `;
 
-  `;
 
-}
+    document.getElementById("reportContent")
+      .innerHTML = html;
 
-/* =====================================================
-   GPS
-===================================================== */
+    document.getElementById("reportResult")
+      .style.display = "block";
 
-async function loadGPS(){
-
-  try{
-
-    const data =
-      await api("/api/admin/gps/today");
-
-    const rows =
-      data.gps ||
-      data.rows ||
-      data.data ||
-      [];
-
-    const tbody =
-      document.getElementById("gpsTable");
-
-    if(!rows.length){
-
-      tbody.innerHTML =
-        `<tr><td colspan="8">
-          No GPS attendance data today.
-        </td></tr>`;
-
-      return;
-    }
-
-    tbody.innerHTML =
-      rows.map(row=>`
-
-      <tr>
-
-        <td>
-          <strong>
-            ${escapeHTML(
-              row.full_name ||
-              row.staff_name ||
-              "Unknown"
-            )}
-          </strong>
-        </td>
-
-        <td>
-          ${escapeHTML(
-            row.event ||
-            row.type ||
-            "Clock"
-          )}
-        </td>
-
-        <td>
-          ${formatNumber(row.latitude || row.clock_in_lat)}
-        </td>
-
-        <td>
-          ${formatNumber(row.longitude || row.clock_in_lon)}
-        </td>
-
-        <td>
-          ${formatNumber(
-            row.accuracy ||
-            row.clock_in_accuracy
-          )} m
-        </td>
-
-        <td>
-          ${formatDistance(
-            row.distance ||
-            row.clock_in_distance
-          )}
-        </td>
-
-        <td>
-          ${
-            row.gps_verified
-            ? `<span class="badge badge-green">
-                Verified
-               </span>`
-            : `<span class="badge badge-red">
-                Not verified
-               </span>`
-          }
-        </td>
-
-        <td>
-          ${formatDateTime(
-            row.time ||
-            row.clock_in ||
-            row.created_at
-          )}
-        </td>
-
-      </tr>
-
-      `).join("");
 
   }catch(error){
 
-    console.error(error);
+    alert(error.message);
 
   }
 
 }
 
-/* =====================================================
+
+/* =========================================================
+   PRINT REPORT
+========================================================= */
+
+function printReport(){
+
+  const content =
+    document.getElementById("reportContent").innerHTML;
+
+  const name =
+    document.getElementById("reportStaffName").textContent;
+
+
+  const win =
+    window.open(
+      "",
+      "_blank",
+      "width=1000,height=800"
+    );
+
+
+  win.document.write(`
+
+    <!DOCTYPE html>
+
+    <html>
+
+    <head>
+
+      <title>
+        S.C.A.G.S.S Staff Attendance Report
+      </title>
+
+      <style>
+
+        body{
+          font-family:Arial,sans-serif;
+          padding:30px;
+          color:#172033;
+        }
+
+        h1{
+          margin-bottom:5px;
+        }
+
+        .subtitle{
+          color:#64748b;
+          margin-bottom:25px;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+        }
+
+        th,td{
+          border:1px solid #dce5ef;
+          padding:10px;
+          text-align:left;
+          font-size:12px;
+        }
+
+        th{
+          background:#f1f5f9;
+        }
+
+        .card{
+          display:inline-block;
+          width:30%;
+          border:1px solid #dce5ef;
+          padding:15px;
+          margin-right:10px;
+          margin-bottom:20px;
+        }
+
+        .card-label{
+          color:#64748b;
+          font-size:11px;
+        }
+
+        .card-number{
+          font-size:24px;
+          font-weight:bold;
+          margin-top:7px;
+        }
+
+        .badge{
+          font-size:10px;
+          font-weight:bold;
+        }
+
+      </style>
+
+    </head>
+
+    <body>
+
+      <h1>
+        S.C.A.G.S.S Staff Attendance Report
+      </h1>
+
+      <div class="subtitle">
+        ${escapeHTML(name)}
+      </div>
+
+      ${content}
+
+      <script>
+        window.onload = function(){
+          window.print();
+        };
+      <\/script>
+
+    </body>
+
+    </html>
+
+  `);
+
+
+  win.document.close();
+
+}
+
+
+/* =========================================================
+   AI
+========================================================= */
+
+async function askAI(){
+
+  const input =
+    document.getElementById("aiQuestion");
+
+  const response =
+    document.getElementById("aiResponse");
+
+  const question =
+    input.value.trim();
+
+
+  if(!question){
+
+    response.textContent =
+      "Please enter a question.";
+
+    return;
+  }
+
+
+  response.textContent =
+    "Processing...";
+
+
+  try{
+
+    const data =
+      await apiFetch(
+        "/ai/assistant",
+        {
+          method:"POST",
+          body:JSON.stringify({
+            question
+          })
+        }
+      );
+
+
+    response.textContent =
+      data.answer ||
+      "No response received.";
+
+  }catch(error){
+
+    response.textContent =
+      error.message;
+
+  }
+
+}
+
+
+/* =========================================================
    GPS SETTINGS
-===================================================== */
+========================================================= */
 
 async function loadGPSSettings(){
 
   try{
 
     const data =
-      await api("/api/settings/gps");
+      await apiFetch(
+        "/settings/gps"
+      );
 
     const settings =
-      data.settings ||
-      data;
+      data.settings || {};
+
 
     document.getElementById("gpsLatitude").value =
       settings.latitude ?? "";
@@ -2426,6 +2916,7 @@ async function loadGPSSettings(){
 
 }
 
+
 async function saveGPSSettings(){
 
   const latitude =
@@ -2443,269 +2934,155 @@ async function saveGPSSettings(){
       document.getElementById("gpsRadius").value
     );
 
+
+  if(
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    !Number.isFinite(radius)
+  ){
+
+    alert("Please enter valid GPS settings.");
+
+    return;
+  }
+
+
   try{
 
-    await api("/api/settings/gps",{
-      method:"PUT",
-      body:JSON.stringify({
-        latitude,
-        longitude,
-        radius
-      })
-    });
+    await apiFetch(
+      "/settings/gps",
+      {
+        method:"PUT",
+        body:JSON.stringify({
+          latitude,
+          longitude,
+          radius
+        })
+      }
+    );
 
-    showMessage(
-      "GPS settings saved successfully.",
-      "success"
+
+    alert(
+      "GPS settings saved successfully."
     );
 
   }catch(error){
 
-    showMessage(
-      error.message,
-      "error"
-    );
+    alert(error.message);
 
   }
 
 }
 
-/* =====================================================
-   AI ASSISTANT
-===================================================== */
 
-function quickAI(text){
-
-  document.getElementById("aiInput").value =
-    text;
-
-  sendAI();
-
-}
-
-async function sendAI(){
-
-  const input =
-    document.getElementById("aiInput");
-
-  const text =
-    input.value.trim();
-
-  if(!text) return;
-
-  addAIMessage(text,"user");
-
-  input.value = "";
-
-  addAIMessage(
-    "Analysing the request...",
-    "bot"
-  );
-
-  try{
-
-    /*
-      This endpoint will be connected to
-      the secure AI backend in the next step.
-    */
-
-    const data = await api("/api/ai/assistant",{
-      method:"POST",
-      body:JSON.stringify({
-        message:text
-      })
-    });
-
-    const messages =
-      document.querySelectorAll(
-        "#aiMessages .ai-message"
-      );
-
-    const last =
-      messages[messages.length-1];
-
-    if(last &&
-       last.textContent === "Analysing the request..."){
-
-      last.remove();
-
-    }
-
-    addAIMessage(
-      data.reply ||
-      data.message ||
-      "The AI assistant did not return a response.",
-      "bot"
-    );
-
-  }catch(error){
-
-    const messages =
-      document.querySelectorAll(
-        "#aiMessages .ai-message"
-      );
-
-    const last =
-      messages[messages.length-1];
-
-    if(last &&
-       last.textContent === "Analysing the request..."){
-
-      last.remove();
-
-    }
-
-    addAIMessage(
-      "AI Assistant is not connected to the server yet. We will connect the secure AI service in the next development step.",
-      "bot"
-    );
-
-  }
-
-}
-
-function addAIMessage(text,type){
-
-  const container =
-    document.getElementById("aiMessages");
-
-  const div =
-    document.createElement("div");
-
-  div.className =
-    "ai-message " + type;
-
-  div.textContent = text;
-
-  container.appendChild(div);
-
-  container.scrollTop =
-    container.scrollHeight;
-
-}
-
-/* =====================================================
+/* =========================================================
    LOGOUT
-===================================================== */
+========================================================= */
 
 async function logout(){
 
   try{
-    await api("/api/auth/logout",{
-      method:"POST"
-    });
-  }catch(error){}
+
+    await fetch(
+      API + "/auth/logout",
+      {
+        method:"POST",
+        credentials:"include"
+      }
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+  }
 
   window.location.href = "/";
 
 }
 
-/* =====================================================
-   MODALS
-===================================================== */
 
-function closeModal(id){
+/* =========================================================
+   ALERT
+========================================================= */
 
-  document.getElementById(id)
-    .classList.remove("show");
+function showAlert(id,message,type){
 
-}
+  const element =
+    document.getElementById(id);
 
-document.querySelectorAll(".modal")
-.forEach(modal=>{
-
-  modal.addEventListener("click",function(event){
-
-    if(event.target === modal){
-      modal.classList.remove("show");
-    }
-
-  });
-
-});
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function formatDateTime(value){
-
-  if(!value) return "—";
-
-  const d = new Date(value);
-
-  if(isNaN(d.getTime())){
-    return "—";
+  if(!element){
+    return;
   }
 
-  return d.toLocaleString("en-KE",{
-    dateStyle:"short",
-    timeStyle:"short"
-  });
+  element.className =
+    `alert show ${type}`;
+
+  element.textContent =
+    message;
+
+
+  setTimeout(()=>{
+    element.className =
+      "alert";
+  },5000);
 
 }
+
+
+/* =========================================================
+   FORMATTERS
+========================================================= */
 
 function formatDate(value){
 
-  if(!value) return "—";
-
-  const d = new Date(value);
-
-  if(isNaN(d.getTime())){
-    return String(value);
-  }
-
-  return d.toLocaleDateString("en-KE");
-
-}
-
-function formatDistance(value){
-
-  if(value === null ||
-     value === undefined ||
-     value === ""){
+  if(!value){
     return "—";
   }
 
-  const n = Number(value);
+  try{
 
-  if(isNaN(n)){
-    return "—";
+    return new Date(value)
+      .toLocaleString(
+        undefined,
+        {
+          dateStyle:"medium",
+          timeStyle:"short"
+        }
+      );
+
+  }catch{
+
+    return value;
   }
-
-  return Math.round(n) + " m";
 
 }
 
-function formatNumber(value){
 
-  if(value === null ||
-     value === undefined ||
-     value === ""){
+function formatTime(value){
+
+  if(!value){
     return "—";
   }
 
-  const n = Number(value);
+  try{
 
-  if(isNaN(n)){
-    return "—";
+    return new Date(value)
+      .toLocaleTimeString(
+        undefined,
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      );
+
+  }catch{
+
+    return value;
   }
 
-  return n.toFixed(6);
-
 }
 
-function getInitials(name){
-
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0,2)
-    .map(x=>x[0])
-    .join("")
-    .toUpperCase();
-
-}
 
 function escapeHTML(value){
 
@@ -2718,28 +3095,30 @@ function escapeHTML(value){
 
 }
 
-/* =====================================================
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+async function initialize(){
+
+  await loadMe();
+
+  await loadDashboard();
+
+}
+
+
+/* =========================================================
    START
-===================================================== */
+========================================================= */
 
-loadMe();
-loadSummary();
-loadStaff();
-loadLiveAttendance();
+document.addEventListener(
+  "DOMContentLoaded",
+  initialize
+);
 
-setInterval(()=>{
-  loadSummary();
-  loadLiveAttendance();
-},10000);
+</script>
 
-setInterval(()=>{
-  if(
-    document.getElementById("gps")
-      .classList.contains("active")
-  ){
-    loadGPS();
-  }
-},10000);
-
-</script></body>
+</body>
 </html>
