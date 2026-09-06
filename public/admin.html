@@ -42,9 +42,14 @@
     button {
       border: none;
       border-radius: 7px;
-      padding: 11px 16px;
+      padding: 11px 15px;
       cursor: pointer;
       font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
     }
 
     .logout {
@@ -53,7 +58,7 @@
     }
 
     main {
-      max-width: 1400px;
+      max-width: 1450px;
       margin: auto;
       padding: 20px;
     }
@@ -70,7 +75,7 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px;
       margin-bottom: 20px;
     }
@@ -83,13 +88,13 @@
     }
 
     .card h3 {
-      font-size: 13px;
+      font-size: 12px;
       color: #64748b;
       margin-bottom: 10px;
     }
 
     .number {
-      font-size: 30px;
+      font-size: 29px;
       font-weight: bold;
       color: #075985;
     }
@@ -108,18 +113,21 @@
       color: #075985;
     }
 
-    .settings {
+    .settings,
+    .report-controls {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 11px;
       border: 1px solid #cbd5e1;
       border-radius: 7px;
       margin-top: 5px;
+      background: white;
     }
 
     label {
@@ -142,6 +150,7 @@
     .message {
       margin-top: 12px;
       font-weight: bold;
+      min-height: 20px;
     }
 
     .table-wrap {
@@ -154,7 +163,8 @@
       min-width: 1000px;
     }
 
-    th, td {
+    th,
+    td {
       padding: 11px;
       border-bottom: 1px solid #e2e8f0;
       text-align: left;
@@ -187,16 +197,85 @@
       font-weight: bold;
     }
 
-    .small {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 7px;
+    .present {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .late {
+      color: #b45309;
+      font-weight: bold;
+    }
+
+    .absent {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .clockedout {
+      color: #075985;
+      font-weight: bold;
     }
 
     .refresh {
       background: #e0f2fe;
       color: #075985;
       margin-bottom: 12px;
+    }
+
+    .export {
+      background: #075985;
+      color: white;
+    }
+
+    .export-green {
+      background: #15803d;
+      color: white;
+    }
+
+    .export-dark {
+      background: #334155;
+      color: white;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .report-info {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .report-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .mini-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 7px;
+      padding: 12px;
+    }
+
+    .mini-card strong {
+      display: block;
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 5px;
+    }
+
+    .mini-card span {
+      font-size: 21px;
+      font-weight: bold;
+      color: #075985;
     }
 
     @media(max-width:600px) {
@@ -232,6 +311,9 @@
     ● LIVE ATTENDANCE MONITORING
     <span id="lastUpdated"></span>
   </div>
+
+
+  <!-- SUMMARY -->
 
   <div class="cards">
 
@@ -287,7 +369,9 @@
       </div>
 
       <div>
-        <button class="save" onclick="saveGPS()">SAVE GPS SETTINGS</button>
+        <button class="save" onclick="saveGPS()">
+          SAVE GPS SETTINGS
+        </button>
       </div>
 
     </div>
@@ -317,7 +401,10 @@
 
       <div>
         <label>Password</label>
-        <input id="password" type="password" placeholder="Password">
+        <input
+          id="password"
+          type="password"
+          placeholder="Password">
       </div>
 
       <div>
@@ -329,7 +416,9 @@
       </div>
 
       <div>
-        <button class="add" onclick="addStaff()">ADD STAFF</button>
+        <button class="add" onclick="addStaff()">
+          ADD STAFF
+        </button>
       </div>
 
     </div>
@@ -339,7 +428,7 @@
   </section>
 
 
-  <!-- STAFF -->
+  <!-- STAFF LIST -->
 
   <section>
 
@@ -379,7 +468,9 @@
 
     <h2>Today's Live Attendance & GPS</h2>
 
-    <button class="refresh" onclick="loadLiveAttendance()">
+    <button
+      class="refresh"
+      onclick="loadLiveAttendance()">
       REFRESH NOW
     </button>
 
@@ -388,7 +479,6 @@
       <table>
 
         <thead>
-
           <tr>
             <th>STAFF</th>
             <th>USERNAME</th>
@@ -405,7 +495,6 @@
             <th>OUT DISTANCE</th>
             <th>GPS</th>
           </tr>
-
         </thead>
 
         <tbody id="attendanceTable">
@@ -424,10 +513,138 @@
 
   </section>
 
+
+  <!-- REPORTS -->
+
+  <section>
+
+    <h2>Attendance Reports</h2>
+
+    <div class="report-controls">
+
+      <div>
+        <label>From Date</label>
+        <input id="fromDate" type="date">
+      </div>
+
+      <div>
+        <label>To Date</label>
+        <input id="toDate" type="date">
+      </div>
+
+      <div>
+        <label>Staff Member</label>
+
+        <select id="reportStaff">
+
+          <option value="">
+            All Staff
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <div class="button-row">
+
+      <button
+        class="export"
+        onclick="generateReport()">
+        GENERATE REPORT
+      </button>
+
+      <button
+        class="export-green"
+        onclick="exportCSV()">
+        EXPORT CSV
+      </button>
+
+      <button
+        class="export-dark"
+        onclick="printReport()">
+        PRINT / SAVE PDF
+      </button>
+
+    </div>
+
+
+    <div
+      id="reportMessage"
+      class="message">
+    </div>
+
+
+    <div class="report-summary">
+
+      <div class="mini-card">
+        <strong>RECORDS</strong>
+        <span id="reportRecords">0</span>
+      </div>
+
+      <div class="mini-card">
+        <strong>PRESENT</strong>
+        <span id="reportPresent">0</span>
+      </div>
+
+      <div class="mini-card">
+        <strong>LATE</strong>
+        <span id="reportLate">0</span>
+      </div>
+
+      <div class="mini-card">
+        <strong>GPS VERIFIED</strong>
+        <span id="reportGPS">0</span>
+      </div>
+
+    </div>
+
+
+    <div class="table-wrap">
+
+      <table id="reportTableElement">
+
+        <thead>
+
+          <tr>
+            <th>DATE</th>
+            <th>STAFF</th>
+            <th>USERNAME</th>
+            <th>STATUS</th>
+            <th>CLOCK IN</th>
+            <th>CLOCK OUT</th>
+            <th>GPS</th>
+            <th>IN DISTANCE</th>
+            <th>OUT DISTANCE</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="reportTable">
+
+          <tr>
+            <td colspan="9">
+              Select dates and generate a report.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
 </main>
 
 
 <script>
+
+  let reportData = [];
+
 
   async function api(url, options = {}) {
 
@@ -440,13 +657,11 @@
       }
     });
 
-    let data;
+    let data = {};
 
     try {
       data = await response.json();
-    } catch {
-      data = {};
-    }
+    } catch {}
 
     if (!response.ok) {
       throw new Error(
@@ -471,13 +686,82 @@
   }
 
 
+  function formatDate(value) {
+
+    if (!value) return "—";
+
+    try {
+
+      return new Date(value).toLocaleString(
+        "en-KE",
+        {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }
+      );
+
+    } catch {
+
+      return value;
+
+    }
+  }
+
+
+  function formatDateOnly(value) {
+
+    if (!value) return "—";
+
+    try {
+
+      return new Date(
+        value + "T00:00:00"
+      ).toLocaleDateString(
+        "en-KE",
+        {
+          dateStyle: "medium"
+        }
+      );
+
+    } catch {
+
+      return value;
+
+    }
+  }
+
+
+  function metres(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "—";
+    }
+
+    const n = Number(value);
+
+    if (!Number.isFinite(n)) {
+      return "—";
+    }
+
+    return Math.round(n) + " m";
+  }
+
+
   async function checkAdmin() {
 
     try {
 
-      const data = await api("/api/me");
+      const data =
+        await api("/api/me");
 
-      if (!data.user || data.user.role !== "admin") {
+      if (
+        !data.user ||
+        data.user.role !== "admin"
+      ) {
 
         window.location.href = "/";
         return false;
@@ -499,23 +783,34 @@
 
     try {
 
-      const data = await api(
-        "/api/admin/summary"
-      );
+      const data =
+        await api(
+          "/api/admin/summary"
+        );
 
-      document.getElementById("teachers").textContent =
+      document.getElementById(
+        "teachers"
+      ).textContent =
         data.teachers ?? 0;
 
-      document.getElementById("present").textContent =
+      document.getElementById(
+        "present"
+      ).textContent =
         data.present ?? 0;
 
-      document.getElementById("late").textContent =
+      document.getElementById(
+        "late"
+      ).textContent =
         data.late ?? 0;
 
-      document.getElementById("clockedOut").textContent =
+      document.getElementById(
+        "clockedOut"
+      ).textContent =
         data.clockedOut ?? 0;
 
-      document.getElementById("absent").textContent =
+      document.getElementById(
+        "absent"
+      ).textContent =
         data.absent ?? 0;
 
     } catch (error) {
@@ -530,26 +825,35 @@
 
     try {
 
-      const data = await api(
-        "/api/settings/gps"
-      );
+      const data =
+        await api(
+          "/api/settings/gps"
+        );
 
       if (data.settings) {
 
-        document.getElementById("gpsLatitude").value =
+        document.getElementById(
+          "gpsLatitude"
+        ).value =
           data.settings.latitude;
 
-        document.getElementById("gpsLongitude").value =
+        document.getElementById(
+          "gpsLongitude"
+        ).value =
           data.settings.longitude;
 
-        document.getElementById("gpsRadius").value =
+        document.getElementById(
+          "gpsRadius"
+        ).value =
           data.settings.radius;
 
       }
 
     } catch (error) {
 
-      document.getElementById("gpsMessage").textContent =
+      document.getElementById(
+        "gpsMessage"
+      ).textContent =
         error.message;
 
     }
@@ -559,34 +863,53 @@
   async function saveGPS() {
 
     const latitude =
-      Number(document.getElementById("gpsLatitude").value);
+      Number(
+        document.getElementById(
+          "gpsLatitude"
+        ).value
+      );
 
     const longitude =
-      Number(document.getElementById("gpsLongitude").value);
+      Number(
+        document.getElementById(
+          "gpsLongitude"
+        ).value
+      );
 
     const radius =
-      Number(document.getElementById("gpsRadius").value);
+      Number(
+        document.getElementById(
+          "gpsRadius"
+        ).value
+      );
 
     try {
 
-      const data = await api(
-        "/api/settings/gps",
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            latitude,
-            longitude,
-            radius
-          })
-        }
-      );
+      const data =
+        await api(
+          "/api/settings/gps",
+          {
+            method: "PUT",
 
-      document.getElementById("gpsMessage").textContent =
-        data.message || "GPS settings saved successfully.";
+            body: JSON.stringify({
+              latitude,
+              longitude,
+              radius
+            })
+          }
+        );
+
+      document.getElementById(
+        "gpsMessage"
+      ).textContent =
+        data.message ||
+        "GPS settings saved.";
 
     } catch (error) {
 
-      document.getElementById("gpsMessage").textContent =
+      document.getElementById(
+        "gpsMessage"
+      ).textContent =
         error.message;
 
     }
@@ -596,52 +919,86 @@
   async function addStaff() {
 
     const full_name =
-      document.getElementById("fullName").value.trim();
+      document.getElementById(
+        "fullName"
+      ).value.trim();
 
     const username =
-      document.getElementById("username").value.trim();
+      document.getElementById(
+        "username"
+      ).value.trim();
 
     const password =
-      document.getElementById("password").value;
+      document.getElementById(
+        "password"
+      ).value;
 
     const role =
-      document.getElementById("role").value;
+      document.getElementById(
+        "role"
+      ).value;
 
-    if (!full_name || !username || !password) {
 
-      document.getElementById("staffMessage").textContent =
+    if (
+      !full_name ||
+      !username ||
+      !password
+    ) {
+
+      document.getElementById(
+        "staffMessage"
+      ).textContent =
         "Please complete all fields.";
 
       return;
+
     }
+
 
     try {
 
-      const data = await api(
-        "/api/admin/staff",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            full_name,
-            username,
-            password,
-            role
-          })
-        }
-      );
+      const data =
+        await api(
+          "/api/admin/staff",
+          {
+            method: "POST",
 
-      document.getElementById("staffMessage").textContent =
-        data.message || "Staff member created.";
+            body: JSON.stringify({
+              full_name,
+              username,
+              password,
+              role
+            })
+          }
+        );
 
-      document.getElementById("fullName").value = "";
-      document.getElementById("username").value = "";
-      document.getElementById("password").value = "";
+
+      document.getElementById(
+        "staffMessage"
+      ).textContent =
+        data.message ||
+        "Staff member created.";
+
+      document.getElementById(
+        "fullName"
+      ).value = "";
+
+      document.getElementById(
+        "username"
+      ).value = "";
+
+      document.getElementById(
+        "password"
+      ).value = "";
+
 
       await loadStaff();
 
     } catch (error) {
 
-      document.getElementById("staffMessage").textContent =
+      document.getElementById(
+        "staffMessage"
+      ).textContent =
         error.message;
 
     }
@@ -652,55 +1009,107 @@
 
     try {
 
-      const data = await api(
-        "/api/admin/staff"
-      );
+      const data =
+        await api(
+          "/api/admin/staff"
+        );
+
+      const staff =
+        data.staff || [];
 
       const table =
-        document.getElementById("staffTable");
+        document.getElementById(
+          "staffTable"
+        );
 
-      if (!data.staff || data.staff.length === 0) {
+      const select =
+        document.getElementById(
+          "reportStaff"
+        );
+
+
+      if (staff.length === 0) {
 
         table.innerHTML =
           `<tr>
-            <td colspan="6">No staff members found.</td>
+            <td colspan="6">
+              No staff members found.
+            </td>
           </tr>`;
 
-        return;
+      } else {
+
+        table.innerHTML =
+          staff.map(person => {
+
+            const status =
+              person.active
+                ? `<span class="online">ACTIVE</span>`
+                : `<span class="inactive">INACTIVE</span>`;
+
+            return `
+              <tr>
+
+                <td>
+                  ${escapeHTML(person.id)}
+                </td>
+
+                <td>
+                  ${escapeHTML(person.full_name)}
+                </td>
+
+                <td>
+                  ${escapeHTML(person.username)}
+                </td>
+
+                <td>
+                  ${escapeHTML(person.role)}
+                </td>
+
+                <td>
+                  ${status}
+                </td>
+
+                <td>
+                  <button
+                    onclick="toggleStaff(
+                      ${person.id},
+                      ${!person.active}
+                    )">
+                    ${
+                      person.active
+                        ? "DEACTIVATE"
+                        : "ACTIVATE"
+                    }
+                  </button>
+                </td>
+
+              </tr>
+            `;
+
+          }).join("");
+
       }
 
-      table.innerHTML =
-        data.staff.map(staff => {
 
-          const status =
-            staff.active
-              ? `<span class="online">ACTIVE</span>`
-              : `<span class="inactive">INACTIVE</span>`;
+      const current =
+        select.value;
+
+      select.innerHTML =
+        `<option value="">
+          All Staff
+        </option>` +
+        staff.map(person => {
 
           return `
-            <tr>
-
-              <td>${escapeHTML(staff.id)}</td>
-
-              <td>${escapeHTML(staff.full_name)}</td>
-
-              <td>${escapeHTML(staff.username)}</td>
-
-              <td>${escapeHTML(staff.role)}</td>
-
-              <td>${status}</td>
-
-              <td>
-                <button
-                  onclick="toggleStaff(${staff.id}, ${!staff.active})">
-                  ${staff.active ? "DEACTIVATE" : "ACTIVATE"}
-                </button>
-              </td>
-
-            </tr>
+            <option value="${person.id}">
+              ${escapeHTML(person.full_name)}
+            </option>
           `;
 
         }).join("");
+
+      select.value = current;
 
     } catch (error) {
 
@@ -718,6 +1127,7 @@
         `/api/admin/staff/${id}/status`,
         {
           method: "PUT",
+
           body: JSON.stringify({
             active
           })
@@ -734,83 +1144,23 @@
   }
 
 
-  function formatDate(value) {
-
-    if (!value) return "—";
-
-    try {
-
-      return new Date(value).toLocaleString(
-        "en-KE",
-        {
-          dateStyle: "medium",
-          timeStyle: "medium"
-        }
-      );
-
-    } catch {
-
-      return value;
-
-    }
-  }
-
-
-  function number(value) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-      return "—";
-    }
-
-    const n = Number(value);
-
-    if (!Number.isFinite(n)) {
-      return "—";
-    }
-
-    return n.toFixed(6);
-
-  }
-
-
-  function metres(value) {
-
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-      return "—";
-    }
-
-    const n = Number(value);
-
-    if (!Number.isFinite(n)) {
-      return "—";
-    }
-
-    return `${Math.round(n)} m`;
-
-  }
-
-
   async function loadLiveAttendance() {
 
     try {
 
-      const data = await api(
-        "/api/admin/gps/today"
-      );
-
-      const table =
-        document.getElementById("attendanceTable");
+      const data =
+        await api(
+          "/api/admin/gps/today"
+        );
 
       const records =
         data.attendance || [];
+
+      const table =
+        document.getElementById(
+          "attendanceTable"
+        );
+
 
       if (records.length === 0) {
 
@@ -828,8 +1178,12 @@
 
             const gps =
               row.gps_verified
-                ? `<span class="verified">VERIFIED</span>`
-                : `<span class="notverified">NOT VERIFIED</span>`;
+                ? `<span class="verified">
+                    VERIFIED
+                  </span>`
+                : `<span class="notverified">
+                    NOT VERIFIED
+                  </span>`;
 
             return `
               <tr>
@@ -851,11 +1205,23 @@
                 </td>
 
                 <td>
-                  ${number(row.clock_in_lat)}
+                  ${
+                    row.clock_in_lat != null
+                      ? Number(
+                          row.clock_in_lat
+                        ).toFixed(6)
+                      : "—"
+                  }
                 </td>
 
                 <td>
-                  ${number(row.clock_in_lon)}
+                  ${
+                    row.clock_in_lon != null
+                      ? Number(
+                          row.clock_in_lon
+                        ).toFixed(6)
+                      : "—"
+                  }
                 </td>
 
                 <td>
@@ -871,11 +1237,23 @@
                 </td>
 
                 <td>
-                  ${number(row.clock_out_lat)}
+                  ${
+                    row.clock_out_lat != null
+                      ? Number(
+                          row.clock_out_lat
+                        ).toFixed(6)
+                      : "—"
+                  }
                 </td>
 
                 <td>
-                  ${number(row.clock_out_lon)}
+                  ${
+                    row.clock_out_lon != null
+                      ? Number(
+                          row.clock_out_lon
+                        ).toFixed(6)
+                      : "—"
+                  }
                 </td>
 
                 <td>
@@ -897,22 +1275,522 @@
 
       }
 
-      document.getElementById("lastUpdated").textContent =
+
+      document.getElementById(
+        "lastUpdated"
+      ).textContent =
         " — Updated " +
-        new Date().toLocaleTimeString("en-KE");
+        new Date().toLocaleTimeString(
+          "en-KE"
+        );
 
     } catch (error) {
 
       console.error(error);
 
-      document.getElementById("attendanceTable").innerHTML =
+    }
+  }
+
+
+  async function generateReport() {
+
+    const from =
+      document.getElementById(
+        "fromDate"
+      ).value;
+
+    const to =
+      document.getElementById(
+        "toDate"
+      ).value;
+
+    const staffId =
+      document.getElementById(
+        "reportStaff"
+      ).value;
+
+
+    if (!from || !to) {
+
+      document.getElementById(
+        "reportMessage"
+      ).textContent =
+        "Please select both From Date and To Date.";
+
+      return;
+
+    }
+
+
+    if (from > to) {
+
+      document.getElementById(
+        "reportMessage"
+      ).textContent =
+        "From Date cannot be after To Date.";
+
+      return;
+
+    }
+
+
+    document.getElementById(
+      "reportMessage"
+    ).textContent =
+      "Generating report...";
+
+
+    try {
+
+      let url =
+        `/api/admin/report?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+
+      if (staffId) {
+
+        url +=
+          `&staff_id=${encodeURIComponent(staffId)}`;
+
+      }
+
+
+      const data =
+        await api(url);
+
+      reportData =
+        data.attendance ||
+        data.report ||
+        [];
+
+
+      renderReport(
+        reportData
+      );
+
+
+      document.getElementById(
+        "reportMessage"
+      ).textContent =
+        `Report generated: ${reportData.length} record(s).`;
+
+    } catch (error) {
+
+      document.getElementById(
+        "reportMessage"
+      ).textContent =
+        error.message;
+
+    }
+  }
+
+
+  function renderReport(records) {
+
+    const table =
+      document.getElementById(
+        "reportTable"
+      );
+
+
+    let present = 0;
+    let late = 0;
+    let gps = 0;
+
+
+    if (records.length === 0) {
+
+      table.innerHTML =
         `<tr>
-          <td colspan="14">
-            Unable to load live attendance.
+          <td colspan="9">
+            No records found for the selected period.
           </td>
         </tr>`;
 
+    } else {
+
+      table.innerHTML =
+        records.map(row => {
+
+          const status =
+            String(
+              row.status || ""
+            ).toLowerCase();
+
+
+          if (status === "present") {
+            present++;
+          }
+
+          if (status === "late") {
+            late++;
+          }
+
+          if (row.gps_verified) {
+            gps++;
+          }
+
+
+          const gpsText =
+            row.gps_verified
+              ? `<span class="verified">
+                  VERIFIED
+                </span>`
+              : `<span class="notverified">
+                  NOT VERIFIED
+                </span>`;
+
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHTML(
+                  formatDateOnly(
+                    row.attendance_date
+                  )
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  row.full_name || "—"
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  row.username || "—"
+                )}
+              </td>
+
+              <td class="${status}">
+                ${escapeHTML(
+                  row.status || "—"
+                )}
+              </td>
+
+              <td>
+                ${formatDate(row.clock_in)}
+              </td>
+
+              <td>
+                ${formatDate(row.clock_out)}
+              </td>
+
+              <td>
+                ${gpsText}
+              </td>
+
+              <td>
+                ${metres(
+                  row.clock_in_distance
+                )}
+              </td>
+
+              <td>
+                ${metres(
+                  row.clock_out_distance
+                )}
+              </td>
+
+            </tr>
+          `;
+
+        }).join("");
+
     }
+
+
+    document.getElementById(
+      "reportRecords"
+    ).textContent =
+      records.length;
+
+    document.getElementById(
+      "reportPresent"
+    ).textContent =
+      present;
+
+    document.getElementById(
+      "reportLate"
+    ).textContent =
+      late;
+
+    document.getElementById(
+      "reportGPS"
+    ).textContent =
+      gps;
+
+  }
+
+
+  function csvEscape(value) {
+
+    const text =
+      String(value ?? "");
+
+    return `"${text.replace(
+      /"/g,
+      '""'
+    )}"`;
+
+  }
+
+
+  function exportCSV() {
+
+    if (!reportData.length) {
+
+      alert(
+        "Generate a report first."
+      );
+
+      return;
+
+    }
+
+
+    const headers = [
+      "Date",
+      "Staff Name",
+      "Username",
+      "Status",
+      "Clock In",
+      "Clock Out",
+      "GPS Verified",
+      "Clock-In Latitude",
+      "Clock-In Longitude",
+      "Clock-In Accuracy",
+      "Clock-In Distance",
+      "Clock-Out Latitude",
+      "Clock-Out Longitude",
+      "Clock-Out Accuracy",
+      "Clock-Out Distance"
+    ];
+
+
+    const rows =
+      reportData.map(row => [
+
+        row.attendance_date,
+
+        row.full_name,
+
+        row.username,
+
+        row.status,
+
+        row.clock_in,
+
+        row.clock_out,
+
+        row.gps_verified
+          ? "VERIFIED"
+          : "NOT VERIFIED",
+
+        row.clock_in_lat,
+
+        row.clock_in_lon,
+
+        row.clock_in_accuracy,
+
+        row.clock_in_distance,
+
+        row.clock_out_lat,
+
+        row.clock_out_lon,
+
+        row.clock_out_accuracy,
+
+        row.clock_out_distance
+
+      ]);
+
+
+    const csv = [
+      headers,
+      ...rows
+    ]
+      .map(row =>
+        row.map(csvEscape).join(",")
+      )
+      .join("\n");
+
+
+    const blob =
+      new Blob(
+        [csv],
+        {
+          type:
+            "text/csv;charset=utf-8;"
+        }
+      );
+
+
+    const url =
+      URL.createObjectURL(blob);
+
+    const link =
+      document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+      "SCAGSS_Attendance_Report.csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+  }
+
+
+  function printReport() {
+
+    if (!reportData.length) {
+
+      alert(
+        "Generate a report first."
+      );
+
+      return;
+
+    }
+
+
+    const printWindow =
+      window.open(
+        "",
+        "_blank"
+      );
+
+
+    const rows =
+      reportData.map(row => {
+
+        return `
+          <tr>
+            <td>${escapeHTML(row.attendance_date)}</td>
+            <td>${escapeHTML(row.full_name)}</td>
+            <td>${escapeHTML(row.username)}</td>
+            <td>${escapeHTML(row.status)}</td>
+            <td>${escapeHTML(formatDate(row.clock_in))}</td>
+            <td>${escapeHTML(formatDate(row.clock_out))}</td>
+            <td>${row.gps_verified ? "VERIFIED" : "NOT VERIFIED"}</td>
+            <td>${escapeHTML(metres(row.clock_in_distance))}</td>
+            <td>${escapeHTML(metres(row.clock_out_distance))}</td>
+          </tr>
+        `;
+
+      }).join("");
+
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+
+      <html>
+
+      <head>
+
+        <title>
+          S.C.A.G.S.S Attendance Report
+        </title>
+
+        <style>
+
+          body {
+            font-family: Arial, sans-serif;
+            padding: 25px;
+          }
+
+          h1 {
+            color: #075985;
+            margin-bottom: 5px;
+          }
+
+          p {
+            margin-bottom: 20px;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          th,
+          td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 11px;
+            text-align: left;
+          }
+
+          th {
+            background: #e0f2fe;
+          }
+
+          @media print {
+            button {
+              display: none;
+            }
+          }
+
+        </style>
+
+      </head>
+
+      <body>
+
+        <h1>
+          S.C.A.G.S.S STAFF ATTENDANCE REPORT
+        </h1>
+
+        <p>
+          Generated:
+          ${new Date().toLocaleString("en-KE")}
+        </p>
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Date</th>
+              <th>Staff</th>
+              <th>Username</th>
+              <th>Status</th>
+              <th>Clock In</th>
+              <th>Clock Out</th>
+              <th>GPS</th>
+              <th>In Distance</th>
+              <th>Out Distance</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+            ${rows}
+          </tbody>
+
+        </table>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        <\/script>
+
+      </body>
+
+      </html>
+    `);
+
+
+    printWindow.document.close();
+
   }
 
 
@@ -932,14 +1810,54 @@
       window.location.href = "/";
 
     }
+
+  }
+
+
+  function setDefaultDates() {
+
+    const today =
+      new Date();
+
+    const year =
+      today.getFullYear();
+
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(2, "0");
+
+    const day =
+      String(
+        today.getDate()
+      ).padStart(2, "0");
+
+
+    const value =
+      `${year}-${month}-${day}`;
+
+
+    document.getElementById(
+      "fromDate"
+    ).value = value;
+
+    document.getElementById(
+      "toDate"
+    ).value = value;
+
   }
 
 
   async function initialize() {
 
-    const allowed = await checkAdmin();
+    const allowed =
+      await checkAdmin();
 
     if (!allowed) return;
+
+
+    setDefaultDates();
+
 
     await Promise.all([
       loadSummary(),
@@ -948,27 +1866,24 @@
       loadLiveAttendance()
     ]);
 
-    /*
-      LIVE MONITORING
-
-      Refresh attendance and dashboard
-      automatically every 5 seconds.
-    */
 
     setInterval(
       loadLiveAttendance,
       5000
     );
 
+
     setInterval(
       loadSummary,
       10000
     );
 
+
     setInterval(
       loadStaff,
       30000
     );
+
   }
 
 
