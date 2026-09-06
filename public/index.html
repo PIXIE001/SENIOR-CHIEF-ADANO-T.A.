@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>S.C.A.G.S.S Staff Portal</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background:
+        linear-gradient(
+          135deg,
+          #eaf7ff,
+          #ffffff
+        );
+      color: #123047;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow:
+        0 20px 60px
+        rgba(0, 60, 100, 0.15);
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #159bd7;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0877b8;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #657786;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccdce6;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #159bd7;
+      box-shadow:
+        0 0 0 3px
+        rgba(21,155,215,0.12);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 12px;
+      background: #0877b8;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    #message {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+      text-align: center;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #7b8c99;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="login-card">
+
+    <div class="logo">
+      SAG
+    </div>
+
+    <h1>S.C.A.G.S.S STAFF PORTAL</h1>
+
+    <p class="subtitle">
+      Staff Attendance Management System
+    </p>
+
+    <form id="loginForm">
+
+      <label for="username">
+        Username
+      </label>
+
+      <input
+        id="username"
+        type="text"
+        autocomplete="username"
+        placeholder="Enter username"
+        required
+      >
+
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter password"
+        required
+      >
+
+      <button
+        id="loginButton"
+        type="submit"
+      >
+        SIGN IN
+      </button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <div class="footer">
+      Senior Chief Adano Girls Senior School
+    </div>
+
+  </main>
+
+  <script>
+    const form =
+      document.getElementById(
+        "loginForm"
+      );
+
+    const button =
+      document.getElementById(
+        "loginButton"
+      );
+
+    const message =
+      document.getElementById(
+        "message"
+      );
+
+    function showMessage(
+      text,
+      success = false
+    ) {
+      message.textContent = text;
+      message.style.display =
+        "block";
+
+      message.style.background =
+        success
+          ? "#e8f8ef"
+          : "#fff0f0";
+
+      message.style.color =
+        success
+          ? "#167442"
+          : "#a52222";
+    }
+
+    form.addEventListener(
+      "submit",
+      async event => {
+        event.preventDefault();
+
+        button.disabled = true;
+        button.textContent =
+          "SIGNING IN...";
+
+        message.style.display =
+          "none";
+
+        try {
+          const response =
+            await fetch(
+              "/api/auth/login",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+                credentials:
+                  "include",
+                body:
+                  JSON.stringify({
+                    username:
+                      document
+                        .getElementById(
+                          "username"
+                        )
+                        .value,
+                    password:
+                      document
+                        .getElementById(
+                          "password"
+                        )
+                        .value
+                  })
+              }
+            );
+
+          const data =
+            await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              data.error ||
+              "Login failed"
+            );
+          }
+
+          showMessage(
+            "Login successful. Redirecting...",
+            true
+          );
+
+          if (
+            data.user.role ===
+            "admin"
+          ) {
+            window.location.href =
+              "/admin.html";
+          } else {
+            window.location.href =
+              "/staff.html";
+          }
+
+        } catch (error) {
+          showMessage(
+            error.message
+          );
+
+          button.disabled =
+            false;
+
+          button.textContent =
+            "SIGN IN";
+        }
+      }
+    );
+  </script>
+
+</body>
+</html>
