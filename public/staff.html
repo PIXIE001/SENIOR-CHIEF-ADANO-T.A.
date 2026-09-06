@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>S.C.A.G.S.S Staff Portal</title>
+  <title>S.C.A.G.S.S Staff Portal — Staff</title>
 
   <style>
     * {
@@ -13,121 +13,38 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f3f7fb;
-      color: #17324d;
+      color: #16324f;
     }
 
     header {
-      background: linear-gradient(135deg, #0877c9, #07579a);
+      background: #075985;
       color: white;
-      padding: 18px 20px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 15px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.15);
+      flex-wrap: wrap;
     }
 
     header h1 {
-      font-size: 20px;
+      font-size: 21px;
     }
 
     header p {
+      margin-top: 5px;
       font-size: 13px;
       opacity: .9;
-      margin-top: 4px;
     }
 
     button {
       border: none;
-      border-radius: 10px;
-      padding: 13px 18px;
-      font-size: 15px;
-      font-weight: bold;
+      border-radius: 7px;
+      padding: 12px 18px;
       cursor: pointer;
-    }
-
-    .logout {
-      background: white;
-      color: #07579a;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .welcome {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
-    }
-
-    .welcome h2 {
-      color: #07579a;
-      margin-bottom: 6px;
-    }
-
-    .welcome p {
-      color: #61778c;
-    }
-
-    .status-card {
-      background: white;
-      border-radius: 18px;
-      padding: 25px;
-      text-align: center;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.07);
-    }
-
-    .status-label {
-      font-size: 13px;
-      color: #70879a;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .status {
-      font-size: 30px;
-      font-weight: 800;
-      margin-bottom: 18px;
-    }
-
-    .status.not-clocked {
-      color: #d97706;
-    }
-
-    .status.clocked-in {
-      color: #16803a;
-    }
-
-    .status.clocked-out {
-      color: #1769aa;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .clock-in {
-      background: #0877c9;
-      color: white;
-      min-width: 150px;
-    }
-
-    .clock-out {
-      background: #16803a;
-      color: white;
-      min-width: 150px;
+      font-weight: bold;
     }
 
     button:disabled {
@@ -135,45 +52,94 @@
       cursor: not-allowed;
     }
 
+    .logout {
+      background: white;
+      color: #075985;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .welcome {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    }
+
+    .welcome h2 {
+      color: #075985;
+      margin-bottom: 7px;
+    }
+
+    .status-card {
+      background: white;
+      padding: 22px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+      text-align: center;
+    }
+
+    .status-label {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .status {
+      font-size: 25px;
+      font-weight: bold;
+      color: #075985;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .clock-in {
+      background: #16a34a;
+      color: white;
+    }
+
+    .clock-out {
+      background: #dc2626;
+      color: white;
+    }
+
     .message {
       margin-top: 15px;
-      padding: 13px;
-      border-radius: 10px;
-      display: none;
-      font-size: 14px;
+      font-weight: bold;
+      min-height: 20px;
     }
 
-    .message.show {
-      display: block;
-    }
-
-    .message.info {
-      background: #e8f3fc;
-      color: #07579a;
-    }
-
-    .message.success {
-      background: #e7f7ed;
-      color: #12652e;
-    }
-
-    .message.error {
-      background: #fdecec;
-      color: #a52626;
-    }
-
-    .gps-card {
+    .gps {
       background: white;
-      border-radius: 18px;
+      border-radius: 10px;
       padding: 20px;
       margin-bottom: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
     }
 
-    .gps-card h3,
-    .history-card h3 {
-      color: #07579a;
+    .gps h2,
+    .history h2 {
+      color: #075985;
+      font-size: 18px;
       margin-bottom: 15px;
+    }
+
+    .gps-status {
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #075985;
     }
 
     .gps-grid {
@@ -183,99 +149,111 @@
     }
 
     .gps-item {
-      background: #f4f8fb;
-      border-radius: 10px;
-      padding: 13px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 7px;
     }
 
-    .gps-item span {
+    .gps-item span:first-child {
       display: block;
-      font-size: 12px;
-      color: #70879a;
+      font-size: 11px;
+      color: #64748b;
       margin-bottom: 5px;
     }
 
-    .gps-item strong {
-      font-size: 14px;
+    .gps-item span:last-child {
+      font-weight: bold;
       word-break: break-word;
     }
 
-    .history-card {
+    .history {
       background: white;
-      border-radius: 18px;
+      border-radius: 10px;
       padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    }
+
+    .history-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .refresh {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    .table-wrap {
       overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 700px;
+      min-width: 850px;
     }
 
     th,
     td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #e6edf3;
+      padding: 11px;
+      border-bottom: 1px solid #e2e8f0;
       text-align: left;
       font-size: 13px;
+      white-space: nowrap;
     }
 
     th {
-      color: #547087;
-      background: #f7fafc;
+      background: #e0f2fe;
+      color: #075985;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 20px;
-      font-size: 11px;
+    .verified {
+      color: #15803d;
       font-weight: bold;
     }
 
-    .badge.present {
-      background: #e5f7eb;
-      color: #16743a;
+    .notverified {
+      color: #dc2626;
+      font-weight: bold;
     }
 
-    .badge.late {
-      background: #fff1d6;
-      color: #9b6100;
+    .present {
+      color: #15803d;
+      font-weight: bold;
     }
 
-    .badge.out {
-      background: #e7f1fb;
-      color: #1769aa;
+    .late {
+      color: #b45309;
+      font-weight: bold;
+    }
+
+    .clockedout {
+      color: #075985;
+      font-weight: bold;
     }
 
     .empty {
       text-align: center;
-      color: #71879a;
       padding: 25px;
+      color: #64748b;
     }
 
-    .loading {
-      opacity: .65;
-      pointer-events: none;
-    }
-
-    @media (max-width: 600px) {
-      header {
-        align-items: flex-start;
-      }
-
-      header h1 {
-        font-size: 17px;
-      }
-
-      .status {
-        font-size: 25px;
-      }
-
+    @media(max-width:600px) {
       main {
         padding: 12px;
+      }
+
+      .gps,
+      .history,
+      .welcome,
+      .status-card {
+        padding: 15px;
+      }
+
+      header {
+        padding: 15px;
       }
     }
   </style>
@@ -286,965 +264,916 @@
 <header>
   <div>
     <h1>S.C.A.G.S.S STAFF PORTAL</h1>
-    <p>Staff Attendance & GPS Verification</p>
+    <p>Staff Attendance Dashboard</p>
   </div>
 
-  <button class="logout" onclick="logout()">Logout</button>
+  <button class="logout" onclick="logout()">LOG OUT</button>
 </header>
 
 <main>
 
-  <section class="welcome">
-    <h2 id="welcomeName">Loading...</h2>
-    <p id="welcomeUsername"></p>
-  </section>
+  <div class="welcome">
+    <h2 id="staffName">Loading...</h2>
+    <p id="staffUsername"></p>
+  </div>
 
-  <section class="status-card">
 
-    <div class="status-label">Today's Attendance Status</div>
+  <!-- TODAY'S STATUS -->
 
-    <div id="attendanceStatus" class="status not-clocked">
+  <div class="status-card">
+
+    <div class="status-label">
+      TODAY'S ATTENDANCE STATUS
+    </div>
+
+    <div class="status" id="attendanceStatus">
       CHECKING...
     </div>
 
     <div class="actions">
 
       <button
-        id="clockInBtn"
+        id="clockInButton"
         class="clock-in"
-        onclick="clockIn()"
-        disabled
-      >
+        onclick="clockIn()">
         CLOCK IN
       </button>
 
       <button
-        id="clockOutBtn"
+        id="clockOutButton"
         class="clock-out"
         onclick="clockOut()"
-        disabled
-      >
+        disabled>
         CLOCK OUT
       </button>
 
     </div>
 
-    <div id="message" class="message"></div>
+    <div
+      id="message"
+      class="message">
+    </div>
 
-  </section>
+  </div>
 
-  <section class="gps-card">
 
-    <h3>GPS Verification</h3>
+  <!-- GPS -->
+
+  <section class="gps">
+
+    <h2>GPS Verification</h2>
+
+    <div
+      id="gpsStatus"
+      class="gps-status">
+      Waiting for GPS...
+    </div>
 
     <div class="gps-grid">
 
       <div class="gps-item">
-        <span>GPS Status</span>
-        <strong id="gpsStatus">Waiting...</strong>
+        <span>LATITUDE</span>
+        <span id="latitude">—</span>
       </div>
 
       <div class="gps-item">
-        <span>Latitude</span>
-        <strong id="latitude">—</strong>
+        <span>LONGITUDE</span>
+        <span id="longitude">—</span>
       </div>
 
       <div class="gps-item">
-        <span>Longitude</span>
-        <strong id="longitude">—</strong>
+        <span>ACCURACY</span>
+        <span id="accuracy">—</span>
       </div>
 
       <div class="gps-item">
-        <span>Accuracy</span>
-        <strong id="accuracy">—</strong>
+        <span>DISTANCE FROM SCHOOL</span>
+        <span id="distance">—</span>
       </div>
 
       <div class="gps-item">
-        <span>Distance From School</span>
-        <strong id="distance">—</strong>
+        <span>CLOCK-IN TIME</span>
+        <span id="clockInTime">—</span>
       </div>
 
       <div class="gps-item">
-        <span>Clock-In Time</span>
-        <strong id="clockInTime">—</strong>
-      </div>
-
-      <div class="gps-item">
-        <span>Clock-Out Time</span>
-        <strong id="clockOutTime">—</strong>
+        <span>CLOCK-OUT TIME</span>
+        <span id="clockOutTime">—</span>
       </div>
 
     </div>
 
   </section>
 
-  <section class="history-card">
 
-    <h3>Attendance History</h3>
+  <!-- HISTORY -->
 
-    <div id="historyContainer">
-      <div class="empty">Loading attendance history...</div>
+  <section class="history">
+
+    <h2>My Attendance History</h2>
+
+    <div class="history-controls">
+
+      <button
+        class="refresh"
+        onclick="loadHistory()">
+        REFRESH HISTORY
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>DATE</th>
+            <th>CLOCK IN</th>
+            <th>CLOCK OUT</th>
+            <th>STATUS</th>
+            <th>GPS</th>
+            <th>IN DISTANCE</th>
+            <th>OUT DISTANCE</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="historyTable">
+
+          <tr>
+            <td
+              colspan="7"
+              class="empty">
+              Loading attendance history...
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
     </div>
 
   </section>
 
 </main>
 
+
 <script>
 
-let currentUser = null;
-let currentAttendance = null;
-let actionInProgress = false;
+  let actionInProgress = false;
 
 
-/* =========================================================
-   BASIC HELPERS
-========================================================= */
+  async function api(url, options = {}) {
 
-function showMessage(text, type = "info") {
-
-  const box = document.getElementById("message");
-
-  box.textContent = text;
-  box.className = `message show ${type}`;
-}
-
-
-function hideMessage() {
-
-  const box = document.getElementById("message");
-
-  box.textContent = "";
-  box.className = "message";
-}
-
-
-function formatTime(value) {
-
-  if (!value) return "—";
-
-  return new Date(value).toLocaleTimeString("en-KE", {
-    timeZone: "Africa/Nairobi",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true
-  });
-}
-
-
-function formatDate(value) {
-
-  if (!value) return "—";
-
-  const date = new Date(`${value}T00:00:00+03:00`);
-
-  return date.toLocaleDateString("en-KE", {
-    timeZone: "Africa/Nairobi",
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
-  });
-}
-
-
-function escapeHTML(value) {
-
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-/* =========================================================
-   API
-========================================================= */
-
-async function api(url, options = {}) {
-
-  const response = await fetch(url, {
-    credentials: "include",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
-  });
-
-  let data = null;
-
-  try {
-    data = await response.json();
-  } catch {
-    data = {};
-  }
-
-  if (!response.ok) {
-
-    throw new Error(
-      data.message || "Request failed."
-    );
-  }
-
-  return data;
-}
-
-
-/* =========================================================
-   LOAD USER
-========================================================= */
-
-async function loadUser() {
-
-  try {
-
-    const data = await api("/api/me");
-
-    currentUser = data.user;
-
-    if (currentUser.role === "admin") {
-
-      window.location.href = "/admin.html";
-      return;
-    }
-
-    document.getElementById("welcomeName").textContent =
-      `Welcome, ${currentUser.full_name}`;
-
-    document.getElementById("welcomeUsername").textContent =
-      `Username: ${currentUser.username}`;
-
-    await loadTodayAttendance();
-
-    await loadHistory();
-
-  } catch (error) {
-
-    window.location.href = "/";
-
-  }
-}
-
-
-/* =========================================================
-   LOAD TODAY'S ATTENDANCE
-========================================================= */
-
-async function loadTodayAttendance() {
-
-  try {
-
-    const data = await api(
-      "/api/attendance/today"
-    );
-
-    currentAttendance = data.attendance || null;
-
-    updateAttendanceInterface();
-
-  } catch (error) {
-
-    showMessage(
-      error.message,
-      "error"
-    );
-
-  }
-}
-
-
-/* =========================================================
-   UPDATE STAFF STATE
-========================================================= */
-
-function updateAttendanceInterface() {
-
-  const status =
-    document.getElementById("attendanceStatus");
-
-  const clockInBtn =
-    document.getElementById("clockInBtn");
-
-  const clockOutBtn =
-    document.getElementById("clockOutBtn");
-
-  const clockInTime =
-    document.getElementById("clockInTime");
-
-  const clockOutTime =
-    document.getElementById("clockOutTime");
-
-
-  /* -----------------------------------------------
-     NO ATTENDANCE TODAY
-  ------------------------------------------------ */
-
-  if (!currentAttendance) {
-
-    status.textContent = "NOT CLOCKED IN";
-
-    status.className =
-      "status not-clocked";
-
-    clockInBtn.disabled = false;
-
-    clockOutBtn.disabled = true;
-
-    clockInTime.textContent = "—";
-    clockOutTime.textContent = "—";
-
-    return;
-  }
-
-
-  /* -----------------------------------------------
-     CLOCKED OUT
-  ------------------------------------------------ */
-
-  if (currentAttendance.clock_out) {
-
-    status.textContent = "CLOCKED OUT";
-
-    status.className =
-      "status clocked-out";
-
-    clockInBtn.disabled = true;
-
-    clockOutBtn.disabled = true;
-
-    clockInTime.textContent =
-      formatTime(currentAttendance.clock_in);
-
-    clockOutTime.textContent =
-      formatTime(currentAttendance.clock_out);
-
-    updateGPSDisplay(
-      currentAttendance.clock_out_lat,
-      currentAttendance.clock_out_lon,
-      currentAttendance.clock_out_accuracy,
-      currentAttendance.clock_out_distance,
-      currentAttendance.gps_verified
-    );
-
-    return;
-  }
-
-
-  /* -----------------------------------------------
-     CLOCKED IN
-  ------------------------------------------------ */
-
-  if (currentAttendance.clock_in) {
-
-    status.textContent = "CLOCKED IN";
-
-    status.className =
-      "status clocked-in";
-
-    clockInBtn.disabled = true;
-
-    clockOutBtn.disabled = false;
-
-    clockInTime.textContent =
-      formatTime(currentAttendance.clock_in);
-
-    clockOutTime.textContent = "—";
-
-    updateGPSDisplay(
-      currentAttendance.clock_in_lat,
-      currentAttendance.clock_in_lon,
-      currentAttendance.clock_in_accuracy,
-      currentAttendance.clock_in_distance,
-      currentAttendance.gps_verified
-    );
-
-    return;
-  }
-
-
-  /* -----------------------------------------------
-     FALLBACK
-  ------------------------------------------------ */
-
-  status.textContent = "NOT CLOCKED IN";
-
-  status.className =
-    "status not-clocked";
-
-  clockInBtn.disabled = false;
-  clockOutBtn.disabled = true;
-}
-
-
-/* =========================================================
-   GPS DISPLAY
-========================================================= */
-
-function updateGPSDisplay(
-  latitude,
-  longitude,
-  accuracy,
-  distance,
-  verified
-) {
-
-  document.getElementById("latitude").textContent =
-    latitude != null
-      ? Number(latitude).toFixed(6)
-      : "—";
-
-  document.getElementById("longitude").textContent =
-    longitude != null
-      ? Number(longitude).toFixed(6)
-      : "—";
-
-  document.getElementById("accuracy").textContent =
-    accuracy != null
-      ? `${Math.round(Number(accuracy))} m`
-      : "—";
-
-  document.getElementById("distance").textContent =
-    distance != null
-      ? `${Math.round(Number(distance))} m`
-      : "—";
-
-  document.getElementById("gpsStatus").textContent =
-    verified
-      ? "GPS VERIFIED"
-      : "Not verified";
-}
-
-
-/* =========================================================
-   GET GPS
-========================================================= */
-
-function getLocation() {
-
-  return new Promise((resolve, reject) => {
-
-    if (!navigator.geolocation) {
-
-      reject(
-        new Error(
-          "Geolocation is not supported by this browser."
-        )
-      );
-
-      return;
-    }
-
-
-    navigator.geolocation.getCurrentPosition(
-
-      position => {
-
-        const {
-          latitude,
-          longitude,
-          accuracy
-        } = position.coords;
-
-
-        if (
-          typeof latitude !== "number" ||
-          typeof longitude !== "number" ||
-          typeof accuracy !== "number" ||
-          !Number.isFinite(latitude) ||
-          !Number.isFinite(longitude) ||
-          !Number.isFinite(accuracy)
-        ) {
-
-          reject(
-            new Error(
-              "Valid GPS coordinates and accuracy are required."
-            )
-          );
-
-          return;
-        }
-
-
-        if (
-          latitude < -90 ||
-          latitude > 90 ||
-          longitude < -180 ||
-          longitude > 180
-        ) {
-
-          reject(
-            new Error(
-              "Invalid GPS coordinates received."
-            )
-          );
-
-          return;
-        }
-
-
-        document.getElementById("latitude").textContent =
-          latitude.toFixed(6);
-
-        document.getElementById("longitude").textContent =
-          longitude.toFixed(6);
-
-        document.getElementById("accuracy").textContent =
-          `${Math.round(accuracy)} m`;
-
-        document.getElementById("gpsStatus").textContent =
-          "GPS LOCATION RECEIVED";
-
-
-        resolve({
-          latitude,
-          longitude,
-          accuracy
-        });
-
-      },
-
-      error => {
-
-        let message =
-          "Unable to get your GPS location.";
-
-        if (
-          error.code ===
-          error.PERMISSION_DENIED
-        ) {
-
-          message =
-            "Location permission was denied. Allow location access and try again.";
-
-        } else if (
-          error.code ===
-          error.POSITION_UNAVAILABLE
-        ) {
-
-          message =
-            "GPS location is currently unavailable. Turn on Location and try again.";
-
-        } else if (
-          error.code ===
-          error.TIMEOUT
-        ) {
-
-          message =
-            "GPS location timed out. Move to an open area and try again.";
-        }
-
-        reject(new Error(message));
-
-      },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 0
+    const response = await fetch(url, {
+      credentials: "include",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
       }
-
-    );
-
-  });
-}
-
-
-/* =========================================================
-   CLOCK IN
-========================================================= */
-
-async function clockIn() {
-
-  if (actionInProgress) return;
-
-  if (currentAttendance?.clock_in) {
-
-    showMessage(
-      "You are already clocked in today.",
-      "error"
-    );
-
-    updateAttendanceInterface();
-
-    return;
-  }
-
-
-  actionInProgress = true;
-
-  const button =
-    document.getElementById("clockInBtn");
-
-  button.disabled = true;
-
-  showMessage(
-    "Getting your GPS location. Please wait...",
-    "info"
-  );
-
-
-  try {
-
-    const location =
-      await getLocation();
-
-
-    showMessage(
-      "GPS received. Verifying your attendance...",
-      "info"
-    );
-
-
-    const data = await api(
-      "/api/attendance/clock-in",
-      {
-        method: "POST",
-
-        body: JSON.stringify({
-          latitude: location.latitude,
-          longitude: location.longitude,
-          accuracy: location.accuracy
-        })
-      }
-    );
-
-
-    currentAttendance =
-      data.attendance;
-
-
-    updateAttendanceInterface();
-
-
-    showMessage(
-      "Clock-in successful. You are now CLOCKED IN.",
-      "success"
-    );
-
-
-    await loadHistory();
-
-
-  } catch (error) {
-
-    showMessage(
-      error.message,
-      "error"
-    );
-
-    updateAttendanceInterface();
-
-  } finally {
-
-    actionInProgress = false;
-
-  }
-}
-
-
-/* =========================================================
-   CLOCK OUT
-========================================================= */
-
-async function clockOut() {
-
-  if (actionInProgress) return;
-
-
-  if (!currentAttendance?.clock_in) {
-
-    showMessage(
-      "You must clock in before clocking out.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if (currentAttendance?.clock_out) {
-
-    showMessage(
-      "You have already clocked out today.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  actionInProgress = true;
-
-  const button =
-    document.getElementById("clockOutBtn");
-
-  button.disabled = true;
-
-  showMessage(
-    "Getting your GPS location. Please wait...",
-    "info"
-  );
-
-
-  try {
-
-    const location =
-      await getLocation();
-
-
-    showMessage(
-      "GPS received. Recording clock-out...",
-      "info"
-    );
-
-
-    const data = await api(
-      "/api/attendance/clock-out",
-      {
-        method: "POST",
-
-        body: JSON.stringify({
-          latitude: location.latitude,
-          longitude: location.longitude,
-          accuracy: location.accuracy
-        })
-      }
-    );
-
-
-    currentAttendance =
-      data.attendance;
-
-
-    updateAttendanceInterface();
-
-
-    showMessage(
-      "Clock-out successful. Your attendance for today is complete.",
-      "success"
-    );
-
-
-    await loadHistory();
-
-
-  } catch (error) {
-
-    showMessage(
-      error.message,
-      "error"
-    );
-
-    updateAttendanceInterface();
-
-  } finally {
-
-    actionInProgress = false;
-
-  }
-}
-
-
-/* =========================================================
-   ATTENDANCE HISTORY
-========================================================= */
-
-async function loadHistory() {
-
-  const container =
-    document.getElementById("historyContainer");
-
-  try {
-
-    const data =
-      await api(
-        "/api/attendance/history"
-      );
-
-    const records =
-      data.attendance || [];
-
-
-    if (!records.length) {
-
-      container.innerHTML =
-        `<div class="empty">
-          No attendance records yet.
-        </div>`;
-
-      return;
-    }
-
-
-    let html = `
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Clock In</th>
-            <th>Clock Out</th>
-            <th>Status</th>
-            <th>GPS</th>
-            <th>Distance</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-
-    records.forEach(record => {
-
-      let badgeClass =
-        record.status === "Late"
-          ? "late"
-          : "present";
-
-      if (record.clock_out) {
-        badgeClass = "out";
-      }
-
-
-      html += `
-        <tr>
-
-          <td>
-            ${escapeHTML(
-              formatDate(record.attendance_date)
-            )}
-          </td>
-
-          <td>
-            ${escapeHTML(
-              formatTime(record.clock_in)
-            )}
-          </td>
-
-          <td>
-            ${escapeHTML(
-              formatTime(record.clock_out)
-            )}
-          </td>
-
-          <td>
-            <span class="badge ${badgeClass}">
-              ${escapeHTML(
-                record.clock_out
-                  ? "Clocked Out"
-                  : record.status || "Present"
-              )}
-            </span>
-          </td>
-
-          <td>
-            ${
-              record.gps_verified
-                ? "Verified"
-                : "Not verified"
-            }
-          </td>
-
-          <td>
-            ${
-              record.clock_in_distance != null
-                ? Math.round(
-                    Number(
-                      record.clock_in_distance
-                    )
-                  ) + " m"
-                : "—"
-            }
-          </td>
-
-        </tr>
-      `;
-
     });
 
+    let data = {};
 
-    html += `
-        </tbody>
-      </table>
-    `;
+    try {
+      data = await response.json();
+    } catch {}
 
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        data.message ||
+        "Request failed."
+      );
+    }
 
-    container.innerHTML = html;
-
-
-  } catch (error) {
-
-    container.innerHTML =
-      `<div class="empty">
-        Unable to load attendance history.
-      </div>`;
-
+    return data;
   }
-}
 
 
-/* =========================================================
-   LOGOUT
-========================================================= */
+  function formatDate(value) {
 
-async function logout() {
+    if (!value) return "—";
 
-  try {
+    try {
 
-    await api(
-      "/api/auth/logout",
-      {
-        method: "POST"
+      return new Date(value).toLocaleString(
+        "en-KE",
+        {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }
+      );
+
+    } catch {
+
+      return value;
+
+    }
+  }
+
+
+  function formatDateOnly(value) {
+
+    if (!value) return "—";
+
+    try {
+
+      return new Date(
+        value + "T00:00:00"
+      ).toLocaleDateString(
+        "en-KE",
+        {
+          dateStyle: "medium"
+        }
+      );
+
+    } catch {
+
+      return value;
+
+    }
+  }
+
+
+  function metres(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "—";
+    }
+
+    const n = Number(value);
+
+    if (!Number.isFinite(n)) {
+      return "—";
+    }
+
+    return Math.round(n) + " m";
+  }
+
+
+  function escapeHTML(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+
+  async function loadUser() {
+
+    try {
+
+      const data = await api("/api/me");
+
+      if (!data.user) {
+
+        window.location.href = "/";
+        return false;
+
       }
-    );
 
-  } catch {
-    // Continue to login even if logout request fails.
+      if (data.user.role === "admin") {
+
+        window.location.href = "/admin.html";
+        return false;
+
+      }
+
+      document.getElementById("staffName").textContent =
+        data.user.full_name || "Staff Member";
+
+      document.getElementById("staffUsername").textContent =
+        "Username: " +
+        (data.user.username || "");
+
+      return true;
+
+    } catch {
+
+      window.location.href = "/";
+      return false;
+
+    }
   }
 
-  window.location.href = "/";
 
-}
+  async function loadTodayAttendance() {
+
+    try {
+
+      const data = await api(
+        "/api/attendance/today"
+      );
+
+      const record =
+        data.attendance || null;
+
+      updateAttendanceInterface(record);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+  }
 
 
-/* =========================================================
-   AUTOMATIC STATE REFRESH
-========================================================= */
+  function updateAttendanceInterface(record) {
 
-setInterval(async () => {
+    const status =
+      document.getElementById(
+        "attendanceStatus"
+      );
 
-  if (
-    currentUser &&
-    !actionInProgress
-  ) {
+    const clockInButton =
+      document.getElementById(
+        "clockInButton"
+      );
+
+    const clockOutButton =
+      document.getElementById(
+        "clockOutButton"
+      );
+
+    if (!record) {
+
+      status.textContent =
+        "NOT CLOCKED IN";
+
+      clockInButton.disabled = false;
+      clockOutButton.disabled = true;
+
+      document.getElementById("gpsStatus").textContent =
+        "GPS verification required for clock-in.";
+
+      return;
+    }
+
+
+    if (
+      record.clock_in &&
+      !record.clock_out
+    ) {
+
+      status.textContent =
+        "CLOCKED IN";
+
+      clockInButton.disabled = true;
+      clockOutButton.disabled = false;
+
+      document.getElementById("clockInTime").textContent =
+        formatDate(record.clock_in);
+
+      updateGPSDisplay(record, "in");
+
+      return;
+    }
+
+
+    if (
+      record.clock_in &&
+      record.clock_out
+    ) {
+
+      status.textContent =
+        "CLOCKED OUT";
+
+      clockInButton.disabled = true;
+      clockOutButton.disabled = true;
+
+      document.getElementById("clockInTime").textContent =
+        formatDate(record.clock_in);
+
+      document.getElementById("clockOutTime").textContent =
+        formatDate(record.clock_out);
+
+      updateGPSDisplay(record, "out");
+
+    }
+
+  }
+
+
+  function updateGPSDisplay(record, mode) {
+
+    if (mode === "in") {
+
+      document.getElementById("latitude").textContent =
+        record.clock_in_lat != null
+          ? Number(record.clock_in_lat).toFixed(6)
+          : "—";
+
+      document.getElementById("longitude").textContent =
+        record.clock_in_lon != null
+          ? Number(record.clock_in_lon).toFixed(6)
+          : "—";
+
+      document.getElementById("accuracy").textContent =
+        metres(record.clock_in_accuracy);
+
+      document.getElementById("distance").textContent =
+        metres(record.clock_in_distance);
+
+      document.getElementById("gpsStatus").textContent =
+        record.gps_verified
+          ? "GPS VERIFIED"
+          : "GPS NOT VERIFIED";
+
+    }
+
+
+    if (mode === "out") {
+
+      document.getElementById("latitude").textContent =
+        record.clock_out_lat != null
+          ? Number(record.clock_out_lat).toFixed(6)
+          : "—";
+
+      document.getElementById("longitude").textContent =
+        record.clock_out_lon != null
+          ? Number(record.clock_out_lon).toFixed(6)
+          : "—";
+
+      document.getElementById("accuracy").textContent =
+        metres(record.clock_out_accuracy);
+
+      document.getElementById("distance").textContent =
+        metres(record.clock_out_distance);
+
+      document.getElementById("gpsStatus").textContent =
+        "CLOCK-OUT GPS VERIFIED";
+
+    }
+
+  }
+
+
+  function getLocation() {
+
+    return new Promise((resolve, reject) => {
+
+      if (!navigator.geolocation) {
+
+        reject(
+          new Error(
+            "Geolocation is not supported by this browser."
+          )
+        );
+
+        return;
+      }
+
+
+      navigator.geolocation.getCurrentPosition(
+
+        position => {
+
+          const {
+            latitude,
+            longitude,
+            accuracy
+          } = position.coords;
+
+
+          if (
+            typeof latitude !== "number" ||
+            typeof longitude !== "number" ||
+            typeof accuracy !== "number" ||
+            !Number.isFinite(latitude) ||
+            !Number.isFinite(longitude) ||
+            !Number.isFinite(accuracy)
+          ) {
+
+            reject(
+              new Error(
+                "Valid GPS coordinates and accuracy are required."
+              )
+            );
+
+            return;
+          }
+
+
+          if (
+            latitude < -90 ||
+            latitude > 90 ||
+            longitude < -180 ||
+            longitude > 180
+          ) {
+
+            reject(
+              new Error(
+                "Invalid GPS coordinates received."
+              )
+            );
+
+            return;
+          }
+
+
+          document.getElementById("latitude").textContent =
+            latitude.toFixed(6);
+
+          document.getElementById("longitude").textContent =
+            longitude.toFixed(6);
+
+          document.getElementById("accuracy").textContent =
+            Math.round(accuracy) + " m";
+
+          document.getElementById("gpsStatus").textContent =
+            "GPS LOCATION RECEIVED";
+
+
+          resolve({
+            latitude,
+            longitude,
+            accuracy
+          });
+
+        },
+
+
+        error => {
+
+          let message =
+            "Unable to get your GPS location.";
+
+          if (
+            error.code ===
+            error.PERMISSION_DENIED
+          ) {
+
+            message =
+              "Location permission was denied. Allow location access and try again.";
+
+          } else if (
+            error.code ===
+            error.POSITION_UNAVAILABLE
+          ) {
+
+            message =
+              "GPS location is currently unavailable. Turn on Location and try again.";
+
+          } else if (
+            error.code ===
+            error.TIMEOUT
+          ) {
+
+            message =
+              "GPS location timed out. Move to an open area and try again.";
+
+          }
+
+          reject(
+            new Error(message)
+          );
+
+        },
+
+
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 0
+        }
+
+      );
+
+    });
+  }
+
+
+  async function clockIn() {
+
+    if (actionInProgress) return;
+
+    actionInProgress = true;
+
+    const button =
+      document.getElementById(
+        "clockInButton"
+      );
+
+    button.disabled = true;
+
+    document.getElementById("message").textContent =
+      "Getting your GPS location...";
+
+
+    try {
+
+      const location =
+        await getLocation();
+
+
+      document.getElementById("message").textContent =
+        "Verifying GPS and clocking you in...";
+
+
+      const data = await api(
+        "/api/attendance/clock-in",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            latitude:
+              location.latitude,
+
+            longitude:
+              location.longitude,
+
+            accuracy:
+              location.accuracy
+          })
+        }
+      );
+
+
+      document.getElementById("message").textContent =
+        data.message ||
+        "Clock-in successful.";
+
+      await loadTodayAttendance();
+      await loadHistory();
+
+    } catch (error) {
+
+      document.getElementById("message").textContent =
+        error.message;
+
+      await loadTodayAttendance();
+
+    } finally {
+
+      actionInProgress = false;
+
+    }
+  }
+
+
+  async function clockOut() {
+
+    if (actionInProgress) return;
+
+    actionInProgress = true;
+
+    const button =
+      document.getElementById(
+        "clockOutButton"
+      );
+
+    button.disabled = true;
+
+    document.getElementById("message").textContent =
+      "Getting your GPS location...";
+
+
+    try {
+
+      const location =
+        await getLocation();
+
+
+      document.getElementById("message").textContent =
+        "Verifying GPS and clocking you out...";
+
+
+      const data = await api(
+        "/api/attendance/clock-out",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            latitude:
+              location.latitude,
+
+            longitude:
+              location.longitude,
+
+            accuracy:
+              location.accuracy
+          })
+        }
+      );
+
+
+      document.getElementById("message").textContent =
+        data.message ||
+        "Clock-out successful.";
+
+      await loadTodayAttendance();
+      await loadHistory();
+
+    } catch (error) {
+
+      document.getElementById("message").textContent =
+        error.message;
+
+      await loadTodayAttendance();
+
+    } finally {
+
+      actionInProgress = false;
+
+    }
+
+  }
+
+
+  async function loadHistory() {
+
+    const table =
+      document.getElementById(
+        "historyTable"
+      );
 
     try {
 
       const data =
         await api(
-          "/api/attendance/today"
+          "/api/attendance/history"
         );
 
-      currentAttendance =
-        data.attendance || null;
+      const records =
+        data.attendance || [];
 
-      updateAttendanceInterface();
 
-    } catch {
-      // Ignore background refresh errors.
+      if (records.length === 0) {
+
+        table.innerHTML =
+          `<tr>
+            <td colspan="7" class="empty">
+              No attendance records found.
+            </td>
+          </tr>`;
+
+        return;
+      }
+
+
+      table.innerHTML =
+        records.map(record => {
+
+          let statusClass =
+            "";
+
+          const status =
+            String(
+              record.status || ""
+            ).toLowerCase();
+
+          if (
+            status === "present"
+          ) {
+            statusClass =
+              "present";
+          }
+
+          if (
+            status === "late"
+          ) {
+            statusClass =
+              "late";
+          }
+
+          if (
+            status === "clocked out"
+          ) {
+            statusClass =
+              "clockedout";
+          }
+
+
+          const gps =
+            record.gps_verified
+              ? `<span class="verified">VERIFIED</span>`
+              : `<span class="notverified">NOT VERIFIED</span>`;
+
+
+          return `
+            <tr>
+
+              <td>
+                ${escapeHTML(
+                  formatDateOnly(
+                    record.attendance_date
+                  )
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  formatDate(record.clock_in)
+                )}
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  formatDate(record.clock_out)
+                )}
+              </td>
+
+              <td class="${statusClass}">
+                ${escapeHTML(
+                  record.status || "—"
+                )}
+              </td>
+
+              <td>
+                ${gps}
+              </td>
+
+              <td>
+                ${metres(
+                  record.clock_in_distance
+                )}
+              </td>
+
+              <td>
+                ${metres(
+                  record.clock_out_distance
+                )}
+              </td>
+
+            </tr>
+          `;
+
+        }).join("");
+
+
+    } catch (error) {
+
+      table.innerHTML =
+        `<tr>
+          <td colspan="7" class="empty">
+            Unable to load attendance history.
+          </td>
+        </tr>`;
+
+      console.error(error);
+
     }
 
   }
 
-}, 10000);
+
+  async function logout() {
+
+    try {
+
+      await api(
+        "/api/auth/logout",
+        {
+          method: "POST"
+        }
+      );
+
+    } finally {
+
+      window.location.href = "/";
+
+    }
+
+  }
 
 
-/* =========================================================
-   START
-========================================================= */
+  async function initialize() {
 
-loadUser();
+    const allowed =
+      await loadUser();
+
+    if (!allowed) return;
+
+    await Promise.all([
+      loadTodayAttendance(),
+      loadHistory()
+    ]);
+
+
+    /*
+      Automatically keep today's
+      attendance status updated.
+    */
+
+    setInterval(
+      loadTodayAttendance,
+      10000
+    );
+
+  }
+
+
+  initialize();
 
 </script>
 
