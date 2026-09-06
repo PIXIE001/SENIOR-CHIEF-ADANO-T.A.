@@ -1,40 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>S.C.A.G.S.S Staff Portal — Admin</title>
-
-<style>
+<title>S.C.A.G.S.S Staff Portal — Administration</title><style>
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
 }
 
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f1f5f9;
-  color:#0f172a;
+:root{
+  --blue:#0757a0;
+  --dark-blue:#063b70;
+  --light-blue:#eaf4ff;
+  --border:#dbe5ef;
+  --text:#17212b;
+  --muted:#687684;
+  --white:#ffffff;
+  --green:#16864a;
+  --red:#c93434;
+  --orange:#d98300;
+  --shadow:0 8px 25px rgba(20,50,80,.08);
 }
 
-header{
-  background:#075985;
-  color:white;
-  padding:16px 22px;
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f7fa;
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
+  min-height:100vh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+  width:245px;
+  background:linear-gradient(180deg,#064b89,#062f59);
+  color:white;
+  position:fixed;
   top:0;
-  z-index:50;
-  box-shadow:0 3px 12px rgba(0,0,0,.15);
+  left:0;
+  bottom:0;
+  z-index:100;
+  display:flex;
+  flex-direction:column;
 }
 
 .brand{
+  height:78px;
   display:flex;
   align-items:center;
   gap:12px;
+  padding:15px 18px;
+  border-bottom:1px solid rgba(255,255,255,.15);
 }
 
 .logo{
@@ -42,65 +70,130 @@ header{
   height:45px;
   border-radius:50%;
   background:white;
-  color:#075985;
+  color:var(--blue);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:bold;
-  font-size:17px;
+  font-weight:900;
+  font-size:15px;
 }
 
-.brand h1{
-  font-size:18px;
+.brand-text strong{
+  display:block;
+  font-size:15px;
 }
 
-.brand small{
-  opacity:.85;
+.brand-text span{
+  font-size:11px;
+  opacity:.8;
 }
 
-.logout{
+.nav{
+  padding:20px 12px;
+  flex:1;
+}
+
+.nav button{
+  width:100%;
   border:0;
-  background:white;
-  color:#075985;
-  padding:10px 15px;
+  background:transparent;
+  color:#dcecff;
+  text-align:left;
+  padding:13px 14px;
   border-radius:8px;
-  font-weight:bold;
+  margin-bottom:5px;
   cursor:pointer;
+  font-size:14px;
 }
 
-nav{
-  background:white;
-  display:flex;
-  gap:8px;
-  padding:10px 15px;
-  overflow-x:auto;
-  border-bottom:1px solid #dbeafe;
-  position:sticky;
-  top:77px;
-  z-index:40;
-}
-
-nav button{
-  border:0;
-  background:#e0f2fe;
-  color:#075985;
-  padding:10px 15px;
-  border-radius:8px;
-  cursor:pointer;
-  white-space:nowrap;
-  font-weight:bold;
-}
-
-nav button.active{
-  background:#075985;
+.nav button:hover,
+.nav button.active{
+  background:rgba(255,255,255,.14);
   color:white;
 }
 
-main{
-  max-width:1400px;
-  margin:auto;
-  padding:20px;
+.nav-label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  opacity:.55;
+  padding:15px 14px 8px;
 }
+
+.sidebar-footer{
+  padding:15px;
+  border-top:1px solid rgba(255,255,255,.15);
+  font-size:11px;
+  color:#c9d9ea;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+}
+
+.topbar{
+  height:78px;
+  background:white;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.page-title h1{
+  font-size:22px;
+  color:#17324c;
+}
+
+.page-title p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.admin-user{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.status-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#1ca35c;
+}
+
+.user-name{
+  font-size:13px;
+  font-weight:bold;
+}
+
+.logout{
+  border:1px solid var(--border);
+  background:white;
+  border-radius:6px;
+  padding:8px 13px;
+  cursor:pointer;
+  color:#555;
+}
+
+.content{
+  padding:28px 30px 50px;
+}
+
+/* =========================
+   SECTIONS
+========================= */
 
 .section{
   display:none;
@@ -110,130 +203,76 @@ main{
   display:block;
 }
 
-.page-title{
-  margin-bottom:18px;
-}
-
-.page-title h2{
-  font-size:24px;
-  margin-bottom:5px;
-}
-
-.page-title p{
-  color:#64748b;
-}
+/* =========================
+   CARDS
+========================= */
 
 .cards{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  margin-bottom:20px;
+  gap:18px;
+  margin-bottom:25px;
 }
 
 .card{
   background:white;
-  border-radius:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
   padding:20px;
-  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  box-shadow:var(--shadow);
 }
 
 .card-title{
-  color:#64748b;
-  font-size:13px;
-  text-transform:uppercase;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:10px;
 }
 
 .card-number{
-  font-size:32px;
+  font-size:29px;
   font-weight:bold;
-  margin-top:8px;
-  color:#075985;
+  color:#143b61;
 }
+
+.card-sub{
+  margin-top:7px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* =========================
+   PANELS
+========================= */
 
 .panel{
   background:white;
-  border-radius:12px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  border:1px solid var(--border);
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  margin-bottom:22px;
+  overflow:hidden;
 }
 
-.panel h3{
-  margin-bottom:15px;
+.panel-header{
+  padding:17px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-}
-
-input,select{
-  width:100%;
-  padding:12px;
-  border:1px solid #cbd5e1;
-  border-radius:8px;
+.panel-header h2{
   font-size:15px;
+  color:#173b5e;
 }
 
-button.primary{
-  background:#075985;
-  color:white;
-  border:0;
-  padding:11px 16px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
+.panel-body{
+  padding:20px;
 }
 
-button.secondary{
-  background:#e0f2fe;
-  color:#075985;
-  border:0;
-  padding:10px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-button.danger{
-  background:#dc2626;
-  color:white;
-  border:0;
-  padding:9px 12px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-button.success{
-  background:#16a34a;
-  color:white;
-  border:0;
-  padding:9px 12px;
-  border-radius:7px;
-  cursor:pointer;
-}
-
-.message{
-  margin-top:12px;
-  padding:11px;
-  border-radius:8px;
-  display:none;
-}
-
-.message.show{
-  display:block;
-}
-
-.message.ok{
-  background:#dcfce7;
-  color:#166534;
-}
-
-.message.error{
-  background:#fee2e2;
-  color:#991b1b;
-}
+/* =========================
+   TABLE
+========================= */
 
 .table-wrap{
   overflow-x:auto;
@@ -242,717 +281,1014 @@ button.success{
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:850px;
-}
-
-th,td{
-  padding:12px;
-  border-bottom:1px solid #e2e8f0;
-  text-align:left;
-  font-size:14px;
+  min-width:700px;
 }
 
 th{
-  background:#f8fafc;
-  color:#475569;
+  background:#f7fafd;
+  color:#657584;
+  text-align:left;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  padding:12px;
+  border-bottom:1px solid var(--border);
 }
 
-.badge{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
+td{
+  padding:13px 12px;
+  border-bottom:1px solid #edf1f4;
+  font-size:13px;
+}
+
+tr:hover td{
+  background:#fafcff;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn{
+  border:0;
+  border-radius:6px;
+  padding:9px 13px;
+  cursor:pointer;
   font-size:12px;
   font-weight:bold;
 }
 
-.badge.green{
-  background:#dcfce7;
-  color:#166534;
-}
-
-.badge.red{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-.badge.blue{
-  background:#dbeafe;
-  color:#1d4ed8;
-}
-
-.badge.gray{
-  background:#e2e8f0;
-  color:#475569;
-}
-
-.live-bar{
-  background:#075985;
+.btn-primary{
+  background:var(--blue);
   color:white;
-  padding:12px 16px;
-  border-radius:10px;
-  margin-bottom:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
 }
 
-.live-dot{
-  width:9px;
-  height:9px;
-  background:#22c55e;
-  border-radius:50%;
+.btn-primary:hover{
+  background:var(--dark-blue);
+}
+
+.btn-secondary{
+  background:#edf4fb;
+  color:#145487;
+}
+
+.btn-danger{
+  background:#fff0f0;
+  color:var(--red);
+}
+
+.btn-success{
+  background:#eaf8f0;
+  color:var(--green);
+}
+
+.btn-small{
+  padding:6px 9px;
+  font-size:11px;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge{
   display:inline-block;
-  margin-right:7px;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:bold;
 }
 
-.form-row{
+.badge-green{
+  background:#eaf8f0;
+  color:#16864a;
+}
+
+.badge-red{
+  background:#fff0f0;
+  color:#c93434;
+}
+
+.badge-orange{
+  background:#fff5e6;
+  color:#b86d00;
+}
+
+.badge-blue{
+  background:#eaf4ff;
+  color:#0757a0;
+}
+
+/* =========================
+   FORMS
+========================= */
+
+.form-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:12px;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
 }
 
-.profile-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.6);
-  z-index:100;
-  display:none;
-  padding:20px;
-  overflow:auto;
-}
-
-.profile-overlay.show{
-  display:block;
-}
-
-.profile-modal{
-  max-width:1000px;
-  margin:30px auto;
-  background:white;
-  border-radius:16px;
-  overflow:hidden;
-}
-
-.profile-header{
-  background:#075985;
-  color:white;
-  padding:22px;
+.form-group{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
+  flex-direction:column;
+  gap:6px;
 }
 
-.profile-header h2{
-  margin-bottom:5px;
+.form-group.full{
+  grid-column:1/-1;
 }
 
-.close{
+.form-group label{
+  font-size:12px;
+  font-weight:bold;
+  color:#455563;
+}
+
+input,
+select{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid #ccd7e1;
+  border-radius:6px;
+  outline:none;
   background:white;
-  color:#075985;
-  border:0;
-  border-radius:8px;
-  padding:9px 13px;
-  font-size:18px;
-  cursor:pointer;
+  font-size:13px;
 }
 
-.profile-body{
-  padding:20px;
+input:focus,
+select:focus{
+  border-color:var(--blue);
 }
 
-.profile-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-  margin-bottom:20px;
-}
+/* =========================
+   TOOLBAR
+========================= */
 
-.profile-info{
-  background:#f8fafc;
-  padding:15px;
-  border-radius:10px;
-}
-
-.profile-info small{
-  display:block;
-  color:#64748b;
-  margin-bottom:5px;
-}
-
-.profile-info strong{
-  font-size:16px;
-}
-
-.profile-actions{
+.toolbar{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
+  align-items:center;
+}
+
+.toolbar input,
+.toolbar select{
+  width:auto;
+  min-width:160px;
+}
+
+/* =========================
+   LIVE BAR
+========================= */
+
+.live-bar{
+  background:#eaf8f0;
+  border:1px solid #c8ead7;
+  color:#146b3d;
+  padding:11px 15px;
+  border-radius:7px;
   margin-bottom:20px;
+  font-size:12px;
 }
 
-.search-row{
+.live-bar strong{
+  margin-right:8px;
+}
+
+/* =========================
+   GPS
+========================= */
+
+.gps-grid{
   display:grid;
-  grid-template-columns:1fr 180px;
-  gap:10px;
-  margin-bottom:15px;
-}
-
-.empty{
-  padding:30px;
-  text-align:center;
-  color:#64748b;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
 }
 
 .gps-box{
-  background:#f0f9ff;
-  border:1px solid #bae6fd;
-  border-radius:10px;
+  background:#f8fbfe;
+  border:1px solid var(--border);
+  border-radius:7px;
   padding:15px;
-  margin-top:10px;
+}
+
+.gps-box label{
+  font-size:10px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:5px;
 }
 
 .gps-box strong{
-  color:#075985;
+  font-size:14px;
 }
 
-footer{
-  text-align:center;
-  color:#64748b;
-  padding:30px 10px;
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(10,30,50,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:300;
+  padding:20px;
 }
 
-@media(max-width:900px){
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:white;
+  width:min(850px,100%);
+  max-height:90vh;
+  overflow:auto;
+  border-radius:12px;
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.modal-header{
+  padding:18px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.modal-header h2{
+  font-size:17px;
+}
+
+.close{
+  border:0;
+  background:#f2f4f6;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+.modal-body{
+  padding:22px;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-head{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:22px;
+}
+
+.avatar{
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  background:var(--light-blue);
+  color:var(--blue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  font-size:20px;
+}
+
+.profile-name{
+  font-size:20px;
+  font-weight:bold;
+}
+
+.profile-role{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:25px;
+}
+
+.info-box{
+  border:1px solid var(--border);
+  padding:13px;
+  border-radius:7px;
+}
+
+.info-box label{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:5px;
+}
+
+.info-box strong{
+  font-size:13px;
+}
+
+/* =========================
+   AI
+========================= */
+
+.ai-layout{
+  display:grid;
+  grid-template-columns:1fr 300px;
+  gap:20px;
+}
+
+.ai-chat{
+  min-height:430px;
+  display:flex;
+  flex-direction:column;
+}
+
+.ai-messages{
+  flex:1;
+  padding:20px;
+  overflow:auto;
+  min-height:330px;
+  background:#f8fafc;
+}
+
+.ai-message{
+  max-width:80%;
+  padding:11px 13px;
+  border-radius:8px;
+  margin-bottom:12px;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.ai-message.bot{
+  background:white;
+  border:1px solid var(--border);
+}
+
+.ai-message.user{
+  background:#eaf4ff;
+  margin-left:auto;
+  color:#154d7e;
+}
+
+.ai-input{
+  display:flex;
+  gap:8px;
+  padding:12px;
+  border-top:1px solid var(--border);
+}
+
+.ai-input input{
+  flex:1;
+}
+
+.ai-tools{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:18px;
+}
+
+.ai-tools h3{
+  font-size:14px;
+  margin-bottom:14px;
+}
+
+.ai-tool{
+  width:100%;
+  text-align:left;
+  border:1px solid var(--border);
+  background:white;
+  padding:10px;
+  border-radius:6px;
+  margin-bottom:8px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.ai-tool:hover{
+  background:#f5f9fd;
+}
+
+/* =========================
+   REPORT
+========================= */
+
+.report-controls{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr auto;
+  gap:10px;
+  align-items:end;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message{
+  padding:11px 14px;
+  border-radius:6px;
+  margin-bottom:15px;
+  font-size:12px;
+  display:none;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.success{
+  background:#eaf8f0;
+  color:#176b3d;
+}
+
+.message.error{
+  background:#fff0f0;
+  color:#a92828;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1100px){
   .cards{
     grid-template-columns:repeat(2,1fr);
   }
 
-  .profile-grid{
+  .gps-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .ai-layout{
+    grid-template-columns:1fr;
+  }
+
+  .report-controls{
     grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:800px){
+  .sidebar{
+    width:70px;
+  }
+
+  .brand-text,
+  .nav-label,
+  .sidebar-footer{
+    display:none;
+  }
+
+  .brand{
+    justify-content:center;
+    padding:10px;
+  }
+
+  .nav button{
+    text-align:center;
+    font-size:0;
+  }
+
+  .nav button::first-letter{
+    font-size:18px;
+  }
+
+  .main{
+    margin-left:70px;
+    width:calc(100% - 70px);
+  }
+
+  .content{
+    padding:18px;
+  }
+
+  .topbar{
+    padding:0 18px;
+  }
+
+  .form-grid,
+  .info-grid{
+    grid-template-columns:1fr;
   }
 }
 
 @media(max-width:600px){
-  main{
-    padding:12px;
-  }
-
   .cards{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .grid,
-  .form-row{
     grid-template-columns:1fr;
   }
 
-  .profile-grid{
+  .gps-grid{
     grid-template-columns:1fr;
   }
 
-  .search-row{
+  .report-controls{
     grid-template-columns:1fr;
   }
 
-  .brand h1{
-    font-size:14px;
+  .page-title h1{
+    font-size:17px;
   }
 
-  .brand small{
-    font-size:10px;
-  }
-
-  header{
-    padding:12px;
+  .user-name{
+    display:none;
   }
 }
-</style>
-</head>
+</style></head><body><div class="app"><!-- ================= SIDEBAR ================= --><aside class="sidebar">  <div class="brand">
+    <div class="logo">SAG</div><div class="brand-text">
+  <strong>S.C.A.G.S.S</strong>
+  <span>Staff Portal</span>
+</div>
 
-<body>
+  </div>  <nav class="nav"><div class="nav-label">Main</div>
 
-<header>
-  <div class="brand">
-    <div class="logo">SAG</div>
-    <div>
-      <h1>S.C.A.G.S.S STAFF PORTAL</h1>
-      <small>Administrator Dashboard</small>
-    </div>
+<button class="active" onclick="showSection('dashboard',this)">
+  ◈ &nbsp; Dashboard
+</button>
+
+<button onclick="showSection('live',this)">
+  ◉ &nbsp; Live Attendance
+</button>
+
+<button onclick="showSection('staff',this)">
+  ◇ &nbsp; Staff Management
+</button>
+
+<div class="nav-label">Management</div>
+
+<button onclick="showSection('gps',this)">
+  ◎ &nbsp; GPS Monitor
+</button>
+
+<button onclick="showSection('reports',this)">
+  ▣ &nbsp; Reports
+</button>
+
+<button onclick="showSection('ai',this)">
+  ✦ &nbsp; AI Assistant
+</button>
+
+<button onclick="showSection('settings',this)">
+  ⚙ &nbsp; Settings
+</button>
+
+  </nav>  <div class="sidebar-footer">
+    S.C.A.G.S.S<br>
+    Administration Portal V2
+  </div></aside><!-- ================= MAIN ================= --><main class="main"><header class="topbar">  <div class="page-title">
+    <h1 id="pageTitle">Administration Dashboard</h1>
+    <p>S.C.A.G.S.S Staff Attendance Management System</p>
+  </div>  <div class="admin-user">
+    <span class="status-dot"></span>
+    <span class="user-name" id="adminName">Administrator</span>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div></header><div class="content"><div id="globalMessage" class="message"></div><!-- ================= DASHBOARD ================= --><section id="dashboard" class="section active">  <div class="live-bar">
+    <strong>● LIVE MONITORING</strong>
+    Attendance information is automatically refreshed.
+  </div>  <div class="cards"><div class="card">
+  <div class="card-title">ACTIVE TEACHERS</div>
+  <div class="card-number" id="totalStaff">0</div>
+  <div class="card-sub">Registered teaching staff</div>
+</div>
+
+<div class="card">
+  <div class="card-title">PRESENT TODAY</div>
+  <div class="card-number" id="presentCount">0</div>
+  <div class="card-sub">Successfully clocked in</div>
+</div>
+
+<div class="card">
+  <div class="card-title">LATE TODAY</div>
+  <div class="card-number" id="lateCount">0</div>
+  <div class="card-sub">Clocked in after reporting time</div>
+</div>
+
+<div class="card">
+  <div class="card-title">CLOCKED OUT</div>
+  <div class="card-number" id="clockedOutCount">0</div>
+  <div class="card-sub">Completed attendance</div>
+</div>
+
+  </div>  <div class="panel"><div class="panel-header">
+  <h2>Today's Attendance</h2>
+
+  <button class="btn btn-secondary btn-small"
+          onclick="showSection('live')">
+    View Live Attendance
+  </button>
+</div>
+
+<div class="panel-body table-wrap">
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Teacher</th>
+        <th>Email</th>
+        <th>Clock In</th>
+        <th>Clock Out</th>
+        <th>GPS</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody id="dashboardAttendance">
+      <tr>
+        <td colspan="6">Loading...</td>
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>
+
+  </div></section><!-- ================= LIVE ================= --><section id="live" class="section">  <div class="panel"><div class="panel-header">
+
+  <h2>Live Staff Attendance & GPS</h2>
+
+  <div class="toolbar">
+    <button class="btn btn-secondary btn-small"
+            onclick="loadLiveAttendance()">
+      Refresh
+    </button>
   </div>
 
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+</div>
 
-<nav>
-  <button class="nav-btn active" data-section="dashboard">Dashboard</button>
-  <button class="nav-btn" data-section="live">Live Attendance</button>
-  <button class="nav-btn" data-section="staff">Staff Management</button>
-  <button class="nav-btn" data-section="gps">GPS Settings</button>
-  <button class="nav-btn" data-section="reports">Reports</button>
-</nav>
+<div class="panel-body table-wrap">
 
-<main>
+  <table>
 
-<!-- DASHBOARD -->
+    <thead>
+      <tr>
+        <th>Teacher</th>
+        <th>Contact</th>
+        <th>Clock In</th>
+        <th>Clock Out</th>
+        <th>GPS Status</th>
+        <th>Distance</th>
+        <th>Status</th>
+      </tr>
+    </thead>
 
-<section id="dashboard" class="section active">
+    <tbody id="liveAttendance">
+      <tr>
+        <td colspan="7">Loading...</td>
+      </tr>
+    </tbody>
 
-  <div class="page-title">
-    <h2>Administrator Dashboard</h2>
-    <p>Monitor S.C.A.G.S.S staff attendance and account activity.</p>
-  </div>
+  </table>
 
-  <div class="live-bar">
-    <div>
-      <span class="live-dot"></span>
-      LIVE MONITORING ACTIVE
-    </div>
-    <div id="lastUpdate">Updating...</div>
-  </div>
+</div>
 
-  <div class="cards">
+  </div></section><!-- ================= STAFF ================= --><section id="staff" class="section">  <div class="panel"><div class="panel-header">
 
-    <div class="card">
-      <div class="card-title">Active Teachers</div>
-      <div class="card-number" id="totalStaff">0</div>
-    </div>
+  <h2>Staff Management</h2>
 
-    <div class="card">
-      <div class="card-title">Clocked In</div>
-      <div class="card-number" id="clockedIn">0</div>
-    </div>
+  <button class="btn btn-primary"
+          onclick="openRegistration()">
+    + Register Teacher
+  </button>
 
-    <div class="card">
-      <div class="card-title">Clocked Out</div>
-      <div class="card-number" id="clockedOut">0</div>
-    </div>
+</div>
 
-    <div class="card">
-      <div class="card-title">Late</div>
-      <div class="card-number" id="late">0</div>
-    </div>
+<div class="panel-body">
 
-  </div>
+  <div class="toolbar" style="margin-bottom:18px">
 
-  <div class="panel">
-    <h3>Today's Attendance</h3>
+    <input
+      id="staffSearch"
+      placeholder="Search teacher name..."
+      oninput="filterStaff()">
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Teacher</th>
-            <th>Username</th>
-            <th>Status</th>
-            <th>Clock In</th>
-            <th>Clock Out</th>
-            <th>GPS</th>
-          </tr>
-        </thead>
-
-        <tbody id="dashboardAttendance"></tbody>
-      </table>
-    </div>
-  </div>
-
-</section>
-
-
-<!-- LIVE -->
-
-<section id="live" class="section">
-
-  <div class="page-title">
-    <h2>Live Attendance & GPS</h2>
-    <p>Monitor teacher clock-in/out activity and GPS verification.</p>
-  </div>
-
-  <div class="live-bar">
-    <div>
-      <span class="live-dot"></span>
-      GPS MONITORING
-    </div>
-    <div id="gpsUpdate">Updating...</div>
-  </div>
-
-  <div class="panel">
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Teacher</th>
-            <th>Status</th>
-            <th>Clock In</th>
-            <th>Clock-In GPS</th>
-            <th>Clock Out</th>
-            <th>Clock-Out GPS</th>
-          </tr>
-        </thead>
-
-        <tbody id="liveAttendance"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- STAFF -->
-
-<section id="staff" class="section">
-
-  <div class="page-title">
-    <h2>Staff Management</h2>
-    <p>Create, search, manage and inspect staff accounts.</p>
-  </div>
-
-  <div class="panel">
-
-    <h3>Add Staff Member</h3>
-
-    <div class="form-row">
-
-      <input id="newName"
-             placeholder="Full name">
-
-      <input id="newUsername"
-             placeholder="Username">
-
-      <input id="newPassword"
-             type="password"
-             placeholder="Password">
-
-    </div>
-
-    <div class="form-row">
-
-      <select id="newRole">
-        <option value="teacher">Teacher</option>
-        <option value="admin">Administrator</option>
-      </select>
-
-      <div></div>
-
-      <button class="primary" onclick="addStaff()">
-        Add Staff
-      </button>
-
-    </div>
-
-    <div id="staffMessage" class="message"></div>
+    <select id="staffStatusFilter"
+            onchange="filterStaff()">
+      <option value="">All Staff</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
 
   </div>
 
-
-  <div class="panel">
-
-    <h3>Staff Accounts</h3>
-
-    <div class="search-row">
-
-      <input id="staffSearch"
-             placeholder="Search by name or username..."
-             oninput="filterStaff()">
-
-      <select id="staffStatusFilter"
-              onchange="filterStaff()">
-
-        <option value="all">All Accounts</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-
-      </select>
-
-    </div>
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Account</th>
-            <th>Created</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody id="staffTable"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- GPS -->
-
-<section id="gps" class="section">
-
-  <div class="page-title">
-    <h2>GPS Attendance Settings</h2>
-    <p>Configure the official school attendance verification zone.</p>
-  </div>
-
-  <div class="panel">
-
-    <div class="grid">
-
-      <div>
-        <label>School Latitude</label>
-        <input id="schoolLat">
-      </div>
-
-      <div>
-        <label>School Longitude</label>
-        <input id="schoolLon">
-      </div>
-
-      <div>
-        <label>Attendance Radius (metres)</label>
-        <input id="schoolRadius" type="number">
-      </div>
-
-      <div style="display:flex;align-items:end;">
-        <button class="primary" onclick="saveGPS()">
-          Save GPS Settings
-        </button>
-      </div>
-
-    </div>
-
-    <div id="gpsMessage" class="message"></div>
-
-  </div>
-
-  <div class="panel">
-
-    <h3>Current Verification Zone</h3>
-
-    <div class="gps-box">
-      Teachers must be within the configured radius of the official
-      school coordinates to clock in or clock out.
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- REPORTS -->
-
-<section id="reports" class="section">
-
-  <div class="page-title">
-    <h2>Attendance Reports</h2>
-    <p>Generate attendance records for selected dates and staff members.</p>
-  </div>
-
-  <div class="panel">
-
-    <div class="form-row">
-
-      <div>
-        <label>From</label>
-        <input id="reportFrom" type="date">
-      </div>
-
-      <div>
-        <label>To</label>
-        <input id="reportTo" type="date">
-      </div>
-
-      <div>
-        <label>Staff</label>
-        <select id="reportStaff">
-          <option value="">All Staff</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="profile-actions">
-
-      <button class="primary" onclick="generateReport()">
-        Generate Report
-      </button>
-
-      <button class="secondary" onclick="exportCSV()">
-        Export CSV
-      </button>
-
-      <button class="secondary" onclick="window.print()">
-        Print / Save PDF
-      </button>
-
-    </div>
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Teacher</th>
-            <th>Status</th>
-            <th>Clock In</th>
-            <th>Clock Out</th>
-            <th>GPS Verified</th>
-          </tr>
-        </thead>
-
-        <tbody id="reportTable"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</section>
-
-</main>
-
-
-<footer>
-  S.C.A.G.S.S Staff Attendance Portal
-</footer>
-
-
-<!-- STAFF PROFILE MODAL -->
-
-<div id="profileOverlay" class="profile-overlay">
-
-  <div class="profile-modal">
-
-    <div class="profile-header">
-
-      <div>
-        <h2 id="profileName">Staff Profile</h2>
-        <div id="profileUsername"></div>
-      </div>
-
-      <button class="close" onclick="closeProfile()">×</button>
-
-    </div>
-
-    <div class="profile-body">
-
-      <div class="profile-grid">
-
-        <div class="profile-info">
-          <small>Full Name</small>
-          <strong id="profileFullName">—</strong>
-        </div>
-
-        <div class="profile-info">
-          <small>Username</small>
-          <strong id="profileUser">—</strong>
-        </div>
-
-        <div class="profile-info">
-          <small>Role</small>
-          <strong id="profileRole">—</strong>
-        </div>
-
-        <div class="profile-info">
-          <small>Account Status</small>
-          <strong id="profileStatus">—</strong>
-        </div>
-
-        <div class="profile-info">
-          <small>Account Created</small>
-          <strong id="profileCreated">—</strong>
-        </div>
-
-        <div class="profile-info">
-          <small>Attendance Records</small>
-          <strong id="profileRecords">0</strong>
-        </div>
-
-      </div>
-
-
-      <div class="profile-actions">
-
-        <button id="profileStatusButton"
-                class="primary">
-          Change Status
-        </button>
-
-        <button class="secondary"
-                onclick="resetPassword()">
-          Reset Password
-        </button>
-
-      </div>
-
-
-      <div class="panel">
-
-        <h3>Attendance History</h3>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Clock In</th>
-                <th>Clock Out</th>
-                <th>GPS</th>
-                <th>Clock-In Distance</th>
-                <th>Clock-Out Distance</th>
-              </tr>
-            </thead>
-
-            <tbody id="profileAttendance"></tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-
-      <div class="panel">
-
-        <h3>Latest GPS Information</h3>
-
-        <div id="profileGPS" class="gps-box">
-          No GPS attendance information available.
-        </div>
-
-      </div>
-
-    </div>
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Teacher</th>
+          <th>Email</th>
+          <th>Contact</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Registered</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody id="staffTable">
+        <tr>
+          <td colspan="7">Loading...</td>
+        </tr>
+      </tbody>
+
+    </table>
 
   </div>
 
 </div>
 
+  </div></section><!-- ================= GPS ================= --><section id="gps" class="section">  <div class="panel"><div class="panel-header">
+  <h2>Teacher GPS Monitoring</h2>
 
-<script>
+  <button class="btn btn-secondary btn-small"
+          onclick="loadGPS()">
+    Refresh GPS
+  </button>
+</div>
 
-let staffList = [];
-let selectedStaff = null;
-let currentReport = [];
+<div class="panel-body table-wrap">
 
+  <table>
+
+    <thead>
+      <tr>
+        <th>Teacher</th>
+        <th>Clock Event</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Accuracy</th>
+        <th>Distance</th>
+        <th>Verification</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+
+    <tbody id="gpsTable">
+      <tr>
+        <td colspan="8">Loading...</td>
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>
+
+  </div></section><!-- ================= REPORTS ================= --><section id="reports" class="section">  <div class="panel"><div class="panel-header">
+  <h2>Individual Teacher Reports</h2>
+</div>
+
+<div class="panel-body">
+
+  <div class="report-controls">
+
+    <div class="form-group">
+      <label>Teacher</label>
+      <select id="reportStaff">
+        <option value="">Select teacher</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>From</label>
+      <input type="date" id="reportFrom">
+    </div>
+
+    <div class="form-group">
+      <label>To</label>
+      <input type="date" id="reportTo">
+    </div>
+
+    <button class="btn btn-primary"
+            onclick="generateIndividualReport()">
+      Generate
+    </button>
+
+  </div>
+
+</div>
+
+  </div>  <div id="reportResult"></div></section><!-- ================= AI ================= --><section id="ai" class="section">  <div class="ai-layout"><div class="panel ai-chat">
+
+  <div class="panel-header">
+    <h2>S.C.A.G.S.S AI Assistant</h2>
+  </div>
+
+  <div class="ai-messages" id="aiMessages">
+
+    <div class="ai-message bot">
+      Hello. I am the S.C.A.G.S.S Staff Portal Assistant.
+      I can help you analyse attendance, identify late
+      teachers, prepare summaries and assist with reports.
+    </div>
+
+  </div>
+
+  <div class="ai-input">
+
+    <input
+      id="aiInput"
+      placeholder="Ask about staff attendance..."
+      onkeydown="if(event.key==='Enter') sendAI()">
+
+    <button class="btn btn-primary"
+            onclick="sendAI()">
+      Send
+    </button>
+
+  </div>
+
+</div>
+
+<div class="ai-tools">
+
+  <h3>Quick Assistance</h3>
+
+  <button class="ai-tool"
+          onclick="quickAI('Give me a summary of today attendance.')">
+    Today's attendance summary
+  </button>
+
+  <button class="ai-tool"
+          onclick="quickAI('Which teachers were late today?')">
+    Find late teachers
+  </button>
+
+  <button class="ai-tool"
+          onclick="quickAI('Which teachers have not clocked out today?')">
+    Missing clock-outs
+  </button>
+
+  <button class="ai-tool"
+          onclick="quickAI('Give me the current attendance statistics.')">
+    Attendance statistics
+  </button>
+
+  <button class="ai-tool"
+          onclick="quickAI('Explain the current GPS attendance situation.')">
+    GPS situation
+  </button>
+
+</div>
+
+  </div></section><!-- ================= SETTINGS ================= --><section id="settings" class="section">  <div class="panel"><div class="panel-header">
+  <h2>School GPS Settings</h2>
+</div>
+
+<div class="panel-body">
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>School Latitude</label>
+      <input id="gpsLatitude" type="number" step="any">
+    </div>
+
+    <div class="form-group">
+      <label>School Longitude</label>
+      <input id="gpsLongitude" type="number" step="any">
+    </div>
+
+    <div class="form-group">
+      <label>Allowed Radius (metres)</label>
+      <input id="gpsRadius" type="number" min="1">
+    </div>
+
+  </div>
+
+  <br>
+
+  <button class="btn btn-primary"
+          onclick="saveGPSSettings()">
+    Save GPS Settings
+  </button>
+
+</div>
+
+  </div></section></div>
+</main>
+</div><!-- =====================================================
+     REGISTRATION MODAL
+===================================================== --><div class="modal" id="registrationModal">  <div class="modal-box"><div class="modal-header">
+
+  <h2>Register Teacher</h2>
+
+  <button class="close"
+          onclick="closeModal('registrationModal')">
+    ×
+  </button>
+
+</div>
+
+<div class="modal-body">
+
+  <div id="registrationMessage" class="message"></div>
+
+  <form id="registrationForm">
+
+    <div class="form-grid">
+
+      <div class="form-group full">
+
+        <label>Teacher's Full Name *</label>
+
+        <input
+          id="regFullName"
+          required
+          placeholder="Enter teacher's actual full name">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Email Address *</label>
+
+        <input
+          id="regEmail"
+          type="email"
+          required
+          placeholder="teacher@example.com">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Phone / Contact *</label>
+
+        <input
+          id="regPhone"
+          required
+          placeholder="07XXXXXXXX">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Password *</label>
+
+        <input
+          id="regPassword"
+          type="password"
+          minlength="8"
+          required
+          placeholder="Minimum 8 characters">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Confirm Password *</label>
+
+        <input
+          id="regPasswordConfirm"
+          type="password"
+          minlength="8"
+          required
+          placeholder="Confirm password">
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <button class="btn btn-primary"
+            type="submit">
+      Register Teacher
+    </button>
+
+  </form>
+
+</div>
+
+  </div></div><!-- =====================================================
+     PROFILE MODAL
+===================================================== --><div class="modal" id="profileModal">  <div class="modal-box"><div class="modal-header">
+
+  <h2>Teacher Profile</h2>
+
+  <button class="close"
+          onclick="closeModal('profileModal')">
+    ×
+  </button>
+
+</div>
+
+<div class="modal-body" id="profileContent">
+  Loading...
+</div>
+
+  </div></div><script>
 
 /* =====================================================
    API
@@ -960,11 +1296,11 @@ let currentReport = [];
 
 async function api(url, options = {}){
 
-  const response = await fetch(url, {
-    credentials: "include",
+  const response = await fetch(url,{
+    credentials:"include",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
+    headers:{
+      "Content-Type":"application/json",
       ...(options.headers || {})
     }
   });
@@ -973,235 +1309,986 @@ async function api(url, options = {}){
 
   try{
     data = await response.json();
-  }catch{}
+  }catch(e){}
 
   if(!response.ok){
-    throw new Error(
-      data.message || "Request failed."
-    );
+    throw new Error(data.message || "Request failed");
   }
 
   return data;
 }
 
+/* =====================================================
+   CURRENT ADMIN
+===================================================== */
+
+async function loadMe(){
+
+  try{
+
+    const data = await api("/api/me");
+
+    if(data.user){
+
+      document.getElementById("adminName").textContent =
+        data.user.full_name || data.user.username;
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
 
 /* =====================================================
    NAVIGATION
 ===================================================== */
 
-document.querySelectorAll(".nav-btn").forEach(button => {
+const titles = {
+  dashboard:"Administration Dashboard",
+  live:"Live Attendance",
+  staff:"Staff Management",
+  gps:"GPS Monitoring",
+  reports:"Individual Reports",
+  ai:"AI Assistant",
+  settings:"System Settings"
+};
 
-  button.addEventListener("click", () => {
+function showSection(id,button){
 
-    document.querySelectorAll(".nav-btn")
-      .forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".section")
+    .forEach(section=>section.classList.remove("active"));
 
-    document.querySelectorAll(".section")
-      .forEach(section => section.classList.remove("active"));
+  const section = document.getElementById(id);
 
+  if(section){
+    section.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav button")
+    .forEach(btn=>btn.classList.remove("active"));
+
+  if(button){
     button.classList.add("active");
+  }
 
-    document
-      .getElementById(button.dataset.section)
-      .classList.add("active");
+  document.getElementById("pageTitle").textContent =
+    titles[id] || "Administration Dashboard";
 
-  });
+  if(id==="dashboard"){
+    loadSummary();
+    loadLiveAttendance();
+  }
 
-});
+  if(id==="live"){
+    loadLiveAttendance();
+  }
 
+  if(id==="staff"){
+    loadStaff();
+  }
+
+  if(id==="gps"){
+    loadGPS();
+  }
+
+  if(id==="reports"){
+    loadReportStaff();
+  }
+
+  if(id==="settings"){
+    loadGPSSettings();
+  }
+
+}
 
 /* =====================================================
-   FORMAT
+   MESSAGE
 ===================================================== */
 
-function formatDate(value){
+function showMessage(text,type="success",target="globalMessage"){
 
-  if(!value) return "—";
+  const box = document.getElementById(target);
 
-  return new Date(value).toLocaleString(
-    "en-KE",
-    {
-      dateStyle:"medium",
-      timeStyle:"short"
-    }
-  );
+  if(!box) return;
+
+  box.textContent = text;
+
+  box.className = "message show " + type;
+
+  setTimeout(()=>{
+    box.className = "message";
+  },5000);
+
 }
-
-function formatDateOnly(value){
-
-  if(!value) return "—";
-
-  return new Date(
-    value + "T00:00:00"
-  ).toLocaleDateString("en-KE");
-}
-
-function badge(text, type){
-
-  return `<span class="badge ${type}">
-    ${escapeHTML(text)}
-  </span>`;
-}
-
-function escapeHTML(value){
-
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
 
 /* =====================================================
-   LOAD SUMMARY
+   SUMMARY
 ===================================================== */
 
 async function loadSummary(){
 
   try{
 
-    const data =
-      await api("/api/admin/summary");
+    const data = await api("/api/admin/summary");
 
-    const summary = data.summary || {};
+    const summary = data.summary || data;
 
     document.getElementById("totalStaff").textContent =
-      summary.total_staff ?? 0;
+      summary.totalStaff ??
+      summary.totalTeachers ??
+      0;
 
-    document.getElementById("clockedIn").textContent =
-      summary.clocked_in ?? 0;
+    document.getElementById("presentCount").textContent =
+      summary.present ??
+      summary.presentToday ??
+      0;
 
-    document.getElementById("clockedOut").textContent =
-      summary.clocked_out ?? 0;
+    document.getElementById("lateCount").textContent =
+      summary.late ??
+      summary.lateToday ??
+      0;
 
-    document.getElementById("late").textContent =
-      summary.late ?? 0;
-
-    document.getElementById("lastUpdate").textContent =
-      "Updated " +
-      new Date().toLocaleTimeString("en-KE");
+    document.getElementById("clockedOutCount").textContent =
+      summary.clockedOut ??
+      summary.clockedOutToday ??
+      0;
 
   }catch(error){
 
-    console.error(error);
+    console.error("Summary error:",error);
 
   }
 
 }
 
-
 /* =====================================================
-   LOAD TODAY ATTENDANCE
+   LIVE ATTENDANCE
 ===================================================== */
 
-async function loadToday(){
+async function loadLiveAttendance(){
 
   try{
 
-    const data =
-      await api("/api/admin/attendance/today");
+    const data = await api("/api/admin/attendance/today");
 
     const rows =
-      data.attendance || [];
+      data.attendance ||
+      data.rows ||
+      data.data ||
+      [];
 
-    renderDashboardAttendance(rows);
+    renderAttendance(rows,"liveAttendance");
+    renderAttendance(rows,"dashboardAttendance");
 
   }catch(error){
 
     console.error(error);
 
+    document.getElementById("liveAttendance").innerHTML =
+      `<tr><td colspan="7">${escapeHTML(error.message)}</td></tr>`;
+
   }
+
 }
 
+function renderAttendance(rows,target){
 
-/* =====================================================
-   DASHBOARD ATTENDANCE
-===================================================== */
+  const tbody = document.getElementById(target);
 
-function renderDashboardAttendance(rows){
-
-  const tbody =
-    document.getElementById("dashboardAttendance");
+  if(!tbody) return;
 
   if(!rows.length){
 
     tbody.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        No attendance records available.
+      `<tr><td colspan="${target==="liveAttendance"?7:6}">
+        No attendance records today.
       </td></tr>`;
 
     return;
   }
 
-  tbody.innerHTML = rows.map(item => {
+  tbody.innerHTML = rows.map(row=>{
 
-    const record = item.attendance;
+    const staff = row.staff || row;
 
-    let status = "NOT CLOCKED IN";
-    let statusType = "gray";
+    const name =
+      row.full_name ||
+      staff.full_name ||
+      "Unknown";
 
-    if(record?.clock_out){
-      status = "CLOCKED OUT";
-      statusType = "blue";
-    }
-    else if(record?.clock_in){
+    const email =
+      row.email ||
+      staff.email ||
+      "—";
 
-      status =
-        record.status === "Late"
-          ? "LATE"
-          : "CLOCKED IN";
+    const phone =
+      row.phone ||
+      staff.phone ||
+      "—";
 
-      statusType =
-        record.status === "Late"
-          ? "red"
-          : "green";
+    const clockIn =
+      formatDateTime(row.clock_in);
+
+    const clockOut =
+      formatDateTime(row.clock_out);
+
+    const gps =
+      row.gps_verified
+      ? `<span class="badge badge-green">Verified</span>`
+      : `<span class="badge badge-red">Not verified</span>`;
+
+    const status =
+      row.status === "Late"
+      ? `<span class="badge badge-orange">Late</span>`
+      : row.clock_in
+      ? `<span class="badge badge-green">Present</span>`
+      : `<span class="badge badge-red">Absent</span>`;
+
+    if(target==="dashboardAttendance"){
+
+      return `
+      <tr>
+        <td><strong>${escapeHTML(name)}</strong></td>
+        <td>${escapeHTML(email)}</td>
+        <td>${clockIn}</td>
+        <td>${clockOut}</td>
+        <td>${gps}</td>
+        <td>${status}</td>
+      </tr>`;
+
     }
 
     return `
-      <tr>
-
-        <td>
-          <strong>
-            ${escapeHTML(item.full_name)}
-          </strong>
-        </td>
-
-        <td>
-          ${escapeHTML(item.username)}
-        </td>
-
-        <td>
-          ${badge(status,statusType)}
-        </td>
-
-        <td>
-          ${formatDate(record?.clock_in)}
-        </td>
-
-        <td>
-          ${formatDate(record?.clock_out)}
-        </td>
-
-        <td>
-          ${
-            record?.gps_verified
-              ? badge("VERIFIED","green")
-              : badge("—","gray")
-          }
-        </td>
-
-      </tr>
-    `;
+    <tr>
+      <td><strong>${escapeHTML(name)}</strong></td>
+      <td>${escapeHTML(phone)}</td>
+      <td>${clockIn}</td>
+      <td>${clockOut}</td>
+      <td>${gps}</td>
+      <td>${formatDistance(
+        row.clock_in_distance ??
+        row.clock_out_distance
+      )}</td>
+      <td>${status}</td>
+    </tr>`;
 
   }).join("");
 
 }
 
+/* =====================================================
+   STAFF
+===================================================== */
+
+let staffCache = [];
+
+async function loadStaff(){
+
+  try{
+
+    const data = await api("/api/admin/staff");
+
+    staffCache =
+      data.staff ||
+      data.rows ||
+      data.data ||
+      [];
+
+    renderStaff(staffCache);
+
+    populateReportStaff();
+
+  }catch(error){
+
+    console.error(error);
+
+    document.getElementById("staffTable").innerHTML =
+      `<tr><td colspan="7">${escapeHTML(error.message)}</td></tr>`;
+
+  }
+
+}
+
+function renderStaff(rows){
+
+  const tbody = document.getElementById("staffTable");
+
+  if(!rows.length){
+
+    tbody.innerHTML =
+      `<tr><td colspan="7">No staff found.</td></tr>`;
+
+    return;
+  }
+
+  tbody.innerHTML = rows.map(staff=>{
+
+    const active =
+      staff.active !== false;
+
+    return `
+    <tr>
+
+      <td>
+        <strong>${escapeHTML(staff.full_name || "Unnamed")}</strong>
+      </td>
+
+      <td>${escapeHTML(staff.email || "—")}</td>
+
+      <td>${escapeHTML(staff.phone || "—")}</td>
+
+      <td>
+        <span class="badge badge-blue">
+          ${escapeHTML(staff.role || "teacher")}
+        </span>
+      </td>
+
+      <td>
+        ${
+          active
+          ? `<span class="badge badge-green">Active</span>`
+          : `<span class="badge badge-red">Inactive</span>`
+        }
+      </td>
+
+      <td>${formatDate(staff.created_at)}</td>
+
+      <td>
+
+        <button class="btn btn-secondary btn-small"
+                onclick="viewProfile(${staff.id})">
+          Profile
+        </button>
+
+        <button
+          class="btn ${
+            active ? "btn-danger" : "btn-success"
+          } btn-small"
+          onclick="toggleStaff(${staff.id},${active})">
+          ${active ? "Deactivate" : "Activate"}
+        </button>
+
+      </td>
+
+    </tr>`;
+
+  }).join("");
+
+}
+
+function filterStaff(){
+
+  const search =
+    document.getElementById("staffSearch")
+      .value
+      .toLowerCase();
+
+  const status =
+    document.getElementById("staffStatusFilter")
+      .value;
+
+  const filtered = staffCache.filter(staff=>{
+
+    const name =
+      (staff.full_name || "").toLowerCase();
+
+    const matchesSearch =
+      !search || name.includes(search);
+
+    const active =
+      staff.active !== false;
+
+    const matchesStatus =
+      !status ||
+      (status==="active" && active) ||
+      (status==="inactive" && !active);
+
+    return matchesSearch && matchesStatus;
+
+  });
+
+  renderStaff(filtered);
+
+}
+
+async function toggleStaff(id,active){
+
+  const action =
+    active ? "deactivate" : "activate";
+
+  if(!confirm(`Are you sure you want to ${action} this account?`)){
+    return;
+  }
+
+  try{
+
+    await api(`/api/admin/staff/${id}/status`,{
+      method:"PATCH",
+      body:JSON.stringify({
+        active:!active
+      })
+    });
+
+    showMessage(
+      `Staff account ${action}d successfully.`,
+      "success"
+    );
+
+    loadStaff();
+
+  }catch(error){
+
+    showMessage(error.message,"error");
+
+  }
+
+}
 
 /* =====================================================
-   LIVE GPS
+   REGISTRATION
+===================================================== */
+
+function openRegistration(){
+
+  document.getElementById("registrationForm").reset();
+
+  document.getElementById("registrationModal")
+    .classList.add("show");
+
+}
+
+document.getElementById("registrationForm")
+.addEventListener("submit",async function(event){
+
+  event.preventDefault();
+
+  const full_name =
+    document.getElementById("regFullName").value.trim();
+
+  const email =
+    document.getElementById("regEmail").value.trim();
+
+  const phone =
+    document.getElementById("regPhone").value.trim();
+
+  const password =
+    document.getElementById("regPassword").value;
+
+  const confirmPassword =
+    document.getElementById("regPasswordConfirm").value;
+
+  if(password !== confirmPassword){
+
+    showMessage(
+      "Passwords do not match.",
+      "error",
+      "registrationMessage"
+    );
+
+    return;
+  }
+
+  try{
+
+    /*
+      IMPORTANT:
+      The backend will create the internal username.
+      The visible teacher identity is the actual full name.
+    */
+
+    const data = await api("/api/admin/staff",{
+      method:"POST",
+      body:JSON.stringify({
+        full_name,
+        email,
+        phone,
+        password,
+        role:"teacher"
+      })
+    });
+
+    showMessage(
+      data.message || "Teacher registered successfully.",
+      "success",
+      "registrationMessage"
+    );
+
+    document.getElementById("registrationForm").reset();
+
+    loadStaff();
+
+    setTimeout(()=>{
+      closeModal("registrationModal");
+    },1200);
+
+  }catch(error){
+
+    showMessage(
+      error.message,
+      "error",
+      "registrationMessage"
+    );
+
+  }
+
+});
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+async function viewProfile(id){
+
+  document.getElementById("profileModal")
+    .classList.add("show");
+
+  const content =
+    document.getElementById("profileContent");
+
+  content.innerHTML = "Loading teacher profile...";
+
+  try{
+
+    const data =
+      await api(`/api/admin/staff/${id}`);
+
+    const staff =
+      data.staff ||
+      data.profile ||
+      data;
+
+    const attendance =
+      data.attendance ||
+      [];
+
+    const name =
+      staff.full_name || "Unknown Teacher";
+
+    const initials =
+      getInitials(name);
+
+    content.innerHTML = `
+
+      <div class="profile-head">
+
+        <div class="avatar">
+          ${escapeHTML(initials)}
+        </div>
+
+        <div>
+
+          <div class="profile-name">
+            ${escapeHTML(name)}
+          </div>
+
+          <div class="profile-role">
+            ${escapeHTML(staff.role || "Teacher")}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="info-grid">
+
+        <div class="info-box">
+          <label>EMAIL</label>
+          <strong>
+            ${escapeHTML(staff.email || "Not provided")}
+          </strong>
+        </div>
+
+        <div class="info-box">
+          <label>CONTACT</label>
+          <strong>
+            ${escapeHTML(staff.phone || "Not provided")}
+          </strong>
+        </div>
+
+        <div class="info-box">
+          <label>ACCOUNT STATUS</label>
+          <strong>
+            ${
+              staff.active !== false
+              ? "Active"
+              : "Inactive"
+            }
+          </strong>
+        </div>
+
+        <div class="info-box">
+          <label>STAFF ID</label>
+          <strong>${escapeHTML(String(staff.id))}</strong>
+        </div>
+
+        <div class="info-box">
+          <label>REGISTERED</label>
+          <strong>${formatDate(staff.created_at)}</strong>
+        </div>
+
+        <div class="info-box">
+          <label>ROLE</label>
+          <strong>${escapeHTML(staff.role || "teacher")}</strong>
+        </div>
+
+      </div>
+
+      <h3 style="margin-bottom:12px">
+        Attendance History
+      </h3>
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Date</th>
+              <th>Clock In</th>
+              <th>Clock Out</th>
+              <th>Status</th>
+              <th>GPS</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${
+              attendance.length
+              ? attendance.map(a=>`
+
+                <tr>
+                  <td>${formatDate(a.attendance_date)}</td>
+                  <td>${formatDateTime(a.clock_in)}</td>
+                  <td>${formatDateTime(a.clock_out)}</td>
+                  <td>${escapeHTML(a.status || "—")}</td>
+                  <td>
+                    ${
+                      a.gps_verified
+                      ? `<span class="badge badge-green">Verified</span>`
+                      : `<span class="badge badge-red">No</span>`
+                    }
+                  </td>
+                </tr>
+
+              `).join("")
+              : `<tr>
+                  <td colspan="5">
+                    No attendance history available.
+                  </td>
+                </tr>`
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <br>
+
+      <button
+        class="btn btn-primary"
+        onclick="prepareIndividualReport(${staff.id})">
+        Generate Individual Report
+      </button>
+
+    `;
+
+  }catch(error){
+
+    content.innerHTML =
+      `<div class="message show error">
+        ${escapeHTML(error.message)}
+      </div>`;
+
+  }
+
+}
+
+/* =====================================================
+   REPORTS
+===================================================== */
+
+function loadReportStaff(){
+
+  if(!staffCache.length){
+    loadStaff();
+    return;
+  }
+
+  populateReportStaff();
+
+}
+
+function populateReportStaff(){
+
+  const select =
+    document.getElementById("reportStaff");
+
+  if(!select) return;
+
+  select.innerHTML =
+    `<option value="">Select teacher</option>` +
+    staffCache
+      .filter(s=>
+        s.role !== "admin" &&
+        s.active !== false
+      )
+      .map(s=>
+        `<option value="${s.id}">
+          ${escapeHTML(s.full_name)}
+        </option>`
+      )
+      .join("");
+
+}
+
+function prepareIndividualReport(id){
+
+  closeModal("profileModal");
+
+  showSection(
+    "reports",
+    document.querySelector(
+      '.nav button[onclick*="reports"]'
+    )
+  );
+
+  document.getElementById("reportStaff").value =
+    id;
+
+}
+
+async function generateIndividualReport(){
+
+  const staffId =
+    document.getElementById("reportStaff").value;
+
+  const from =
+    document.getElementById("reportFrom").value;
+
+  const to =
+    document.getElementById("reportTo").value;
+
+  if(!staffId){
+
+    showMessage(
+      "Please select a teacher.",
+      "error"
+    );
+
+    return;
+  }
+
+  try{
+
+    let url =
+      `/api/admin/report?staff_id=${encodeURIComponent(staffId)}`;
+
+    if(from){
+      url += `&from=${encodeURIComponent(from)}`;
+    }
+
+    if(to){
+      url += `&to=${encodeURIComponent(to)}`;
+    }
+
+    const data = await api(url);
+
+    const report =
+      data.report ||
+      data;
+
+    displayReport(report);
+
+  }catch(error){
+
+    showMessage(
+      error.message,
+      "error"
+    );
+
+  }
+
+}
+
+function displayReport(report){
+
+  const box =
+    document.getElementById("reportResult");
+
+  const rows =
+    report.attendance ||
+    report.rows ||
+    [];
+
+  const staff =
+    report.staff ||
+    {};
+
+  box.innerHTML = `
+
+    <div class="panel">
+
+      <div class="panel-header">
+
+        <h2>
+          Individual Attendance Report
+        </h2>
+
+        <button
+          class="btn btn-primary"
+          onclick="window.print()">
+          Print / Save PDF
+        </button>
+
+      </div>
+
+      <div class="panel-body">
+
+        <div class="profile-head">
+
+          <div class="avatar">
+            ${escapeHTML(
+              getInitials(
+                staff.full_name || "Teacher"
+              )
+            )}
+          </div>
+
+          <div>
+
+            <div class="profile-name">
+              ${escapeHTML(
+                staff.full_name || "Teacher"
+              )}
+            </div>
+
+            <div class="profile-role">
+              ${escapeHTML(
+                staff.email || "No email"
+              )}
+              &nbsp; | &nbsp;
+              ${escapeHTML(
+                staff.phone || "No contact"
+              )}
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="cards">
+
+          <div class="card">
+            <div class="card-title">
+              DAYS PRESENT
+            </div>
+            <div class="card-number">
+              ${report.days_present ?? 0}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              LATE DAYS
+            </div>
+            <div class="card-number">
+              ${report.late_days ?? 0}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              MISSING CLOCK-OUT
+            </div>
+            <div class="card-number">
+              ${report.missing_clock_out ?? 0}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              ATTENDANCE RATE
+            </div>
+            <div class="card-number">
+              ${report.attendance_percentage ?? 0}%
+            </div>
+          </div>
+
+        </div>
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Date</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Status</th>
+                <th>GPS</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              ${
+                rows.length
+                ? rows.map(row=>`
+
+                  <tr>
+                    <td>${formatDate(row.attendance_date)}</td>
+                    <td>${formatDateTime(row.clock_in)}</td>
+                    <td>${formatDateTime(row.clock_out)}</td>
+                    <td>${escapeHTML(row.status || "—")}</td>
+                    <td>
+                      ${
+                        row.gps_verified
+                        ? `<span class="badge badge-green">
+                            Verified
+                           </span>`
+                        : `<span class="badge badge-red">
+                            Not verified
+                           </span>`
+                      }
+                    </td>
+                  </tr>
+
+                `).join("")
+                : `<tr>
+                    <td colspan="5">
+                      No attendance records found.
+                    </td>
+                  </tr>`
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+/* =====================================================
+   GPS
 ===================================================== */
 
 async function loadGPS(){
@@ -1212,705 +2299,100 @@ async function loadGPS(){
       await api("/api/admin/gps/today");
 
     const rows =
-      data.attendance || [];
+      data.gps ||
+      data.rows ||
+      data.data ||
+      [];
 
-    renderLive(rows);
+    const tbody =
+      document.getElementById("gpsTable");
 
-    document.getElementById("gpsUpdate").textContent =
-      "Updated " +
-      new Date().toLocaleTimeString("en-KE");
+    if(!rows.length){
 
-  }catch(error){
+      tbody.innerHTML =
+        `<tr><td colspan="8">
+          No GPS attendance data today.
+        </td></tr>`;
 
-    console.error(error);
-
-  }
-
-}
-
-
-function renderLive(rows){
-
-  const tbody =
-    document.getElementById("liveAttendance");
-
-  if(!rows.length){
+      return;
+    }
 
     tbody.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        No GPS attendance records yet.
-      </td></tr>`;
+      rows.map(row=>`
 
-    return;
-  }
-
-  tbody.innerHTML = rows.map(row => {
-
-    const staff = row.staff || {};
-
-    let status = "CLOCKED IN";
-    let type = "green";
-
-    if(row.clock_out){
-      status = "CLOCKED OUT";
-      type = "blue";
-    }
-    else if(row.status === "Late"){
-      status = "LATE";
-      type = "red";
-    }
-
-    const inGPS =
-      row.clock_in_lat != null
-      ? `${Number(row.clock_in_lat).toFixed(6)},
-         ${Number(row.clock_in_lon).toFixed(6)}
-         <br>
-         Accuracy: ${Math.round(row.clock_in_accuracy || 0)}m
-         <br>
-         Distance: ${Math.round(row.clock_in_distance || 0)}m`
-      : "—";
-
-    const outGPS =
-      row.clock_out_lat != null
-      ? `${Number(row.clock_out_lat).toFixed(6)},
-         ${Number(row.clock_out_lon).toFixed(6)}
-         <br>
-         Accuracy: ${Math.round(row.clock_out_accuracy || 0)}m
-         <br>
-         Distance: ${Math.round(row.clock_out_distance || 0)}m`
-      : "—";
-
-    return `
       <tr>
 
         <td>
           <strong>
-            ${escapeHTML(staff.full_name || "Unknown")}
-          </strong>
-          <br>
-          <small>
-            ${escapeHTML(staff.username || "")}
-          </small>
-        </td>
-
-        <td>
-          ${badge(status,type)}
-        </td>
-
-        <td>
-          ${formatDate(row.clock_in)}
-        </td>
-
-        <td>
-          ${inGPS}
-        </td>
-
-        <td>
-          ${formatDate(row.clock_out)}
-        </td>
-
-        <td>
-          ${outGPS}
-        </td>
-
-      </tr>
-    `;
-
-  }).join("");
-
-}
-
-
-/* =====================================================
-   LOAD STAFF
-===================================================== */
-
-async function loadStaff(){
-
-  try{
-
-    const data =
-      await api("/api/admin/staff");
-
-    staffList =
-      data.staff || [];
-
-    renderStaff();
-
-    populateReportStaff();
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-
-}
-
-
-/* =====================================================
-   STAFF TABLE
-===================================================== */
-
-function renderStaff(){
-
-  const search =
-    document.getElementById("staffSearch")
-      .value
-      .toLowerCase()
-      .trim();
-
-  const filter =
-    document.getElementById("staffStatusFilter")
-      .value;
-
-  const tbody =
-    document.getElementById("staffTable");
-
-  const rows =
-    staffList.filter(person => {
-
-      const matchesSearch =
-        !search ||
-        person.full_name
-          .toLowerCase()
-          .includes(search) ||
-        person.username
-          .toLowerCase()
-          .includes(search);
-
-      const matchesStatus =
-        filter === "all" ||
-        (filter === "active" && person.active) ||
-        (filter === "inactive" && !person.active);
-
-      return matchesSearch && matchesStatus;
-
-    });
-
-  if(!rows.length){
-
-    tbody.innerHTML =
-      `<tr><td colspan="6" class="empty">
-        No staff accounts found.
-      </td></tr>`;
-
-    return;
-  }
-
-  tbody.innerHTML = rows.map(person => {
-
-    const active =
-      person.active;
-
-    const status =
-      active
-        ? badge("ACTIVE","green")
-        : badge("INACTIVE","red");
-
-    return `
-      <tr>
-
-        <td>
-          <strong>
-            ${escapeHTML(person.full_name)}
+            ${escapeHTML(
+              row.full_name ||
+              row.staff_name ||
+              "Unknown"
+            )}
           </strong>
         </td>
 
         <td>
-          ${escapeHTML(person.username)}
+          ${escapeHTML(
+            row.event ||
+            row.type ||
+            "Clock"
+          )}
         </td>
 
         <td>
-          ${escapeHTML(person.role)}
+          ${formatNumber(row.latitude || row.clock_in_lat)}
         </td>
 
         <td>
-          ${status}
+          ${formatNumber(row.longitude || row.clock_in_lon)}
         </td>
 
         <td>
-          ${formatDate(person.created_at)}
+          ${formatNumber(
+            row.accuracy ||
+            row.clock_in_accuracy
+          )} m
         </td>
 
         <td>
-
-          <button
-            class="secondary"
-            onclick="openProfile(${person.id})">
-            View Profile
-          </button>
-
-          ${
-            person.id !== selectedStaff?.id
-            ? `
-              <button
-                class="${active ? "danger" : "success"}"
-                onclick="toggleStatus(${person.id},${active})">
-                ${active ? "Deactivate" : "Activate"}
-              </button>
-            `
-            : ""
-          }
-
-        </td>
-
-      </tr>
-    `;
-
-  }).join("");
-
-}
-
-function filterStaff(){
-  renderStaff();
-}
-
-
-/* =====================================================
-   ADD STAFF
-===================================================== */
-
-async function addStaff(){
-
-  const full_name =
-    document.getElementById("newName").value.trim();
-
-  const username =
-    document.getElementById("newUsername").value.trim();
-
-  const password =
-    document.getElementById("newPassword").value;
-
-  const role =
-    document.getElementById("newRole").value;
-
-  if(!full_name || !username || !password){
-
-    showMessage(
-      "staffMessage",
-      "Please fill in all staff account fields.",
-      "error"
-    );
-
-    return;
-  }
-
-  try{
-
-    await api("/api/admin/staff",{
-      method:"POST",
-      body:JSON.stringify({
-        full_name,
-        username,
-        password,
-        role
-      })
-    });
-
-    document.getElementById("newName").value = "";
-    document.getElementById("newUsername").value = "";
-    document.getElementById("newPassword").value = "";
-
-    showMessage(
-      "staffMessage",
-      "Staff account created successfully.",
-      "ok"
-    );
-
-    await loadStaff();
-    await loadSummary();
-
-  }catch(error){
-
-    showMessage(
-      "staffMessage",
-      error.message,
-      "error"
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-async function toggleStatus(id, current){
-
-  const action =
-    current
-      ? "deactivate"
-      : "activate";
-
-  if(
-    !confirm(
-      `Are you sure you want to ${action} this account?`
-    )
-  ){
-    return;
-  }
-
-  try{
-
-    await api(
-      `/api/admin/staff/${id}/status`,
-      {
-        method:"PATCH",
-        body:JSON.stringify({
-          active:!current
-        })
-      }
-    );
-
-    await loadStaff();
-
-    if(selectedStaff?.id === id){
-
-      selectedStaff.active = !current;
-
-      document.getElementById(
-        "profileStatus"
-      ).textContent =
-        selectedStaff.active
-          ? "ACTIVE"
-          : "INACTIVE";
-    }
-
-  }catch(error){
-
-    alert(error.message);
-
-  }
-
-}
-
-
-/* =====================================================
-   STAFF PROFILE
-===================================================== */
-
-async function openProfile(id){
-
-  const overlay =
-    document.getElementById("profileOverlay");
-
-  overlay.classList.add("show");
-
-  document.getElementById("profileName")
-    .textContent = "Loading profile...";
-
-  try{
-
-    const data =
-      await api(`/api/admin/staff/${id}`);
-
-    selectedStaff =
-      data.staff;
-
-    const attendance =
-      data.attendance || [];
-
-    document.getElementById("profileName")
-      .textContent =
-      selectedStaff.full_name;
-
-    document.getElementById("profileUsername")
-      .textContent =
-      selectedStaff.username;
-
-    document.getElementById("profileFullName")
-      .textContent =
-      selectedStaff.full_name;
-
-    document.getElementById("profileUser")
-      .textContent =
-      selectedStaff.username;
-
-    document.getElementById("profileRole")
-      .textContent =
-      selectedStaff.role;
-
-    document.getElementById("profileStatus")
-      .textContent =
-      selectedStaff.active
-        ? "ACTIVE"
-        : "INACTIVE";
-
-    document.getElementById("profileCreated")
-      .textContent =
-      formatDate(selectedStaff.created_at);
-
-    document.getElementById("profileRecords")
-      .textContent =
-      attendance.length;
-
-    const statusButton =
-      document.getElementById(
-        "profileStatusButton"
-      );
-
-    statusButton.textContent =
-      selectedStaff.active
-        ? "Deactivate Account"
-        : "Activate Account";
-
-    statusButton.className =
-      selectedStaff.active
-        ? "danger"
-        : "success";
-
-    statusButton.onclick =
-      () =>
-        toggleStatus(
-          selectedStaff.id,
-          selectedStaff.active
-        );
-
-    renderProfileAttendance(attendance);
-
-    renderProfileGPS(attendance);
-
-  }catch(error){
-
-    document.getElementById("profileName")
-      .textContent =
-      "Unable to load profile.";
-
-    alert(error.message);
-
-  }
-
-}
-
-
-function closeProfile(){
-
-  document
-    .getElementById("profileOverlay")
-    .classList.remove("show");
-
-  selectedStaff = null;
-
-}
-
-
-/* =====================================================
-   PROFILE ATTENDANCE
-===================================================== */
-
-function renderProfileAttendance(rows){
-
-  const tbody =
-    document.getElementById(
-      "profileAttendance"
-    );
-
-  if(!rows.length){
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7" class="empty">
-          No attendance records available.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  tbody.innerHTML = rows.map(row => {
-
-    return `
-      <tr>
-
-        <td>
-          ${formatDateOnly(row.attendance_date)}
-        </td>
-
-        <td>
-          ${
-            row.status === "Late"
-              ? badge("LATE","red")
-              : badge(
-                  row.clock_out
-                    ? "COMPLETED"
-                    : "PRESENT",
-                  row.clock_out
-                    ? "blue"
-                    : "green"
-                )
-          }
-        </td>
-
-        <td>
-          ${formatDate(row.clock_in)}
-        </td>
-
-        <td>
-          ${formatDate(row.clock_out)}
+          ${formatDistance(
+            row.distance ||
+            row.clock_in_distance
+          )}
         </td>
 
         <td>
           ${
             row.gps_verified
-              ? badge("VERIFIED","green")
-              : badge("NO","gray")
+            ? `<span class="badge badge-green">
+                Verified
+               </span>`
+            : `<span class="badge badge-red">
+                Not verified
+               </span>`
           }
         </td>
 
         <td>
-          ${
-            row.clock_in_distance != null
-              ? Math.round(row.clock_in_distance) + " m"
-              : "—"
-          }
-        </td>
-
-        <td>
-          ${
-            row.clock_out_distance != null
-              ? Math.round(row.clock_out_distance) + " m"
-              : "—"
-          }
+          ${formatDateTime(
+            row.time ||
+            row.clock_in ||
+            row.created_at
+          )}
         </td>
 
       </tr>
-    `;
 
-  }).join("");
-
-}
-
-
-/* =====================================================
-   PROFILE GPS
-===================================================== */
-
-function renderProfileGPS(rows){
-
-  const box =
-    document.getElementById("profileGPS");
-
-  const record =
-    rows.find(
-      row =>
-        row.clock_in_lat != null ||
-        row.clock_out_lat != null
-    );
-
-  if(!record){
-
-    box.innerHTML =
-      "No GPS attendance information available.";
-
-    return;
-  }
-
-  let html = "";
-
-  if(record.clock_in_lat != null){
-
-    html += `
-      <div>
-        <strong>Clock-In GPS</strong><br>
-        Latitude:
-        ${Number(record.clock_in_lat).toFixed(6)}
-        <br>
-        Longitude:
-        ${Number(record.clock_in_lon).toFixed(6)}
-        <br>
-        Accuracy:
-        ${Math.round(record.clock_in_accuracy || 0)} metres
-        <br>
-        Distance from school:
-        ${Math.round(record.clock_in_distance || 0)} metres
-      </div>
-    `;
-
-  }
-
-  if(record.clock_out_lat != null){
-
-    html += `
-      <hr style="margin:15px 0;border:0;border-top:1px solid #bae6fd">
-
-      <div>
-        <strong>Clock-Out GPS</strong><br>
-        Latitude:
-        ${Number(record.clock_out_lat).toFixed(6)}
-        <br>
-        Longitude:
-        ${Number(record.clock_out_lon).toFixed(6)}
-        <br>
-        Accuracy:
-        ${Math.round(record.clock_out_accuracy || 0)} metres
-        <br>
-        Distance from school:
-        ${Math.round(record.clock_out_distance || 0)} metres
-      </div>
-    `;
-
-  }
-
-  box.innerHTML = html;
-
-}
-
-
-/* =====================================================
-   PASSWORD RESET
-===================================================== */
-
-async function resetPassword(){
-
-  if(!selectedStaff){
-    return;
-  }
-
-  const password =
-    prompt(
-      `Enter a new password for ${selectedStaff.full_name}.\n\nMinimum 8 characters.`
-    );
-
-  if(password === null){
-    return;
-  }
-
-  if(password.length < 8){
-
-    alert(
-      "Password must contain at least 8 characters."
-    );
-
-    return;
-  }
-
-  try{
-
-    await api(
-      `/api/admin/staff/${selectedStaff.id}/password`,
-      {
-        method:"PATCH",
-        body:JSON.stringify({
-          password
-        })
-      }
-    );
-
-    alert(
-      "Password reset successfully."
-    );
+      `).join("");
 
   }catch(error){
 
-    alert(error.message);
+    console.error(error);
 
   }
 
 }
-
 
 /* =====================================================
    GPS SETTINGS
@@ -1924,21 +2406,17 @@ async function loadGPSSettings(){
       await api("/api/settings/gps");
 
     const settings =
-      data.settings;
+      data.settings ||
+      data;
 
-    if(!settings) return;
+    document.getElementById("gpsLatitude").value =
+      settings.latitude ?? "";
 
-    document.getElementById("schoolLat")
-      .value =
-      settings.latitude;
+    document.getElementById("gpsLongitude").value =
+      settings.longitude ?? "";
 
-    document.getElementById("schoolLon")
-      .value =
-      settings.longitude;
-
-    document.getElementById("schoolRadius")
-      .value =
-      settings.radius;
+    document.getElementById("gpsRadius").value =
+      settings.radius ?? 500;
 
   }catch(error){
 
@@ -1948,48 +2426,42 @@ async function loadGPSSettings(){
 
 }
 
-
-async function saveGPS(){
+async function saveGPSSettings(){
 
   const latitude =
     Number(
-      document.getElementById("schoolLat").value
+      document.getElementById("gpsLatitude").value
     );
 
   const longitude =
     Number(
-      document.getElementById("schoolLon").value
+      document.getElementById("gpsLongitude").value
     );
 
   const radius =
     Number(
-      document.getElementById("schoolRadius").value
+      document.getElementById("gpsRadius").value
     );
 
   try{
 
-    await api(
-      "/api/settings/gps",
-      {
-        method:"PUT",
-        body:JSON.stringify({
-          latitude,
-          longitude,
-          radius
-        })
-      }
-    );
+    await api("/api/settings/gps",{
+      method:"PUT",
+      body:JSON.stringify({
+        latitude,
+        longitude,
+        radius
+      })
+    });
 
     showMessage(
-      "gpsMessage",
       "GPS settings saved successfully.",
-      "ok"
+      "success"
     );
 
   }catch(error){
 
     showMessage(
-      "gpsMessage",
       error.message,
       "error"
     );
@@ -1998,257 +2470,119 @@ async function saveGPS(){
 
 }
 
-
 /* =====================================================
-   REPORT STAFF
+   AI ASSISTANT
 ===================================================== */
 
-function populateReportStaff(){
+function quickAI(text){
 
-  const select =
-    document.getElementById("reportStaff");
+  document.getElementById("aiInput").value =
+    text;
 
-  select.innerHTML =
-    `<option value="">All Staff</option>`;
-
-  staffList
-    .filter(person => person.role === "teacher")
-    .forEach(person => {
-
-      const option =
-        document.createElement("option");
-
-      option.value =
-        person.id;
-
-      option.textContent =
-        `${person.full_name} (${person.username})`;
-
-      select.appendChild(option);
-
-    });
+  sendAI();
 
 }
 
+async function sendAI(){
 
-/* =====================================================
-   REPORT
-===================================================== */
+  const input =
+    document.getElementById("aiInput");
 
-async function generateReport(){
+  const text =
+    input.value.trim();
 
-  const from =
-    document.getElementById("reportFrom").value;
+  if(!text) return;
 
-  const to =
-    document.getElementById("reportTo").value;
+  addAIMessage(text,"user");
 
-  const staff =
-    document.getElementById("reportStaff").value;
+  input.value = "";
 
-  const params =
-    new URLSearchParams();
-
-  if(from) params.set("from",from);
-  if(to) params.set("to",to);
-  if(staff) params.set("staff_id",staff);
+  addAIMessage(
+    "Analysing the request...",
+    "bot"
+  );
 
   try{
 
-    const data =
-      await api(
-        "/api/admin/report?" +
-        params.toString()
+    /*
+      This endpoint will be connected to
+      the secure AI backend in the next step.
+    */
+
+    const data = await api("/api/ai/assistant",{
+      method:"POST",
+      body:JSON.stringify({
+        message:text
+      })
+    });
+
+    const messages =
+      document.querySelectorAll(
+        "#aiMessages .ai-message"
       );
 
-    currentReport =
-      data.attendance || [];
+    const last =
+      messages[messages.length-1];
 
-    renderReport();
+    if(last &&
+       last.textContent === "Analysing the request..."){
+
+      last.remove();
+
+    }
+
+    addAIMessage(
+      data.reply ||
+      data.message ||
+      "The AI assistant did not return a response.",
+      "bot"
+    );
 
   }catch(error){
 
-    alert(error.message);
+    const messages =
+      document.querySelectorAll(
+        "#aiMessages .ai-message"
+      );
+
+    const last =
+      messages[messages.length-1];
+
+    if(last &&
+       last.textContent === "Analysing the request..."){
+
+      last.remove();
+
+    }
+
+    addAIMessage(
+      "AI Assistant is not connected to the server yet. We will connect the secure AI service in the next development step.",
+      "bot"
+    );
 
   }
 
 }
 
+function addAIMessage(text,type){
 
-function renderReport(){
+  const container =
+    document.getElementById("aiMessages");
 
-  const tbody =
-    document.getElementById("reportTable");
+  const div =
+    document.createElement("div");
 
-  if(!currentReport.length){
+  div.className =
+    "ai-message " + type;
 
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="6" class="empty">
-          No records found.
-        </td>
-      </tr>`;
+  div.textContent = text;
 
-    return;
-  }
+  container.appendChild(div);
 
-  tbody.innerHTML =
-    currentReport.map(row => {
-
-      const staff =
-        row.staff || {};
-
-      return `
-        <tr>
-
-          <td>
-            ${formatDateOnly(row.attendance_date)}
-          </td>
-
-          <td>
-            ${escapeHTML(staff.full_name || "Unknown")}
-          </td>
-
-          <td>
-            ${escapeHTML(row.status || "—")}
-          </td>
-
-          <td>
-            ${formatDate(row.clock_in)}
-          </td>
-
-          <td>
-            ${formatDate(row.clock_out)}
-          </td>
-
-          <td>
-            ${
-              row.gps_verified
-                ? badge("YES","green")
-                : badge("NO","gray")
-            }
-          </td>
-
-        </tr>
-      `;
-
-    }).join("");
+  container.scrollTop =
+    container.scrollHeight;
 
 }
-
-
-/* =====================================================
-   CSV EXPORT
-===================================================== */
-
-function exportCSV(){
-
-  if(!currentReport.length){
-
-    alert(
-      "Generate a report first."
-    );
-
-    return;
-  }
-
-  const headers = [
-    "Date",
-    "Teacher",
-    "Username",
-    "Status",
-    "Clock In",
-    "Clock Out",
-    "GPS Verified"
-  ];
-
-  const lines = [
-    headers.join(",")
-  ];
-
-  currentReport.forEach(row => {
-
-    const staff =
-      row.staff || {};
-
-    const values = [
-
-      row.attendance_date,
-
-      staff.full_name || "",
-
-      staff.username || "",
-
-      row.status || "",
-
-      row.clock_in || "",
-
-      row.clock_out || "",
-
-      row.gps_verified ? "YES" : "NO"
-
-    ];
-
-    lines.push(
-      values
-        .map(value =>
-          `"${String(value)
-            .replaceAll('"','""')}"`
-        )
-        .join(",")
-    );
-
-  });
-
-  const blob =
-    new Blob(
-      [lines.join("\n")],
-      {
-        type:"text/csv;charset=utf-8;"
-      }
-    );
-
-  const url =
-    URL.createObjectURL(blob);
-
-  const a =
-    document.createElement("a");
-
-  a.href = url;
-
-  a.download =
-    "SCAGSS-attendance-report.csv";
-
-  a.click();
-
-  URL.revokeObjectURL(url);
-
-}
-
-
-/* =====================================================
-   MESSAGE
-===================================================== */
-
-function showMessage(id,text,type){
-
-  const element =
-    document.getElementById(id);
-
-  element.textContent =
-    text;
-
-  element.className =
-    `message show ${type}`;
-
-  setTimeout(() => {
-
-    element.classList.remove("show");
-
-  },5000);
-
-}
-
 
 /* =====================================================
    LOGOUT
@@ -2257,94 +2591,155 @@ function showMessage(id,text,type){
 async function logout(){
 
   try{
-    await api(
-      "/api/auth/logout",
-      {method:"POST"}
-    );
-  }catch{}
+    await api("/api/auth/logout",{
+      method:"POST"
+    });
+  }catch(error){}
 
   window.location.href = "/";
+
 }
 
-
 /* =====================================================
-   AUTH CHECK
+   MODALS
 ===================================================== */
 
-async function checkAdmin(){
+function closeModal(id){
 
-  try{
+  document.getElementById(id)
+    .classList.remove("show");
 
-    const data =
-      await api("/api/me");
+}
 
-    if(data.user?.role !== "admin"){
+document.querySelectorAll(".modal")
+.forEach(modal=>{
 
-      window.location.href = "/";
-      return false;
+  modal.addEventListener("click",function(event){
 
+    if(event.target === modal){
+      modal.classList.remove("show");
     }
 
-    return true;
+  });
 
-  }catch{
+});
 
-    window.location.href = "/";
-    return false;
+/* =====================================================
+   HELPERS
+===================================================== */
 
+function formatDateTime(value){
+
+  if(!value) return "—";
+
+  const d = new Date(value);
+
+  if(isNaN(d.getTime())){
+    return "—";
   }
 
-}
-
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
-
-async function initialize(){
-
-  const allowed =
-    await checkAdmin();
-
-  if(!allowed) return;
-
-  await Promise.all([
-    loadSummary(),
-    loadToday(),
-    loadGPS(),
-    loadStaff(),
-    loadGPSSettings()
-  ]);
+  return d.toLocaleString("en-KE",{
+    dateStyle:"short",
+    timeStyle:"short"
+  });
 
 }
 
+function formatDate(value){
 
-/* =====================================================
-   LIVE REFRESH
-===================================================== */
+  if(!value) return "—";
 
-setInterval(() => {
+  const d = new Date(value);
 
-  loadSummary();
-  loadToday();
-  loadGPS();
+  if(isNaN(d.getTime())){
+    return String(value);
+  }
 
-},5000);
+  return d.toLocaleDateString("en-KE");
 
-setInterval(() => {
+}
 
-  loadStaff();
+function formatDistance(value){
 
-},30000);
+  if(value === null ||
+     value === undefined ||
+     value === ""){
+    return "—";
+  }
 
+  const n = Number(value);
+
+  if(isNaN(n)){
+    return "—";
+  }
+
+  return Math.round(n) + " m";
+
+}
+
+function formatNumber(value){
+
+  if(value === null ||
+     value === undefined ||
+     value === ""){
+    return "—";
+  }
+
+  const n = Number(value);
+
+  if(isNaN(n)){
+    return "—";
+  }
+
+  return n.toFixed(6);
+
+}
+
+function getInitials(name){
+
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0,2)
+    .map(x=>x[0])
+    .join("")
+    .toUpperCase();
+
+}
+
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
 
 /* =====================================================
    START
 ===================================================== */
 
-initialize();
+loadMe();
+loadSummary();
+loadStaff();
+loadLiveAttendance();
 
-</script>
+setInterval(()=>{
+  loadSummary();
+  loadLiveAttendance();
+},10000);
 
-</body>
+setInterval(()=>{
+  if(
+    document.getElementById("gps")
+      .classList.contains("active")
+  ){
+    loadGPS();
+  }
+},10000);
+
+</script></body>
 </html>
