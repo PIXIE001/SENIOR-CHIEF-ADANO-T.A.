@@ -1,571 +1,564 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>S.C.A.G.S.S Staff Portal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<title>S.C.A.G.S.S Staff Portal</title>
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #eaf6ff, #ffffff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+<meta name="theme-color" content="#0b5ed7">
 
-    .container {
-      width: 100%;
-      max-width: 460px;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 15px 40px rgba(0,0,0,.15);
-      overflow: hidden;
-    }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-    .header {
-      background: linear-gradient(135deg, #0878c9, #004b87);
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(135deg,#eaf4ff,#ffffff);
+  color:#17324d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
 
-    .logo {
-      width: 75px;
-      height: 75px;
-      margin: auto;
-      border-radius: 50%;
-      background: white;
-      color: #0878c9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 25px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
+.container{
+  width:100%;
+  max-width:460px;
+}
 
-    .header h1 {
-      font-size: 22px;
-      margin-bottom: 6px;
-    }
+.card{
+  background:#fff;
+  border-radius:22px;
+  padding:28px;
+  box-shadow:0 18px 50px rgba(0,0,0,.12);
+  border:1px solid #dcecff;
+}
 
-    .header p {
-      font-size: 13px;
-      opacity: .9;
-    }
+.logo{
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  margin:0 auto 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#0b5ed7;
+  color:white;
+  font-weight:900;
+  font-size:23px;
+  box-shadow:0 10px 25px rgba(11,94,215,.3);
+}
 
-    .content {
-      padding: 25px;
-    }
+h1{
+  text-align:center;
+  margin:0;
+  font-size:25px;
+  color:#084b9b;
+}
 
-    .tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 25px;
-    }
+.subtitle{
+  text-align:center;
+  color:#6a7f95;
+  margin:8px 0 24px;
+  font-size:14px;
+}
 
-    .tab {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #edf5fb;
-      color: #17679b;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  background:#eef6ff;
+  padding:6px;
+  border-radius:12px;
+  margin-bottom:22px;
+}
 
-    .tab.active {
-      background: #0878c9;
-      color: white;
-    }
+.tab{
+  border:0;
+  padding:12px;
+  border-radius:9px;
+  background:transparent;
+  color:#50708f;
+  font-weight:700;
+  cursor:pointer;
+}
 
-    .form {
-      display: none;
-    }
+.tab.active{
+  background:#0b5ed7;
+  color:#fff;
+}
 
-    .form.active {
-      display: block;
-    }
+.form{
+  display:none;
+}
 
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 7px;
-    }
+.form.active{
+  display:block;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #ccd9e2;
-      border-radius: 10px;
-      outline: none;
-      margin-bottom: 17px;
-      font-size: 15px;
-    }
+label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin:14px 0 7px;
+  color:#36546f;
+}
 
-    input:focus {
-      border-color: #0878c9;
-      box-shadow: 0 0 0 3px rgba(8,120,201,.1);
-    }
+input{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid #cbdced;
+  border-radius:10px;
+  outline:none;
+  font-size:15px;
+}
 
-    .btn {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      background: #0878c9;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+input:focus{
+  border-color:#0b5ed7;
+  box-shadow:0 0 0 3px rgba(11,94,215,.1);
+}
 
-    .btn:disabled {
-      opacity: .6;
-    }
+button.primary{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:0;
+  border-radius:11px;
+  background:#0b5ed7;
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
 
-    .message {
-      display: none;
-      padding: 13px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-      font-size: 14px;
-      line-height: 1.4;
-    }
+button.primary:disabled{
+  opacity:.6;
+}
 
-    .message.show {
-      display: block;
-    }
+.message{
+  display:none;
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.5;
+}
 
-    .message.error {
-      background: #ffe9e9;
-      color: #a00000;
-      border: 1px solid #ffbcbc;
-    }
+.message.show{
+  display:block;
+}
 
-    .message.success {
-      background: #e9fff1;
-      color: #087238;
-      border: 1px solid #a9e9bd;
-    }
+.message.success{
+  background:#e9f9ef;
+  color:#176b39;
+  border:1px solid #bde8ca;
+}
 
-    .message.info {
-      background: #eaf5ff;
-      color: #07588f;
-      border: 1px solid #acd5f2;
-    }
+.message.error{
+  background:#fff0f0;
+  color:#9a2525;
+  border:1px solid #f0c3c3;
+}
 
-    .footer {
-      text-align: center;
-      padding: 15px;
-      color: #777;
-      font-size: 12px;
-      border-top: 1px solid #eee;
-    }
-
-    .small {
-      text-align: center;
-      color: #777;
-      font-size: 12px;
-      margin-top: 15px;
-    }
-  </style>
+.footer{
+  text-align:center;
+  margin-top:20px;
+  font-size:12px;
+  color:#8193a5;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <div class="header">
-    <div class="logo">SAG</div>
-    <h1>S.C.A.G.S.S STAFF PORTAL</h1>
-    <p>Senior Chief Adano Girls Senior School</p>
-  </div>
+  <div class="card">
 
-  <div class="content">
+    <div class="logo">SAG</div>
+
+    <h1>S.C.A.G.S.S</h1>
+
+    <div class="subtitle">
+      Staff Attendance Portal
+    </div>
 
     <div class="tabs">
-      <button class="tab active" id="loginTab" type="button">
+
+      <button
+        class="tab active"
+        id="loginTab"
+        onclick="showForm('login')">
         STAFF LOGIN
       </button>
 
-      <button class="tab" id="registerTab" type="button">
+      <button
+        class="tab"
+        id="registerTab"
+        onclick="showForm('register')">
         REGISTER
       </button>
+
     </div>
 
-    <div id="message" class="message"></div>
-
     <!-- LOGIN -->
-    <form id="loginForm" class="form active">
+
+    <form
+      id="loginForm"
+      class="form active"
+      onsubmit="login(event)">
 
       <label>Username or Email</label>
+
       <input
         id="login"
         type="text"
         placeholder="Enter username or email"
         autocomplete="username"
-        required
-      >
+        required>
 
       <label>Password</label>
+
       <input
         id="password"
         type="password"
         placeholder="Enter password"
         autocomplete="current-password"
-        required
-      >
+        required>
 
-      <button id="loginBtn" class="btn" type="submit">
-        SIGN IN
+      <button
+        class="primary"
+        id="loginButton"
+        type="submit">
+        LOGIN
       </button>
-
-      <div class="small">
-        Teachers must be approved by the administrator before login.
-      </div>
 
     </form>
 
+    <!-- REGISTER -->
 
-    <!-- REGISTRATION -->
-    <form id="registerForm" class="form">
+    <form
+      id="registerForm"
+      class="form"
+      onsubmit="registerStaff(event)">
 
       <label>Full Name</label>
-      <input
-        id="fullName"
-        type="text"
-        placeholder="Enter your full name"
-        required
-      >
 
-      <label>Email Address</label>
+      <input
+        id="full_name"
+        type="text"
+        placeholder="Enter full name"
+        required>
+
+      <label>Email</label>
+
       <input
         id="email"
         type="email"
-        placeholder="Enter your actual email"
-        required
-      >
+        placeholder="Enter email"
+        required>
 
       <label>Phone Number</label>
+
       <input
         id="phone"
         type="tel"
-        placeholder="Enter your phone number"
-        required
-      >
+        placeholder="Enter phone number"
+        required>
 
       <label>Password</label>
+
       <input
         id="regPassword"
         type="password"
-        placeholder="Create a password"
+        placeholder="Create password"
         minlength="6"
-        required
-      >
+        required>
 
-      <label>Confirm Password</label>
-      <input
-        id="confirmPassword"
-        type="password"
-        placeholder="Confirm password"
-        minlength="6"
-        required
-      >
-
-      <button id="registerBtn" class="btn" type="submit">
-        REGISTER
+      <button
+        class="primary"
+        id="registerButton"
+        type="submit">
+        CREATE STAFF ACCOUNT
       </button>
-
-      <div class="small">
-        Your registration will be sent to the administrator for approval.
-      </div>
 
     </form>
 
-  </div>
+    <div
+      id="message"
+      class="message">
+    </div>
 
-  <div class="footer">
-    S.C.A.G.S.S Staff Attendance Management System
+    <div class="footer">
+      S.C.A.G.S.S Staff Attendance Portal
+      <br>
+      GPS-verified staff attendance
+    </div>
+
   </div>
 
 </div>
 
-
 <script>
 
-  const loginTab = document.getElementById("loginTab");
-  const registerTab = document.getElementById("registerTab");
+function showForm(type){
 
-  const loginForm = document.getElementById("loginForm");
-  const registerForm = document.getElementById("registerForm");
+  const loginForm =
+    document.getElementById("loginForm");
 
-  const message = document.getElementById("message");
+  const registerForm =
+    document.getElementById("registerForm");
 
-  function showMessage(text, type = "info") {
-    message.textContent = text;
-    message.className = "message show " + type;
-  }
+  const loginTab =
+    document.getElementById("loginTab");
 
-  function clearMessage() {
-    message.textContent = "";
-    message.className = "message";
-  }
+  const registerTab =
+    document.getElementById("registerTab");
 
-  loginTab.addEventListener("click", function () {
-    clearMessage();
+  if(type === "login"){
+
+    loginForm.classList.add("active");
+    registerForm.classList.remove("active");
 
     loginTab.classList.add("active");
     registerTab.classList.remove("active");
 
-    loginForm.classList.add("active");
-    registerForm.classList.remove("active");
-  });
+  }else{
 
-
-  registerTab.addEventListener("click", function () {
-    clearMessage();
+    registerForm.classList.add("active");
+    loginForm.classList.remove("active");
 
     registerTab.classList.add("active");
     loginTab.classList.remove("active");
 
-    registerForm.classList.add("active");
-    loginForm.classList.remove("active");
-  });
+  }
 
+  clearMessage();
+}
 
-  // LOGIN
-  loginForm.addEventListener("submit", async function (event) {
+function showMessage(
+  text,
+  type="error"
+){
 
-    event.preventDefault();
+  const box =
+    document.getElementById("message");
 
-    const loginBtn = document.getElementById("loginBtn");
+  box.textContent = text;
 
-    const login = document.getElementById("login").value.trim();
-    const password = document.getElementById("password").value;
+  box.className =
+    `message show ${type}`;
 
-    if (!login || !password) {
-      showMessage("Please enter your username and password.", "error");
-      return;
-    }
+}
 
-    loginBtn.disabled = true;
-    loginBtn.textContent = "SIGNING IN...";
+function clearMessage(){
 
-    showMessage("Connecting to the S.C.A.G.S.S server...", "info");
+  const box =
+    document.getElementById("message");
 
-    try {
+  box.className =
+    "message";
 
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          login: login,
-          password: password
-        })
-      });
+  box.textContent = "";
 
-      const text = await response.text();
+}
 
-      let data;
+async function login(event){
 
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error(
-          "The server returned an unexpected response. HTTP " +
-          response.status
-        );
-      }
+  event.preventDefault();
 
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-          data.error ||
-          "Login failed. HTTP " + response.status
-        );
-      }
+  clearMessage();
 
-      if (!data.success) {
-        throw new Error(
-          data.message ||
-          "Login was not successful."
-        );
-      }
+  const button =
+    document.getElementById("loginButton");
 
-      showMessage("Login successful. Opening your dashboard...", "success");
+  button.disabled = true;
+  button.textContent = "LOGGING IN...";
 
-      const role = String(
-        data.user && data.user.role
-          ? data.user.role
-          : ""
-      ).trim().toLowerCase();
+  try{
 
-      setTimeout(function () {
+    const response =
+      await fetch(
+        "/api/auth/login",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          credentials:"include",
+          body:JSON.stringify({
+            login:
+              document
+                .getElementById("login")
+                .value
+                .trim(),
 
-        if (role === "admin") {
-          window.location.href = "/admin.html";
-        } else {
-          window.location.href = "/staff.html";
+            password:
+              document
+                .getElementById("password")
+                .value
+          })
         }
-
-      }, 500);
-
-    } catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        error.message ||
-        "Unable to connect to the server.",
-        "error"
       );
 
-      loginBtn.disabled = false;
-      loginBtn.textContent = "SIGN IN";
-    }
+    const data =
+      await response.json();
 
-  });
-
-
-  // TEACHER REGISTRATION
-  registerForm.addEventListener("submit", async function (event) {
-
-    event.preventDefault();
-
-    const registerBtn = document.getElementById("registerBtn");
-
-    const full_name =
-      document.getElementById("fullName").value.trim();
-
-    const email =
-      document.getElementById("email").value.trim();
-
-    const phone =
-      document.getElementById("phone").value.trim();
-
-    const password =
-      document.getElementById("regPassword").value;
-
-    const confirmPassword =
-      document.getElementById("confirmPassword").value;
-
-
-    if (password !== confirmPassword) {
-      showMessage("Passwords do not match.", "error");
-      return;
-    }
-
-    if (password.length < 6) {
-      showMessage(
-        "Password must contain at least 6 characters.",
-        "error"
-      );
-      return;
-    }
-
-
-    registerBtn.disabled = true;
-    registerBtn.textContent = "REGISTERING...";
-
-    showMessage(
-      "Submitting your registration...",
-      "info"
-    );
-
-
-    try {
-
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          full_name: full_name,
-          email: email,
-          phone: phone,
-          password: password
-        })
-      });
-
-
-      const text = await response.text();
-
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        throw new Error(
-          "The server returned an unexpected response. HTTP " +
-          response.status
-        );
-      }
-
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-          data.error ||
-          "Registration failed."
-        );
-      }
-
+    if(!response.ok){
 
       showMessage(
         data.message ||
-        "Registration successful. Your account is waiting for administrator approval.",
-        "success"
+        "Login failed."
       );
 
-
-      registerForm.reset();
-
-
-      setTimeout(function () {
-
-        loginTab.click();
-
-      }, 2500);
-
-
-    } catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        error.message ||
-        "Unable to connect to the server.",
-        "error"
-      );
-
-    } finally {
-
-      registerBtn.disabled = false;
-      registerBtn.textContent = "REGISTER";
-
+      return;
     }
 
-  });
+    showMessage(
+      "Login successful. Opening portal...",
+      "success"
+    );
+
+    setTimeout(() => {
+
+      if(
+        String(
+          data.user?.role || ""
+        ).toLowerCase()
+        === "admin"
+      ){
+
+        window.location.href =
+          "/admin.html";
+
+      }else{
+
+        window.location.href =
+          "/staff.html";
+
+      }
+
+    },500);
+
+  }catch(error){
+
+    showMessage(
+      "Unable to connect to the server."
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent = "LOGIN";
+
+  }
+}
+
+async function registerStaff(event){
+
+  event.preventDefault();
+
+  clearMessage();
+
+  const button =
+    document.getElementById(
+      "registerButton"
+    );
+
+  button.disabled = true;
+  button.textContent =
+    "CREATING ACCOUNT...";
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/auth/register",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          credentials:"include",
+          body:JSON.stringify({
+
+            full_name:
+              document
+                .getElementById(
+                  "full_name"
+                )
+                .value
+                .trim(),
+
+            email:
+              document
+                .getElementById(
+                  "email"
+                )
+                .value
+                .trim(),
+
+            phone:
+              document
+                .getElementById(
+                  "phone"
+                )
+                .value
+                .trim(),
+
+            password:
+              document
+                .getElementById(
+                  "regPassword"
+                )
+                .value
+
+          })
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if(!response.ok){
+
+      showMessage(
+        data.message ||
+        "Registration failed."
+      );
+
+      return;
+    }
+
+    showMessage(
+      `Registration successful. Your username is ${data.username}. Please wait for administrator approval.`,
+      "success"
+    );
+
+    document
+      .getElementById("registerForm")
+      .reset();
+
+  }catch(error){
+
+    showMessage(
+      "Unable to connect to the server."
+    );
+
+  }finally{
+
+    button.disabled = false;
+    button.textContent =
+      "CREATE STAFF ACCOUNT";
+
+  }
+}
 
 </script>
 
