@@ -1,1389 +1,1103 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>S.C.A.G.S.S Staff Portal</title><style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
-  <title>S.C.A.G.S.S Staff Portal</title>
+:root{
+  --blue:#0b4f9c;
+  --blue-dark:#06356d;
+  --blue-light:#eaf4ff;
+  --white:#ffffff;
+  --bg:#f4f7fb;
+  --text:#172033;
+  --muted:#718096;
+  --border:#dbe4ef;
+  --green:#15803d;
+  --green-bg:#eaf8ef;
+  --red:#c62828;
+  --red-bg:#fff0f0;
+  --orange:#b77900;
+  --orange-bg:#fff7df;
+}
 
-  <meta
-    name="description"
-    content="Senior Chief Adano Girls Senior School Staff Portal"
+body{
+  min-height:100vh;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+    linear-gradient(135deg,#06356d 0%,#0b4f9c 45%,#eaf4ff 100%);
+  color:var(--text);
+}
+
+.page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+}
+
+.container{
+  width:100%;
+  max-width:1050px;
+  min-height:650px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:white;
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 25px 70px rgba(0,0,0,.22);
+}
+
+/* LEFT */
+
+.brand-panel{
+  background:linear-gradient(160deg,#06356d,#0b4f9c);
+  color:white;
+  padding:55px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.logo{
+  width:80px;
+  height:80px;
+  border-radius:20px;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  font-weight:900;
+  margin-bottom:25px;
+}
+
+.brand-panel h1{
+  font-size:34px;
+  line-height:1.1;
+  margin-bottom:15px;
+}
+
+.brand-panel h2{
+  font-size:18px;
+  font-weight:600;
+  opacity:.9;
+  margin-bottom:25px;
+}
+
+.brand-panel p{
+  font-size:14px;
+  line-height:1.8;
+  opacity:.8;
+  max-width:420px;
+}
+
+.features{
+  margin-top:30px;
+  display:grid;
+  gap:12px;
+}
+
+.feature{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:13px;
+  color:#eaf4ff;
+}
+
+.feature-mark{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:rgba(255,255,255,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:900;
+}
+
+/* RIGHT */
+
+.form-panel{
+  padding:45px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.form-header{
+  margin-bottom:25px;
+}
+
+.form-header h2{
+  font-size:26px;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+.form-header p{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:#f1f5f9;
+  padding:5px;
+  border-radius:10px;
+  margin-bottom:25px;
+}
+
+.tab{
+  border:0;
+  background:transparent;
+  padding:11px;
+  border-radius:7px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:800;
+  color:#64748b;
+}
+
+.tab.active{
+  background:white;
+  color:var(--blue);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.form{
+  display:none;
+}
+
+.form.active{
+  display:block;
+}
+
+.field{
+  margin-bottom:15px;
+}
+
+.field label{
+  display:block;
+  font-size:11px;
+  font-weight:850;
+  margin-bottom:7px;
+  color:#334155;
+}
+
+.field input{
+  width:100%;
+  height:45px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:0 12px;
+  font-size:13px;
+  outline:none;
+  transition:.2s;
+}
+
+.field input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(11,79,156,.08);
+}
+
+.btn{
+  width:100%;
+  height:46px;
+  border:0;
+  border-radius:9px;
+  background:var(--blue);
+  color:white;
+  font-size:13px;
+  font-weight:850;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.btn:hover{
+  background:var(--blue-dark);
+}
+
+.btn:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}
+
+.message{
+  display:none;
+  padding:12px 14px;
+  border-radius:9px;
+  font-size:12px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.success{
+  color:var(--green);
+  background:var(--green-bg);
+}
+
+.message.error{
+  color:var(--red);
+  background:var(--red-bg);
+}
+
+.message.warning{
+  color:var(--orange);
+  background:var(--orange-bg);
+}
+
+.small-note{
+  margin-top:15px;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+
+.footer{
+  text-align:center;
+  margin-top:25px;
+  color:#94a3b8;
+  font-size:10px;
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+  .page{
+    padding:12px;
+  }
+
+  .container{
+    grid-template-columns:1fr;
+    max-width:520px;
+    min-height:auto;
+    border-radius:18px;
+  }
+
+  .brand-panel{
+    padding:30px;
+  }
+
+  .brand-panel h1{
+    font-size:27px;
+  }
+
+  .brand-panel h2{
+    font-size:16px;
+  }
+
+  .features{
+    display:none;
+  }
+
+  .logo{
+    width:60px;
+    height:60px;
+    font-size:19px;
+    margin-bottom:18px;
+  }
+
+  .form-panel{
+    padding:30px 25px;
+  }
+}
+</style></head><body><div class="page">  <div class="container"><!-- BRAND PANEL -->
+
+<section class="brand-panel">
+
+  <div class="logo">
+    SAG
+  </div>
+
+  <h1>
+    S.C.A.G.S.S
+  </h1>
+
+  <h2>
+    Staff Attendance Portal
+  </h2>
+
+  <p>
+    Secure staff management and attendance
+    system for Senior Chief Adano Girls
+    Senior School.
+  </p>
+
+  <div class="features">
+
+    <div class="feature">
+      <div class="feature-mark">01</div>
+      Teacher Registration
+    </div>
+
+    <div class="feature">
+      <div class="feature-mark">02</div>
+      Administrator Approval
+    </div>
+
+    <div class="feature">
+      <div class="feature-mark">03</div>
+      GPS Attendance Verification
+    </div>
+
+    <div class="feature">
+      <div class="feature-mark">04</div>
+      Attendance Reports
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FORM PANEL -->
+
+<section class="form-panel">
+
+  <div class="form-header">
+
+    <h2>
+      Staff Portal
+    </h2>
+
+    <p>
+      Sign in or register as a teacher.
+    </p>
+
+  </div>
+
+
+  <div class="tabs">
+
+    <button
+      class="tab active"
+      id="loginTab"
+      type="button"
+      onclick="showForm('login')"
+    >
+      LOGIN
+    </button>
+
+    <button
+      class="tab"
+      id="registerTab"
+      type="button"
+      onclick="showForm('register')"
+    >
+      TEACHER REGISTRATION
+    </button>
+
+  </div>
+
+
+  <!-- MESSAGE -->
+
+  <div
+    id="message"
+    class="message"
+  ></div>
+
+
+  <!-- LOGIN -->
+
+  <form
+    id="loginForm"
+    class="form active"
+    onsubmit="login(event)"
   >
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --blue: #0b4f9c;
-      --blue-dark: #06356d;
-      --blue-light: #eaf4ff;
-      --white: #ffffff;
-      --text: #142033;
-      --muted: #6b778c;
-      --border: #dce5f0;
-      --success: #16834b;
-      --danger: #c62828;
-      --warning: #b77900;
-      --shadow: 0 20px 50px rgba(4, 42, 85, 0.15);
-    }
-
-    body {
-      min-height: 100vh;
-      font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      background:
-        linear-gradient(
-          135deg,
-          #eef7ff 0%,
-          #ffffff 50%,
-          #e9f4ff 100%
-        );
-      color: var(--text);
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .page {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-    }
-
-    /* =====================================================
-       LEFT PANEL
-    ===================================================== */
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(
-          145deg,
-          #06356d 0%,
-          #0b4f9c 55%,
-          #1676c8 100%
-        );
-      color: white;
-      padding: 55px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .hero::before,
-    .hero::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.07);
-      pointer-events: none;
-    }
-
-    .hero::before {
-      width: 420px;
-      height: 420px;
-      right: -180px;
-      top: -150px;
-    }
-
-    .hero::after {
-      width: 500px;
-      height: 500px;
-      left: -280px;
-      bottom: -280px;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 650px;
-    }
-
-    .school-mark {
-      width: 76px;
-      height: 76px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      margin-bottom: 35px;
-      backdrop-filter: blur(8px);
-    }
-
-    .hero h1 {
-      font-size: clamp(36px, 5vw, 66px);
-      line-height: 1.02;
-      letter-spacing: -2px;
-      margin-bottom: 22px;
-    }
-
-    .hero h1 span {
-      display: block;
-      color: #dceeff;
-    }
-
-    .hero-description {
-      max-width: 560px;
-      color: #e6f2ff;
-      font-size: 18px;
-      line-height: 1.7;
-    }
-
-    .feature-grid {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-top: 45px;
-    }
-
-    .feature {
-      padding: 18px;
-      border-radius: 15px;
-      background: rgba(255,255,255,0.09);
-      border: 1px solid rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-    }
-
-    .feature strong {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 7px;
-    }
-
-    .feature span {
-      display: block;
-      color: #d7eaff;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .hero-footer {
-      position: relative;
-      z-index: 2;
-      color: #cfe4fb;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    /* =====================================================
-       RIGHT PANEL
-    ===================================================== */
-
-    .auth-area {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-      background: rgba(255,255,255,0.72);
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 510px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .auth-header {
-      padding: 32px 34px 22px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .auth-header h2 {
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .auth-header p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    /* =====================================================
-       TABS
-    ===================================================== */
-
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      margin: 24px 34px 0;
-      background: #f1f6fc;
-      padding: 5px;
-      border-radius: 12px;
-    }
-
-    .tab {
-      border: 0;
-      background: transparent;
-      padding: 12px;
-      border-radius: 9px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .tab.active {
-      background: white;
-      color: var(--blue);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-
-    /* =====================================================
-       FORMS
-    ===================================================== */
-
-    .form {
-      padding: 28px 34px 34px;
-    }
-
-    .form.hidden {
-      display: none;
-    }
-
-    .field {
-      margin-bottom: 17px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 13px;
-      font-weight: 750;
-      margin-bottom: 8px;
-    }
-
-    .field input {
-      width: 100%;
-      height: 48px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 0 14px;
-      outline: none;
-      color: var(--text);
-      background: #fbfdff;
-      transition: 0.2s;
-    }
-
-    .field input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(11,79,156,0.10);
-      background: white;
-    }
-
-    .hint {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    .password-wrap {
-      position: relative;
-    }
-
-    .password-wrap input {
-      padding-right: 80px;
-    }
-
-    .show-password {
-      position: absolute;
-      right: 9px;
-      top: 7px;
-      height: 34px;
-      border: 0;
-      background: #edf5ff;
-      color: var(--blue);
-      border-radius: 8px;
-      padding: 0 10px;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .submit-btn {
-      width: 100%;
-      height: 51px;
-      border: 0;
-      border-radius: 11px;
-      background: linear-gradient(
-        135deg,
-        var(--blue-dark),
-        var(--blue)
-      );
-      color: white;
-      font-weight: 800;
-      font-size: 15px;
-      box-shadow: 0 8px 20px rgba(11,79,156,0.20);
-      transition: 0.2s;
-      margin-top: 7px;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 25px rgba(11,79,156,0.26);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.65;
-      cursor: wait;
-      transform: none;
-    }
-
-    /* =====================================================
-       MESSAGES
-    ===================================================== */
-
-    .message {
-      display: none;
-      margin-bottom: 18px;
-      padding: 13px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .message.show {
-      display: block;
-    }
-
-    .message.error {
-      background: #fff1f1;
-      border: 1px solid #ffd1d1;
-      color: var(--danger);
-    }
-
-    .message.success {
-      background: #eefaf3;
-      border: 1px solid #ccebd9;
-      color: var(--success);
-    }
-
-    .message.warning {
-      background: #fff8e8;
-      border: 1px solid #f2dda5;
-      color: var(--warning);
-    }
-
-    /* =====================================================
-       REGISTRATION NOTICE
-    ===================================================== */
-
-    .registration-notice {
-      display: flex;
-      gap: 11px;
-      padding: 13px;
-      background: var(--blue-light);
-      border: 1px solid #d3e8ff;
-      border-radius: 11px;
-      margin-bottom: 20px;
-      font-size: 12px;
-      line-height: 1.5;
-      color: #315170;
-    }
-
-    .notice-icon {
-      width: 25px;
-      height: 25px;
-      flex-shrink: 0;
-      border-radius: 7px;
-      background: var(--blue);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    /* =====================================================
-       LOGIN INFO
-    ===================================================== */
-
-    .login-info {
-      margin-top: 20px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.6;
-      text-align: center;
-    }
-
-    /* =====================================================
-       LOADING
-    ===================================================== */
-
-    .loading {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .spinner {
-      width: 15px;
-      height: 15px;
-      border: 2px solid rgba(255,255,255,0.35);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
-
-    @media (max-width: 950px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        min-height: 420px;
-        padding: 40px 30px;
-      }
-
-      .hero h1 {
-        font-size: 42px;
-      }
-
-      .feature-grid {
-        margin-top: 30px;
-      }
-
-      .auth-area {
-        padding: 30px 20px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .hero {
-        min-height: 370px;
-        padding: 30px 22px;
-      }
-
-      .school-mark {
-        width: 62px;
-        height: 62px;
-        margin-bottom: 25px;
-        font-size: 20px;
-      }
-
-      .hero h1 {
-        font-size: 35px;
-      }
-
-      .hero-description {
-        font-size: 15px;
-      }
-
-      .feature-grid {
-        grid-template-columns: 1fr;
-        gap: 9px;
-      }
-
-      .feature {
-        padding: 12px;
-      }
-
-      .hero-footer {
-        margin-top: 25px;
-      }
-
-      .auth-area {
-        padding: 15px;
-      }
-
-      .auth-card {
-        border-radius: 18px;
-      }
-
-      .auth-header {
-        padding: 25px 22px 18px;
-      }
-
-      .tabs {
-        margin-left: 22px;
-        margin-right: 22px;
-      }
-
-      .form {
-        padding: 24px 22px 28px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="page">
-
-  <!-- =====================================================
-       LEFT / SCHOOL BRANDING
-  ====================================================== -->
-
-  <section class="hero">
-
-    <div class="hero-content">
-
-      <div class="school-mark">
-        SAG
-      </div>
-
-      <h1>
-        S.C.A.G.S.S
-        <span>Staff Portal</span>
-      </h1>
-
-      <p class="hero-description">
-        Secure digital staff management and attendance platform
-        for Senior Chief Adano Girls Senior School.
-      </p>
-
-      <div class="feature-grid">
-
-        <div class="feature">
-          <strong>GPS Attendance</strong>
-          <span>
-            Verified clock-in and clock-out using the school
-            attendance zone.
-          </span>
-        </div>
-
-        <div class="feature">
-          <strong>Staff Profiles</strong>
-          <span>
-            Secure staff information, contact details and
-            attendance records.
-          </span>
-        </div>
-
-        <div class="feature">
-          <strong>Administration</strong>
-          <span>
-            Centralized approval, monitoring and reporting for
-            authorized administrators.
-          </span>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="hero-footer">
-      Senior Chief Adano Girls Senior School<br>
-      Staff Management & Attendance System
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       RIGHT / AUTHENTICATION
-  ====================================================== -->
-
-  <main class="auth-area">
-
-    <div class="auth-card">
-
-      <div class="auth-header">
-        <h2 id="authTitle">Staff Login</h2>
-
-        <p id="authSubtitle">
-          Sign in using your registered name, username or email.
-        </p>
-      </div>
-
-
-      <!-- TABS -->
-
-      <div class="tabs">
-
-        <button
-          type="button"
-          class="tab active"
-          id="loginTab"
-          onclick="showLogin()"
-        >
-          Login
-        </button>
-
-        <button
-          type="button"
-          class="tab"
-          id="registerTab"
-          onclick="showRegister()"
-        >
-          Teacher Registration
-        </button>
-
-      </div>
-
-
-      <!-- =================================================
-           LOGIN FORM
-      ================================================== -->
-
-      <form
-        id="loginForm"
-        class="form"
-        onsubmit="login(event)"
+    <div class="field">
+
+      <label>
+        USERNAME OR EMAIL
+      </label>
+
+      <input
+        id="login"
+        type="text"
+        placeholder="Enter username or email"
+        autocomplete="username"
+        required
       >
 
-        <div
-          id="loginMessage"
-          class="message"
-        ></div>
-
-        <div class="field">
-
-          <label for="login">
-            Name, Username or Email
-          </label>
-
-          <input
-            id="login"
-            name="login"
-            type="text"
-            autocomplete="username"
-            placeholder="e.g. Admin.001 or teacher@email.com"
-            required
-          >
-
-        </div>
+    </div>
 
 
-        <div class="field">
+    <div class="field">
 
-          <label for="loginPassword">
-            Password
-          </label>
+      <label>
+        PASSWORD
+      </label>
 
-          <div class="password-wrap">
-
-            <input
-              id="loginPassword"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              placeholder="Enter your password"
-              required
-            >
-
-            <button
-              type="button"
-              class="show-password"
-              onclick="togglePassword('loginPassword', this)"
-            >
-              SHOW
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <button
-          type="submit"
-          class="submit-btn"
-          id="loginButton"
-        >
-          Login to Portal
-        </button>
-
-
-        <div class="login-info">
-          Authorized administrators and approved teachers only.
-        </div>
-
-      </form>
-
-
-      <!-- =================================================
-           REGISTRATION FORM
-      ================================================== -->
-
-      <form
-        id="registerForm"
-        class="form hidden"
-        onsubmit="registerTeacher(event)"
+      <input
+        id="password"
+        type="password"
+        placeholder="Enter password"
+        autocomplete="current-password"
+        required
       >
-
-        <div
-          id="registerMessage"
-          class="message"
-        ></div>
-
-
-        <div class="registration-notice">
-
-          <div class="notice-icon">
-            i
-          </div>
-
-          <div>
-            After registration, your account will remain
-            <strong>pending</strong> until an administrator
-            approves it.
-          </div>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="fullName">
-            Full Name
-          </label>
-
-          <input
-            id="fullName"
-            name="full_name"
-            type="text"
-            autocomplete="name"
-            placeholder="Enter your actual full name"
-            required
-          >
-
-          <div class="hint">
-            Use your official name as it should appear in the
-            staff portal.
-          </div>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="email">
-            Email Address
-          </label>
-
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autocomplete="email"
-            placeholder="teacher@example.com"
-            required
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="phone">
-            Phone Number
-          </label>
-
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            autocomplete="tel"
-            placeholder="e.g. 0712345678"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="registerPassword">
-            Password
-          </label>
-
-          <div class="password-wrap">
-
-            <input
-              id="registerPassword"
-              name="password"
-              type="password"
-              autocomplete="new-password"
-              placeholder="Create a password"
-              minlength="6"
-              required
-            >
-
-            <button
-              type="button"
-              class="show-password"
-              onclick="togglePassword('registerPassword', this)"
-            >
-              SHOW
-            </button>
-
-          </div>
-
-          <div class="hint">
-            Minimum 6 characters.
-          </div>
-
-        </div>
-
-
-        <div class="field">
-
-          <label for="confirmPassword">
-            Confirm Password
-          </label>
-
-          <div class="password-wrap">
-
-            <input
-              id="confirmPassword"
-              name="confirm_password"
-              type="password"
-              autocomplete="new-password"
-              placeholder="Enter password again"
-              minlength="6"
-              required
-            >
-
-            <button
-              type="button"
-              class="show-password"
-              onclick="togglePassword('confirmPassword', this)"
-            >
-              SHOW
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <button
-          type="submit"
-          class="submit-btn"
-          id="registerButton"
-        >
-          Create Teacher Account
-        </button>
-
-      </form>
 
     </div>
 
-  </main>
 
-</div>
-
-
-<script>
-
-  /* =======================================================
-     HELPERS
-  ======================================================= */
-
-  const API = "/api";
+    <button
+      id="loginButton"
+      class="btn"
+      type="submit"
+    >
+      SIGN IN
+    </button>
 
 
-  function getElement(id) {
-    return document.getElementById(id);
+    <div class="small-note">
+      Teachers must be approved by the administrator
+      before they can access the portal.
+    </div>
+
+  </form>
+
+
+  <!-- REGISTRATION -->
+
+  <form
+    id="registerForm"
+    class="form"
+    onsubmit="registerTeacher(event)"
+  >
+
+    <div class="field">
+
+      <label>
+        FULL NAME
+      </label>
+
+      <input
+        id="full_name"
+        type="text"
+        placeholder="Enter your full name"
+        autocomplete="name"
+        required
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        EMAIL ADDRESS
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        placeholder="Enter your email"
+        autocomplete="email"
+        required
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        PHONE NUMBER
+      </label>
+
+      <input
+        id="phone"
+        type="tel"
+        placeholder="Enter your phone number"
+        autocomplete="tel"
+        required
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        PASSWORD
+      </label>
+
+      <input
+        id="registerPassword"
+        type="password"
+        placeholder="Create a password"
+        autocomplete="new-password"
+        minlength="6"
+        required
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        CONFIRM PASSWORD
+      </label>
+
+      <input
+        id="confirmPassword"
+        type="password"
+        placeholder="Confirm your password"
+        autocomplete="new-password"
+        minlength="6"
+        required
+      >
+
+    </div>
+
+
+    <button
+      id="registerButton"
+      class="btn"
+      type="submit"
+    >
+      REGISTER
+    </button>
+
+
+    <div class="small-note">
+      Your registration will remain pending until
+      an administrator approves your account.
+    </div>
+
+  </form>
+
+
+  <div class="footer">
+    S.C.A.G.S.S Staff Administration System
+  </div>
+
+</section>
+
+  </div></div><script>
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const API = "/api";
+
+
+/* =========================================================
+   SHOW MESSAGE
+========================================================= */
+
+function showMessage(text,type="error"){
+
+  const box =
+    document.getElementById("message");
+
+  box.textContent = text;
+
+  box.className =
+    "message show " + type;
+
+}
+
+
+/* =========================================================
+   CLEAR MESSAGE
+========================================================= */
+
+function clearMessage(){
+
+  const box =
+    document.getElementById("message");
+
+  box.className =
+    "message";
+
+  box.textContent = "";
+
+}
+
+
+/* =========================================================
+   SWITCH FORMS
+========================================================= */
+
+function showForm(type){
+
+  clearMessage();
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const registerForm =
+    document.getElementById("registerForm");
+
+  const loginTab =
+    document.getElementById("loginTab");
+
+  const registerTab =
+    document.getElementById("registerTab");
+
+
+  if(type === "login"){
+
+    loginForm.classList.add("active");
+
+    registerForm.classList.remove("active");
+
+    loginTab.classList.add("active");
+
+    registerTab.classList.remove("active");
+
+  }else{
+
+    loginForm.classList.remove("active");
+
+    registerForm.classList.add("active");
+
+    loginTab.classList.remove("active");
+
+    registerTab.classList.add("active");
+
+  }
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(event){
+
+  event.preventDefault();
+
+  clearMessage();
+
+
+  const loginValue =
+    document.getElementById("login")
+      .value
+      .trim();
+
+  const password =
+    document.getElementById("password")
+      .value;
+
+
+  if(!loginValue || !password){
+
+    showMessage(
+      "Please enter your username and password.",
+      "error"
+    );
+
+    return;
   }
 
 
-  function showMessage(elementId, message, type) {
-
-    const element = getElement(elementId);
-
-    if (!element) return;
-
-    element.className = "message show " + type;
-
-    element.textContent = message;
-  }
+  const button =
+    document.getElementById("loginButton");
 
 
-  function clearMessage(elementId) {
+  button.disabled = true;
 
-    const element = getElement(elementId);
-
-    if (!element) return;
-
-    element.className = "message";
-
-    element.textContent = "";
-  }
+  button.textContent = "SIGNING IN...";
 
 
-  /* =======================================================
-     TAB SWITCHING
-  ======================================================= */
+  try{
 
-  function showLogin() {
-
-    getElement("loginForm").classList.remove("hidden");
-    getElement("registerForm").classList.add("hidden");
-
-    getElement("loginTab").classList.add("active");
-    getElement("registerTab").classList.remove("active");
-
-    getElement("authTitle").textContent = "Staff Login";
-
-    getElement("authSubtitle").textContent =
-      "Sign in using your registered name, username or email.";
-
-    clearMessage("registerMessage");
-  }
-
-
-  function showRegister() {
-
-    getElement("loginForm").classList.add("hidden");
-    getElement("registerForm").classList.remove("hidden");
-
-    getElement("loginTab").classList.remove("active");
-    getElement("registerTab").classList.add("active");
-
-    getElement("authTitle").textContent =
-      "Teacher Registration";
-
-    getElement("authSubtitle").textContent =
-      "Create your staff account for administrator approval.";
-
-    clearMessage("loginMessage");
-  }
-
-
-  /* =======================================================
-     PASSWORD VISIBILITY
-  ======================================================= */
-
-  function togglePassword(inputId, button) {
-
-    const input = getElement(inputId);
-
-    if (input.type === "password") {
-
-      input.type = "text";
-      button.textContent = "HIDE";
-
-    } else {
-
-      input.type = "password";
-      button.textContent = "SHOW";
-
-    }
-  }
-
-
-  /* =======================================================
-     LOGIN
-  ======================================================= */
-
-  async function login(event) {
-
-    event.preventDefault();
-
-    clearMessage("loginMessage");
-
-    const button = getElement("loginButton");
-
-    const loginValue =
-      getElement("login").value.trim();
-
-    const password =
-      getElement("loginPassword").value;
-
-    if (!loginValue || !password) {
-
-      showMessage(
-        "loginMessage",
-        "Please enter your login details.",
-        "error"
-      );
-
-      return;
-    }
-
-    button.disabled = true;
-
-    button.innerHTML =
-      '<span class="loading">' +
-      '<span class="spinner"></span>' +
-      'Signing in...' +
-      '</span>';
-
-    try {
-
-      const response = await fetch(
+    const response =
+      await fetch(
         API + "/auth/login",
         {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
+          method:"POST",
+
+          credentials:"include",
+
+          headers:{
+            "Content-Type":"application/json"
           },
-          body: JSON.stringify({
-            login: loginValue,
-            password: password
+
+          body:JSON.stringify({
+            login:loginValue,
+            password:password
           })
         }
       );
 
 
-      let data;
-
-      try {
-
-        data = await response.json();
-
-      } catch {
-
-        throw new Error(
-          "The server returned an invalid response."
-        );
-
-      }
+    let data = null;
 
 
-      if (!response.ok || !data.success) {
+    try{
 
-        if (data.pending) {
+      data = await response.json();
 
-          showMessage(
-            "loginMessage",
-            "Your teacher registration is still pending administrator approval.",
-            "warning"
-          );
+    }catch(error){
 
-        } else {
-
-          showMessage(
-            "loginMessage",
-            data.message ||
-            "Invalid login details.",
-            "error"
-          );
-
-        }
-
-        return;
-      }
-
-
-      /*
-        Redirect based on role.
-      */
-
-      if (data.user.role === "admin") {
-
-        window.location.href = "/admin.html";
-
-      } else {
-
-        window.location.href = "/staff.html";
-
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        "loginMessage",
-        error.message ||
-        "Unable to connect to the server.",
-        "error"
+      throw new Error(
+        "The server returned an invalid response."
       );
 
-    } finally {
-
-      button.disabled = false;
-
-      button.textContent =
-        "Login to Portal";
-    }
-  }
-
-
-  /* =======================================================
-     TEACHER REGISTRATION
-  ======================================================= */
-
-  async function registerTeacher(event) {
-
-    event.preventDefault();
-
-    clearMessage("registerMessage");
-
-    const button =
-      getElement("registerButton");
-
-
-    const fullName =
-      getElement("fullName").value.trim();
-
-    const email =
-      getElement("email").value.trim();
-
-    const phone =
-      getElement("phone").value.trim();
-
-    const password =
-      getElement("registerPassword").value;
-
-    const confirmPassword =
-      getElement("confirmPassword").value;
-
-
-    /* -----------------------------------------------
-       VALIDATION
-    ------------------------------------------------ */
-
-    if (!fullName) {
-
-      showMessage(
-        "registerMessage",
-        "Please enter your full name.",
-        "error"
-      );
-
-      return;
     }
 
 
-    if (!email) {
+    if(!response.ok){
 
-      showMessage(
-        "registerMessage",
-        "Please enter your email address.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    if (password.length < 6) {
-
-      showMessage(
-        "registerMessage",
-        "Password must contain at least 6 characters.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    if (password !== confirmPassword) {
-
-      showMessage(
-        "registerMessage",
-        "The two passwords do not match.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    button.disabled = true;
-
-    button.innerHTML =
-      '<span class="loading">' +
-      '<span class="spinner"></span>' +
-      'Creating account...' +
-      '</span>';
-
-
-    try {
-
-      const response = await fetch(
-        API + "/auth/register",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            full_name: fullName,
-            email: email,
-            phone: phone,
-            password: password
-          })
-        }
-      );
-
-
-      let data;
-
-      try {
-
-        data = await response.json();
-
-      } catch {
-
-        throw new Error(
-          "The server returned an invalid response."
-        );
-
-      }
-
-
-      if (!response.ok || !data.success) {
+      if(data && data.pending){
 
         showMessage(
-          "registerMessage",
           data.message ||
-          "Registration failed.",
+          "Your registration is still pending administrator approval.",
+          "warning"
+        );
+
+      }else{
+
+        showMessage(
+          data.message ||
+          "Invalid login details.",
           "error"
         );
 
-        return;
       }
 
-
-      /*
-        SUCCESS
-      */
-
-      showMessage(
-        "registerMessage",
-        "Registration successful. Your account is now PENDING administrator approval. Once approved, you can return here and log in using your name or email.",
-        "success"
-      );
-
-
-      /*
-        Clear password fields.
-      */
-
-      getElement("registerPassword").value = "";
-      getElement("confirmPassword").value = "";
-
-
-      /*
-        Keep the teacher on the registration screen
-        so they can see the approval message.
-      */
-
-    } catch (error) {
-
-      console.error(error);
-
-      showMessage(
-        "registerMessage",
-        error.message ||
-        "Unable to connect to the server.",
-        "error"
-      );
-
-    } finally {
-
-      button.disabled = false;
-
-      button.textContent =
-        "Create Teacher Account";
+      return;
     }
+
+
+    if(!data.user){
+
+      throw new Error(
+        "Login succeeded but no user information was returned."
+      );
+
+    }
+
+
+    showMessage(
+      "Login successful. Opening your portal...",
+      "success"
+    );
+
+
+    setTimeout(()=>{
+
+      if(data.user.role === "admin"){
+
+        window.location.replace("/admin.html");
+
+      }else{
+
+        window.location.replace("/staff.html");
+
+      }
+
+    },500);
+
+
+  }catch(error){
+
+    console.error("LOGIN ERROR:",error);
+
+    showMessage(
+      error.message ||
+      "Unable to connect to the server.",
+      "error"
+    );
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent = "SIGN IN";
+
+  }
+
+}
+
+
+/* =========================================================
+   TEACHER REGISTRATION
+========================================================= */
+
+async function registerTeacher(event){
+
+  event.preventDefault();
+
+  clearMessage();
+
+
+  const fullName =
+    document.getElementById("full_name")
+      .value
+      .trim();
+
+  const email =
+    document.getElementById("email")
+      .value
+      .trim();
+
+  const phone =
+    document.getElementById("phone")
+      .value
+      .trim();
+
+  const password =
+    document.getElementById("registerPassword")
+      .value;
+
+  const confirmPassword =
+    document.getElementById("confirmPassword")
+      .value;
+
+
+  if(!fullName){
+
+    showMessage(
+      "Please enter your full name.",
+      "error"
+    );
+
+    return;
   }
 
 
-  /* =======================================================
-     CHECK EXISTING SESSION
-  ======================================================= */
+  if(!email){
 
-  async function checkExistingSession() {
+    showMessage(
+      "Please enter your email address.",
+      "error"
+    );
 
-    try {
+    return;
+  }
 
-      const response = await fetch(
-        API + "/me",
+
+  if(!phone){
+
+    showMessage(
+      "Please enter your phone number.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if(password.length < 6){
+
+    showMessage(
+      "Password must contain at least 6 characters.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if(password !== confirmPassword){
+
+    showMessage(
+      "The passwords do not match.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  const button =
+    document.getElementById("registerButton");
+
+
+  button.disabled = true;
+
+  button.textContent = "REGISTERING...";
+
+
+  try{
+
+    const response =
+      await fetch(
+        API + "/auth/register",
         {
-          credentials: "include"
+          method:"POST",
+
+          credentials:"include",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify({
+            full_name:fullName,
+            email:email,
+            phone:phone,
+            password:password
+          })
         }
       );
 
-      if (!response.ok) {
-        return;
-      }
 
-      const data = await response.json();
+    let data = null;
 
-      if (!data.success || !data.user) {
-        return;
-      }
 
-      /*
-        Already logged in.
-      */
+    try{
 
-      if (data.user.role === "admin") {
+      data = await response.json();
 
-        window.location.href = "/admin.html";
+    }catch(error){
 
-      } else if (
-        data.user.role === "teacher" &&
-        data.user.active === true
-      ) {
-
-        window.location.href = "/staff.html";
-
-      }
-
-    } catch (error) {
-
-      /*
-        No active session.
-        Stay on login page.
-      */
-
-      console.log("No active session.");
+      throw new Error(
+        "The server returned an invalid response."
+      );
 
     }
+
+
+    if(!response.ok){
+
+      throw new Error(
+        data.message ||
+        "Registration failed."
+      );
+
+    }
+
+
+    showMessage(
+      data.message ||
+      "Registration successful. Your account is pending administrator approval.",
+      "success"
+    );
+
+
+    document.getElementById("registerForm")
+      .reset();
+
+
+    setTimeout(()=>{
+
+      showForm("login");
+
+    },1800);
+
+
+  }catch(error){
+
+    console.error(
+      "REGISTRATION ERROR:",
+      error
+    );
+
+
+    showMessage(
+      error.message ||
+      "Unable to complete registration.",
+      "error"
+    );
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent = "REGISTER";
+
   }
 
+}
 
-  /* =======================================================
-     START
-  ======================================================= */
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+/* =========================================================
+   CHECK EXISTING SESSION
+========================================================= */
 
-      showLogin();
+async function checkSession(){
 
-      checkExistingSession();
+  try{
+
+    const response =
+      await fetch(
+        API + "/me",
+        {
+          method:"GET",
+          credentials:"include",
+          headers:{
+            "Content-Type":"application/json"
+          }
+        }
+      );
+
+
+    if(!response.ok){
+      return;
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if(!data.user){
+      return;
+    }
+
+
+    if(data.user.role === "admin"){
+
+      window.location.replace(
+        "/admin.html"
+      );
+
+    }else{
+
+      window.location.replace(
+        "/staff.html"
+      );
 
     }
-  );
 
-</script>
+  }catch(error){
 
-</body>
+    console.log(
+      "No active session."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
+
+    checkSession();
+
+  }
+);
+
+</script></body>
 </html>
