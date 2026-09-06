@@ -2,42 +2,50 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "index.js",
       "use": "@vercel/node"
     },
     {
-      "src": "public/**",
+      "src": "Index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "Admin.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "staff.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
-      "src": "/admin.html",
-      "dest": "/public/admin.html"
+      "dest": "/index.js"
     },
     {
       "src": "/admin",
-      "dest": "/public/admin.html"
+      "dest": "/Admin.html"
     },
     {
-      "src": "/staff.html",
-      "dest": "/public/staff.html"
+      "src": "/admin.html",
+      "dest": "/Admin.html"
     },
     {
       "src": "/staff",
-      "dest": "/public/staff.html"
+      "dest": "/staff.html"
+    },
+    {
+      "src": "/staff.html",
+      "dest": "/staff.html"
     },
     {
       "src": "/",
-      "dest": "/public/index.html"
+      "dest": "/Index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/$1"
     }
   ]
 }
