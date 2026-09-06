@@ -1,551 +1,976 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>S.C.A.G.S.S Teacher Dashboard</title>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0">
+
+<title>S.C.A.G.S.S Staff Portal</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
+
 body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#f2f7fb;
- color:#17324d
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f3f7fc;
+  color:#17324d;
 }
+
 header{
- background:linear-gradient(135deg,#0878c9,#004b87);
- color:white;
- padding:18px 25px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:15px
+  background:#0b5ed7;
+  color:white;
+  padding:16px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-header h1{margin:0;font-size:20px}
-header small{opacity:.85}
-button{
- border:0;
- border-radius:9px;
- padding:12px 17px;
- font-weight:bold;
- cursor:pointer
+
+.brand{
+  font-weight:900;
 }
-.logout{background:white;color:#075b91}
-.container{max-width:1200px;margin:auto;padding:25px}
+
+.logout{
+  background:transparent;
+  color:white;
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:8px;
+  padding:7px 11px;
+  cursor:pointer;
+}
+
+.container{
+  max-width:1050px;
+  margin:auto;
+  padding:20px;
+}
+
 .welcome{
- background:white;
- border-radius:16px;
- padding:22px;
- box-shadow:0 5px 20px #00000012;
- margin-bottom:20px
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  border:1px solid #dfe9f3;
+  margin-bottom:15px;
 }
+
+h1{
+  color:#084b9b;
+  margin-top:0;
+}
+
 .grid{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:16px;
- margin-bottom:20px
+  display:grid;
+  grid-template-columns:
+    repeat(3,1fr);
+  gap:14px;
 }
+
 .card{
- background:white;
- border-radius:16px;
- padding:20px;
- box-shadow:0 5px 20px #00000012
+  background:#fff;
+  border:1px solid #dfe9f3;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 5px 18px rgba(0,0,0,.04);
 }
-.card h3{margin-top:0;font-size:14px;color:#64788a}
-.value{font-size:27px;font-weight:bold;color:#0878c9}
+
+.card h3{
+  margin:0 0 8px;
+  color:#6b8194;
+  font-size:13px;
+}
+
+.value{
+  font-size:23px;
+  font-weight:900;
+  color:#0b5ed7;
+}
+
 .actions{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:15px
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:15px;
 }
-.action{
- padding:22px;
- color:white;
- border-radius:15px;
- font-size:17px
+
+button.action{
+  padding:16px;
+  border:0;
+  border-radius:11px;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
 }
-.in{background:#0878c9}
-.out{background:#126f4c}
-.action button{
- width:100%;
- margin-top:15px;
- background:white;
- color:#075b91
+
+.clockin{
+  background:#198754;
 }
-.section{
- background:white;
- padding:22px;
- border-radius:16px;
- margin-top:20px;
- box-shadow:0 5px 20px #00000012;
- overflow:auto
+
+.clockout{
+  background:#dc3545;
 }
+
+button:disabled{
+  opacity:.5;
+}
+
+.status{
+  margin-top:15px;
+  padding:13px;
+  border-radius:10px;
+  background:#eef6ff;
+  color:#27577f;
+  line-height:1.5;
+}
+
+.table-wrap{
+  margin-top:15px;
+  overflow:auto;
+  background:#fff;
+  border-radius:13px;
+  border:1px solid #dfe9f3;
+}
+
 table{
- width:100%;
- border-collapse:collapse;
- min-width:700px
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
 }
+
 th,td{
- padding:12px;
- border-bottom:1px solid #e7edf2;
- text-align:left;
- font-size:13px
+  padding:11px;
+  border-bottom:1px solid #edf1f5;
+  text-align:left;
+  font-size:13px;
 }
-th{background:#edf6fc}
-.badge{
- padding:5px 9px;
- border-radius:20px;
- background:#e8f5ff;
- color:#07659d;
- font-size:11px;
- font-weight:bold
+
+th{
+  background:#eef6ff;
 }
-.success{color:#087238}
-.danger{color:#a00000}
-.info{
- background:#edf7ff;
- border:1px solid #c5e3f7;
- padding:14px;
- border-radius:10px;
- margin-bottom:15px
-}
+
 .profile{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:12px
+  display:grid;
+  grid-template-columns:
+    repeat(2,1fr);
+  gap:10px;
 }
-.profile div{
- background:#f5f9fc;
- padding:14px;
- border-radius:9px
+
+.profile-item{
+  background:#f7fbff;
+  padding:12px;
+  border-radius:9px;
 }
-@media(max-width:800px){
- .grid{grid-template-columns:repeat(2,1fr)}
- .actions{grid-template-columns:1fr}
+
+.profile-item strong{
+  display:block;
+  font-size:11px;
+  color:#6c8194;
+  margin-bottom:4px;
 }
-@media(max-width:520px){
- .container{padding:12px}
- header{padding:15px}
- .grid{grid-template-columns:1fr 1fr}
- .card{padding:15px}
- .profile{grid-template-columns:1fr}
+
+@media(max-width:700px){
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .profile{
+    grid-template-columns:1fr;
+  }
+
+  .actions{
+    grid-template-columns:1fr;
+  }
+
+  .container{
+    padding:12px;
+  }
+
 }
+
 </style>
 </head>
 
 <body>
 
 <header>
- <div>
-  <h1>S.C.A.G.S.S STAFF PORTAL</h1>
-  <small>Teacher Attendance Dashboard</small>
- </div>
- <button class="logout" onclick="logout()">LOG OUT</button>
+
+  <div class="brand">
+    S.C.A.G.S.S STAFF PORTAL
+  </div>
+
+  <button
+    class="logout"
+    onclick="logout()">
+    Logout
+  </button>
+
 </header>
 
 <div class="container">
 
- <div class="welcome">
-  <h2 id="teacherName">Loading...</h2>
-  <p id="teacherRole">Teacher</p>
- </div>
+  <div class="welcome">
 
- <div id="message" class="info">
-  Checking your account...
- </div>
+    <h1>
+      Welcome,
+      <span id="teacherName">
+        Staff Member
+      </span>
+    </h1>
 
- <div class="grid">
-  <div class="card">
-   <h3>TODAY</h3>
-   <div class="value" id="todayStatus">—</div>
+    <div
+      id="profileBox"
+      class="profile">
+    </div>
+
   </div>
 
-  <div class="card">
-   <h3>CLOCK IN</h3>
-   <div class="value" id="clockIn">—</div>
+  <div class="grid">
+
+    <div class="card">
+
+      <h3>
+        Today's Clock In
+      </h3>
+
+      <div
+        class="value"
+        id="todayIn">
+        -
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>
+        Today's Clock Out
+      </h3>
+
+      <div
+        class="value"
+        id="todayOut">
+        -
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>
+        GPS Status
+      </h3>
+
+      <div
+        class="value"
+        id="gpsStatus">
+        -
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="card">
-   <h3>CLOCK OUT</h3>
-   <div class="value" id="clockOut">—</div>
+  <div class="card" style="margin-top:15px">
+
+    <h3>
+      Attendance Actions
+    </h3>
+
+    <div class="actions">
+
+      <button
+        id="clockInButton"
+        class="action clockin"
+        onclick="clockIn()">
+        CLOCK IN
+      </button>
+
+      <button
+        id="clockOutButton"
+        class="action clockout"
+        onclick="clockOut()">
+        CLOCK OUT
+      </button>
+
+    </div>
+
+    <div
+      id="status"
+      class="status">
+      GPS verification is required for clock in and clock out.
+    </div>
+
   </div>
 
-  <div class="card">
-   <h3>GPS</h3>
-   <div class="value" id="gpsStatus">—</div>
+  <div class="card" style="margin-top:15px">
+
+    <h3>
+      My Attendance History
+    </h3>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Date</th>
+            <th>Clock In</th>
+            <th>Clock Out</th>
+            <th>GPS</th>
+            <th>In Distance</th>
+            <th>Out Distance</th>
+          </tr>
+
+        </thead>
+
+        <tbody
+          id="attendanceTable">
+        </tbody>
+
+      </table>
+
+    </div>
+
   </div>
- </div>
-
- <div class="actions">
-
-  <div class="action in">
-   <strong>GPS CLOCK IN</strong>
-   <p>Allow location access when requested.</p>
-   <button id="clockInBtn" onclick="clockIn()">
-    CLOCK IN
-   </button>
-  </div>
-
-  <div class="action out">
-   <strong>GPS CLOCK OUT</strong>
-   <p>Your location will be verified again.</p>
-   <button id="clockOutBtn" onclick="clockOut()">
-    CLOCK OUT
-   </button>
-  </div>
-
- </div>
-
- <div class="section">
-  <h2>My Profile</h2>
-
-  <div class="profile">
-   <div><b>Full Name</b><br><span id="profileName">—</span></div>
-   <div><b>Username</b><br><span id="profileUsername">—</span></div>
-   <div><b>Email</b><br><span id="profileEmail">—</span></div>
-   <div><b>Phone</b><br><span id="profilePhone">—</span></div>
-  </div>
- </div>
-
- <div class="section">
-  <h2>Attendance History</h2>
-
-  <table>
-   <thead>
-    <tr>
-     <th>Date</th>
-     <th>Clock In</th>
-     <th>Clock Out</th>
-     <th>Status</th>
-     <th>GPS</th>
-     <th>In Distance</th>
-     <th>Out Distance</th>
-    </tr>
-   </thead>
-
-   <tbody id="attendanceBody">
-    <tr>
-     <td colspan="7">Loading...</td>
-    </tr>
-   </tbody>
-  </table>
- </div>
 
 </div>
 
 <script>
 
-async function api(url, options={}){
- const response=await fetch("/api"+url,{
-  credentials:"include",
-  ...options,
-  headers:{
-   "Content-Type":"application/json",
-   ...(options.headers||{})
+let attendanceData = [];
+let profileData = null;
+
+async function api(
+  url,
+  options={}
+){
+
+  const response =
+    await fetch(
+      "/api" + url,
+      {
+        credentials:"include",
+        ...options
+      }
+    );
+
+  const data =
+    await response.json()
+      .catch(() => ({}));
+
+  if(
+    response.status === 401
+  ){
+
+    window.location.href =
+      "/";
+
+    throw new Error(
+      "Session expired."
+    );
   }
- });
 
- const text=await response.text();
+  if(!response.ok){
 
- let data;
+    throw new Error(
+      data.message ||
+      "Request failed."
+    );
+  }
 
- try{
-  data=JSON.parse(text);
- }catch{
-  throw new Error("Server returned HTTP "+response.status);
- }
-
- if(!response.ok){
-  throw new Error(data.message||"Request failed.");
- }
-
- return data;
+  return data;
 }
 
-function show(text,type="info"){
- const box=document.getElementById("message");
- box.textContent=text;
- box.className=type==="success"
-  ? "info success"
-  : type==="error"
-  ? "info danger"
-  : "info";
+function todayKenya(){
+
+  const parts =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:
+          "Africa/Nairobi",
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit"
+      }
+    ).formatToParts(
+      new Date()
+    );
+
+  const values = {};
+
+  parts.forEach(
+    part => {
+      values[part.type] =
+        part.value;
+    }
+  );
+
+  return `${values.year}-${values.month}-${values.day}`;
 }
-
-function formatTime(value){
- if(!value)return "—";
-
- return new Date(value).toLocaleTimeString([],{
-  hour:"2-digit",
-  minute:"2-digit"
- });
-}
-
-function today(){
- return new Date().toISOString().slice(0,10);
-}
-
-let currentAttendance=null;
 
 async function loadProfile(){
 
- try{
+  try{
 
-  const data=await api("/me");
+    const data =
+      await api("/me");
 
-  if(
-   String(data.user.role).toLowerCase()==="admin"
-  ){
-   location.href="/admin.html";
-   return;
+    profileData =
+      data.user;
+
+    if(
+      String(
+        profileData.role || ""
+      ).toLowerCase()
+      === "admin"
+    ){
+
+      window.location.href =
+        "/admin.html";
+
+      return;
+    }
+
+    document
+      .getElementById(
+        "teacherName"
+      )
+      .textContent =
+        profileData.full_name ||
+        profileData.username ||
+        "Staff Member";
+
+    document
+      .getElementById(
+        "profileBox"
+      )
+      .innerHTML = `
+
+        <div class="profile-item">
+          <strong>Username</strong>
+          ${escapeHTML(
+            profileData.username || "-"
+          )}
+        </div>
+
+        <div class="profile-item">
+          <strong>Email</strong>
+          ${escapeHTML(
+            profileData.email || "-"
+          )}
+        </div>
+
+        <div class="profile-item">
+          <strong>Phone</strong>
+          ${escapeHTML(
+            profileData.phone || "-"
+          )}
+        </div>
+
+        <div class="profile-item">
+          <strong>Account</strong>
+          ${
+            profileData.active
+              ? "ACTIVE"
+              : "PENDING"
+          }
+        </div>
+
+      `;
+
+  }catch(error){
+
+    window.location.href =
+      "/";
+
   }
-
-  document.getElementById("teacherName").textContent=
-   data.user.full_name;
-
-  document.getElementById("teacherRole").textContent=
-   "Teacher • "+data.user.username;
-
-  document.getElementById("profileName").textContent=
-   data.user.full_name;
-
-  document.getElementById("profileUsername").textContent=
-   data.user.username;
-
-  document.getElementById("profileEmail").textContent=
-   data.user.email||"Not provided";
-
-  document.getElementById("profilePhone").textContent=
-   data.user.phone||"Not provided";
-
- }catch(error){
-
-  show(error.message,"error");
-
-  if(error.message.toLowerCase().includes("session")){
-   setTimeout(()=>location.href="/",1200);
-  }
-
- }
-
 }
 
 async function loadAttendance(){
 
- try{
+  try{
 
-  const data=await api("/attendance/my");
+    const data =
+      await api(
+        "/attendance/my"
+      );
 
-  const rows=data.attendance||[];
+    attendanceData =
+      data.attendance || [];
 
-  const body=document.getElementById("attendanceBody");
+    renderAttendance();
 
-  if(!rows.length){
-   body.innerHTML=
-    `<tr><td colspan="7">No attendance records yet.</td></tr>`;
-  }else{
+  }catch(error){
 
-   body.innerHTML=rows.map(r=>`
-    <tr>
-     <td>${r.attendance_date||"—"}</td>
-     <td>${formatTime(r.clock_in)}</td>
-     <td>${formatTime(r.clock_out)}</td>
-     <td>${r.status||"—"}</td>
-     <td>
-      <span class="badge">
-       ${r.gps_verified ? "VERIFIED":"NOT VERIFIED"}
-      </span>
-     </td>
-     <td>${r.clock_in_distance!=null
-       ? Math.round(r.clock_in_distance)+" m":"—"}</td>
-     <td>${r.clock_out_distance!=null
-       ? Math.round(r.clock_out_distance)+" m":"—"}</td>
-    </tr>
-   `).join("");
+    showStatus(
+      error.message
+    );
+
   }
-
-  const record=rows.find(
-   r=>r.attendance_date===today()
-  );
-
-  currentAttendance=record||null;
-
-  document.getElementById("todayStatus").textContent=
-   record
-    ? record.clock_out
-      ? "COMPLETE"
-      : "PRESENT"
-    : "NOT CLOCKED";
-
-  document.getElementById("clockIn").textContent=
-   formatTime(record?.clock_in);
-
-  document.getElementById("clockOut").textContent=
-   formatTime(record?.clock_out);
-
-  document.getElementById("gpsStatus").textContent=
-   record?.gps_verified ? "VERIFIED":"—";
-
-  document.getElementById("clockInBtn").disabled=
-   !!record?.clock_in;
-
-  document.getElementById("clockOutBtn").disabled=
-   !record?.clock_in || !!record?.clock_out;
-
- }catch(error){
-  show(error.message,"error");
- }
-
 }
 
-function getGPS(){
+function renderAttendance(){
 
- return new Promise((resolve,reject)=>{
+  const table =
+    document.getElementById(
+      "attendanceTable"
+    );
 
-  if(!navigator.geolocation){
-   reject(
-    new Error("GPS is not supported on this device.")
-   );
-   return;
+  table.innerHTML = "";
+
+  const today =
+    todayKenya();
+
+  const todayRecord =
+    attendanceData.find(
+      record =>
+        record.attendance_date
+        === today
+    );
+
+  document
+    .getElementById(
+      "todayIn"
+    )
+    .textContent =
+      todayRecord?.clock_in
+        ? formatDateTime(
+            todayRecord.clock_in
+          )
+        : "-";
+
+  document
+    .getElementById(
+      "todayOut"
+    )
+    .textContent =
+      todayRecord?.clock_out
+        ? formatDateTime(
+            todayRecord.clock_out
+          )
+        : "-";
+
+  document
+    .getElementById(
+      "gpsStatus"
+    )
+    .textContent =
+      todayRecord?.gps_verified
+        ? "VERIFIED"
+        : "NOT VERIFIED";
+
+  if(todayRecord?.clock_in){
+
+    document
+      .getElementById(
+        "clockInButton"
+      )
+      .disabled = true;
+
+  }else{
+
+    document
+      .getElementById(
+        "clockInButton"
+      )
+      .disabled = false;
+
   }
 
-  navigator.geolocation.getCurrentPosition(
-   position=>{
-    resolve({
-     latitude:position.coords.latitude,
-     longitude:position.coords.longitude,
-     accuracy:position.coords.accuracy
-    });
-   },
-   error=>{
+  if(
+    !todayRecord?.clock_in ||
+    todayRecord?.clock_out
+  ){
 
-    let msg="Unable to get your GPS location.";
+    document
+      .getElementById(
+        "clockOutButton"
+      )
+      .disabled = true;
 
-    if(error.code===1)
-     msg="Location permission was denied. Please allow location access.";
+  }else{
 
-    if(error.code===2)
-     msg="Your location could not be determined.";
+    document
+      .getElementById(
+        "clockOutButton"
+      )
+      .disabled = false;
 
-    if(error.code===3)
-     msg="GPS request timed out. Try again.";
+  }
 
-    reject(new Error(msg));
+  attendanceData.forEach(
+    item => {
 
-   },
-   {
-    enableHighAccuracy:true,
-    timeout:15000,
-    maximumAge:0
-   }
+      const row =
+        document.createElement(
+          "tr"
+        );
+
+      row.innerHTML = `
+
+        <td>
+          ${escapeHTML(
+            item.attendance_date || ""
+          )}
+        </td>
+
+        <td>
+          ${formatDateTime(
+            item.clock_in
+          )}
+        </td>
+
+        <td>
+          ${formatDateTime(
+            item.clock_out
+          )}
+        </td>
+
+        <td>
+          ${
+            item.gps_verified
+              ? "VERIFIED"
+              : "NOT VERIFIED"
+          }
+        </td>
+
+        <td>
+          ${formatDistance(
+            item.clock_in_distance
+          )}
+        </td>
+
+        <td>
+          ${formatDistance(
+            item.clock_out_distance
+          )}
+        </td>
+
+      `;
+
+      table.appendChild(
+        row
+      );
+
+    }
   );
+}
 
- });
+function getLocation(){
+
+  return new Promise(
+    (resolve,reject) => {
+
+      if(
+        !navigator.geolocation
+      ){
+
+        reject(
+          new Error(
+            "GPS is not supported by this browser."
+          )
+        );
+
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        resolve,
+        error => {
+
+          let message =
+            "Unable to get your location.";
+
+          if(
+            error.code ===
+            error.PERMISSION_DENIED
+          ){
+            message =
+              "GPS permission was denied. Please allow location access.";
+          }
+
+          if(
+            error.code ===
+            error.POSITION_UNAVAILABLE
+          ){
+            message =
+              "Your GPS position is unavailable.";
+          }
+
+          if(
+            error.code ===
+            error.TIMEOUT
+          ){
+            message =
+              "GPS request timed out. Please try again.";
+          }
+
+          reject(
+            new Error(message)
+          );
+
+        },
+        {
+          enableHighAccuracy:true,
+          timeout:20000,
+          maximumAge:0
+        }
+      );
+
+    }
+  );
 }
 
 async function clockIn(){
 
- const button=document.getElementById("clockInBtn");
+  const button =
+    document.getElementById(
+      "clockInButton"
+    );
 
- button.disabled=true;
- button.textContent="GETTING GPS...";
+  button.disabled = true;
 
- show(
-  "Please allow location access. Verifying that you are within the school area..."
- );
-
- try{
-
-  const gps=await getGPS();
-
-  show("GPS received. Checking your distance from school...");
-
-  const data=await api("/attendance/clock-in",{
-   method:"POST",
-   body:JSON.stringify(gps)
-  });
-
-  show(
-   data.message+
-   " Distance: "+data.distance+" metres.",
-   "success"
+  showStatus(
+    "Getting your GPS location..."
   );
 
-  await loadAttendance();
+  try{
 
- }catch(error){
+    const position =
+      await getLocation();
 
-  show(error.message,"error");
+    showStatus(
+      "Verifying your location..."
+    );
 
- }finally{
+    const data =
+      await api(
+        "/attendance/clock-in",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:
+            JSON.stringify({
 
-  button.textContent="CLOCK IN";
+              latitude:
+                position.coords.latitude,
 
-  await loadAttendance();
+              longitude:
+                position.coords.longitude,
 
- }
+              accuracy:
+                position.coords.accuracy
 
+            })
+        }
+      );
+
+    showStatus(
+      `${data.message} Distance from school: ${data.distance} metres.`
+    );
+
+    await loadAttendance();
+
+  }catch(error){
+
+    showStatus(
+      error.message
+    );
+
+    button.disabled = false;
+
+  }
 }
 
 async function clockOut(){
 
- const button=document.getElementById("clockOutBtn");
+  const button =
+    document.getElementById(
+      "clockOutButton"
+    );
 
- button.disabled=true;
- button.textContent="GETTING GPS...";
+  button.disabled = true;
 
- show(
-  "Please allow location access. Verifying your clock-out location..."
- );
-
- try{
-
-  const gps=await getGPS();
-
-  const data=await api("/attendance/clock-out",{
-   method:"POST",
-   body:JSON.stringify(gps)
-  });
-
-  show(
-   data.message+
-   " Distance: "+data.distance+" metres.",
-   "success"
+  showStatus(
+    "Getting your GPS location..."
   );
 
-  await loadAttendance();
+  try{
 
- }catch(error){
+    const position =
+      await getLocation();
 
-  show(error.message,"error");
+    showStatus(
+      "Verifying your location..."
+    );
 
- }finally{
+    const data =
+      await api(
+        "/attendance/clock-out",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:
+            JSON.stringify({
 
-  button.textContent="CLOCK OUT";
+              latitude:
+                position.coords.latitude,
 
-  await loadAttendance();
+              longitude:
+                position.coords.longitude,
 
- }
+              accuracy:
+                position.coords.accuracy
 
+            })
+        }
+      );
+
+    showStatus(
+      `${data.message} Distance from school: ${data.distance} metres.`
+    );
+
+    await loadAttendance();
+
+  }catch(error){
+
+    showStatus(
+      error.message
+    );
+
+    button.disabled = false;
+
+  }
+}
+
+function showStatus(
+  message
+){
+
+  document
+    .getElementById(
+      "status"
+    )
+    .textContent =
+      message;
 }
 
 async function logout(){
 
- try{
-  await api("/auth/logout",{method:"POST"});
- }catch{}
+  try{
 
- location.href="/";
+    await fetch(
+      "/api/auth/logout",
+      {
+        method:"POST",
+        credentials:"include"
+      }
+    );
+
+  }finally{
+
+    window.location.href =
+      "/";
+
+  }
+}
+
+function formatDateTime(
+  value
+){
+
+  if(!value)
+    return "-";
+
+  const date =
+    new Date(value);
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+    return value;
+  }
+
+  return date.toLocaleString(
+    "en-KE",
+    {
+      timeZone:
+        "Africa/Nairobi"
+    }
+  );
+}
+
+function formatDistance(
+  value
+){
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+    return "-";
+  }
+
+  return `${Math.round(
+    Number(value)
+  )} m`;
+}
+
+function escapeHTML(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+async function start(){
+
+  await loadProfile();
+  await loadAttendance();
 
 }
 
-(async function(){
-
- await loadProfile();
- await loadAttendance();
-
-})();
+start();
 
 </script>
 
