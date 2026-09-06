@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>SCAGSS Admin Portal</title>
+
+  <style>
+
+    * {
+      box-sizing:
+        border-box;
+      margin:
+        0;
+      padding:
+        0;
+    }
+
+    body {
+      font-family:
+        Arial,
+        sans-serif;
+
+      background:
+        #f3f9fc;
+
+      color:
+        #17384d;
+    }
+
+    header {
+      background:
+        #0877b8;
+
+      color:
+        white;
+
+      padding:
+        20px;
+    }
+
+    header .top {
+      max-width:
+        1200px;
+
+      margin:
+        auto;
+
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap:
+        15px;
+    }
+
+    .logout {
+      width:
+        auto;
+
+      padding:
+        10px 16px;
+
+      background:
+        transparent;
+
+      border:
+        1px solid white;
+
+      border-radius:
+        10px;
+
+      color:
+        white;
+    }
+
+    main {
+      max-width:
+        1200px;
+
+      margin:
+        auto;
+
+      padding:
+        25px 18px;
+    }
+
+    .stats {
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(
+            160px,
+            1fr
+          )
+        );
+
+      gap:
+        15px;
+
+      margin-bottom:
+        25px;
+    }
+
+    .stat {
+      background:
+        white;
+
+      padding:
+        22px;
+
+      border-radius:
+        17px;
+
+      box-shadow:
+        0 8px 25px
+        rgba(
+          0,
+          70,
+          110,
+          0.08
+        );
+    }
+
+    .stat strong {
+      display:
+        block;
+
+      font-size:
+        30px;
+
+      color:
+        #0877b8;
+
+      margin-top:
+        7px;
+    }
+
+    .card {
+      background:
+        white;
+
+      padding:
+        22px;
+
+      border-radius:
+        17px;
+
+      margin-bottom:
+        20px;
+
+      box-shadow:
+        0 8px 25px
+        rgba(
+          0,
+          70,
+          110,
+          0.08
+        );
+    }
+
+    .card h2 {
+      color:
+        #0877b8;
+
+      margin-bottom:
+        15px;
+    }
+
+    .table-wrap {
+      overflow-x:
+        auto;
+    }
+
+    table {
+      width:
+        100%;
+
+      border-collapse:
+        collapse;
+
+      font-size:
+        14px;
+    }
+
+    th,
+    td {
+      padding:
+        11px;
+
+      border-bottom:
+        1px solid
+        #e1ebef;
+
+      text-align:
+        left;
+
+      white-space:
+        nowrap;
+    }
+
+    th {
+      background:
+        #edf7fc;
+    }
+
+    button {
+      border:
+        0;
+
+      border-radius:
+        10px;
+
+      padding:
+        11px 16px;
+
+      background:
+        #0877b8;
+
+      color:
+        white;
+
+      font-weight:
+        bold;
+
+      cursor:
+        pointer;
+    }
+
+    .danger {
+      background:
+        #b83232;
+    }
+
+    .success {
+      background:
+        #16804a;
+    }
+
+    .message {
+      display:
+        none;
+
+      padding:
+        13px;
+
+      border-radius:
+        10px;
+
+      margin-bottom:
+        15px;
+    }
+
+    input,
+    select {
+      width:
+        100%;
+
+      padding:
+        12px;
+
+      margin:
+        7px 0 15px;
+
+      border:
+        1px solid
+        #ccdce6;
+
+      border-radius:
+        10px;
+
+      font-size:
+        15px;
+    }
+
+    .form-grid {
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(
+            200px,
+            1fr
+          )
+        );
+
+      gap:
+        10px;
+    }
+
+    .gps-badge {
+      font-weight:
+        bold;
+
+      color:
+        #16804a;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<header>
+
+  <div class="top">
+
+    <h1>
+      S.C.A.G.S.S ADMINISTRATION
+    </h1>
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      LOG OUT
+    </button>
+
+  </div>
+
+</header>
+
+<main>
+
+  <div
+    id="message"
+    class="message"
+  ></div>
+
+  <section class="stats">
+
+    <div class="stat">
+      Teachers
+      <strong
+        id="totalTeachers"
+      >—</strong>
+    </div>
+
+    <div class="stat">
+      Present
+      <strong
+        id="present"
+      >—</strong>
+    </div>
+
+    <div class="stat">
+      Late
+      <strong
+        id="late"
+      >—</strong>
+    </div>
+
+    <div class="stat">
+      Clocked Out
+      <strong
+        id="clockedOut"
+      >—</strong>
+    </div>
+
+    <div class="stat">
+      Absent
+      <strong
+        id="absent"
+      >—</strong>
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <h2>
+      GPS School Location
+    </h2>
+
+    <div class="form-grid">
+
+      <div>
+
+        <label>
+          Latitude
+        </label>
+
+        <input
+          id="gpsLat"
+          type="number"
+          step="any"
+        >
+
+      </div>
+
+      <div>
+
+        <label>
+          Longitude
+        </label>
+
+        <input
+          id="gpsLon"
+          type="number"
+          step="any"
+        >
+
+      </div>
+
+      <div>
+
+        <label>
+          Radius (metres)
+        </label>
+
+        <input
+          id="gpsRadius"
+          type="number"
+          min="50"
+          max="5000"
+        >
+
+      </div>
+
+    </div>
+
+    <button
+      onclick="saveGPS()"
+    >
+      SAVE GPS SETTINGS
+    </button>
+
+  </section>
+
+  <section class="card">
+
+    <h2>
+      Add Staff Member
+    </h2>
+
+    <div class="form-grid">
+
+      <div>
+
+        <label>
+          Full Name
+        </label>
+
+        <input
+          id="newName"
+          type="text"
+        >
+
+      </div>
+
+      <div>
+
+        <label>
+          Username
+        </label>
+
+        <input
+          id="newUsername"
+          type="text"
+        >
+
+      </div>
+
+      <div>
+
+        <label>
+          Password
+        </label>
+
+        <input
+          id="newPassword"
+          type="password"
+        >
+
+      </div>
+
+      <div>
+
+        <label>
+          Role
+        </label>
+
+        <select
+          id="newRole"
+        >
+          <option value="teacher">
+            Teacher
+          </option>
+
+          <option value="admin">
+            Administrator
+          </option>
+        </select>
+
+      </div>
+
+    </div>
+
+    <button
+      onclick="createStaff()"
+    >
+      CREATE ACCOUNT
+    </button>
+
+  </section>
+
+  <section class="card">
+
+    <h2>
+      Staff Accounts
+    </h2>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody
+          id="staffTable"
+        ></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+  <section class="card">
+
+    <h2>
+      Today's Attendance & GPS
+    </h2>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Staff</th>
+            <th>Date</th>
+            <th>Clock In</th>
+            <th>Clock Out</th>
+            <th>Status</th>
+            <th>In GPS</th>
+            <th>In Distance</th>
+            <th>Out GPS</th>
+            <th>Out Distance</th>
+            <th>Verification</th>
+          </tr>
+
+        </thead>
+
+        <tbody
+          id="attendanceTable"
+        ></tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+
+  async function api(
+    url,
+    options = {}
+  ) {
+
+    const response =
+      await fetch(
+        url,
+        {
+          ...options,
+          credentials:
+            "include"
+        }
+      );
+
+    const data =
+      await response
+        .json()
+        .catch(
+          () => ({})
+        );
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Request failed"
+      );
+    }
+
+    return data;
+  }
+
+  function showMessage(
+    text,
+    success = false
+  ) {
+
+    const box =
+      document.getElementById(
+        "message"
+      );
+
+    box.textContent =
+      text;
+
+    box.style.display =
+      "block";
+
+    box.style.background =
+      success
+        ? "#e8f8ef"
+        : "#fff0f0";
+
+    box.style.color =
+      success
+        ? "#167442"
+        : "#a52222";
+  }
+
+  async function verifyAdmin() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/me"
+        );
+
+      if (
+        data.user.role !==
+        "admin"
+      ) {
+        window.location.href =
+          "/staff.html";
+      }
+
+    } catch {
+
+      window.location.href =
+        "/";
+    }
+  }
+
+  async function loadSummary() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/admin/attendance/summary"
+        );
+
+      document.getElementById(
+        "totalTeachers"
+      ).textContent =
+        data.totalTeachers;
+
+      document.getElementById(
+        "present"
+      ).textContent =
+        data.present;
+
+      document.getElementById(
+        "late"
+      ).textContent =
+        data.late;
+
+      document.getElementById(
+        "clockedOut"
+      ).textContent =
+        data.clockedOut;
+
+      document.getElementById(
+        "absent"
+      ).textContent =
+        data.absent;
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  async function loadGPS() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/settings/gps"
+        );
+
+      document.getElementById(
+        "gpsLat"
+      ).value =
+        data.settings.latitude;
+
+      document.getElementById(
+        "gpsLon"
+      ).value =
+        data.settings.longitude;
+
+      document.getElementById(
+        "gpsRadius"
+      ).value =
+        data.settings.radius;
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  async function saveGPS() {
+
+    try {
+
+      await api(
+        "/api/settings/gps",
+        {
+          method:
+            "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              latitude:
+                Number(
+                  document
+                    .getElementById(
+                      "gpsLat"
+                    )
+                    .value
+                ),
+
+              longitude:
+                Number(
+                  document
+                    .getElementById(
+                      "gpsLon"
+                    )
+                    .value
+                ),
+
+              radius:
+                Number(
+                  document
+                    .getElementById(
+                      "gpsRadius"
+                    )
+                    .value
+                )
+            })
+        }
+      );
+
+      showMessage(
+        "GPS settings saved.",
+        true
+      );
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  async function createStaff() {
+
+    try {
+
+      await api(
+        "/api/admin/staff",
+        {
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              full_name:
+                document
+                  .getElementById(
+                    "newName"
+                  )
+                  .value,
+
+              username:
+                document
+                  .getElementById(
+                    "newUsername"
+                  )
+                  .value,
+
+              password:
+                document
+                  .getElementById(
+                    "newPassword"
+                  )
+                  .value,
+
+              role:
+                document
+                  .getElementById(
+                    "newRole"
+                  )
+                  .value
+            })
+        }
+      );
+
+      document
+        .getElementById(
+          "newName"
+        )
+        .value = "";
+
+      document
+        .getElementById(
+          "newUsername"
+        )
+        .value = "";
+
+      document
+        .getElementById(
+          "newPassword"
+        )
+        .value = "";
+
+      showMessage(
+        "Staff account created.",
+        true
+      );
+
+      loadStaff();
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  async function loadStaff() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/admin/staff"
+        );
+
+      const table =
+        document.getElementById(
+          "staffTable"
+        );
+
+      table.innerHTML = "";
+
+      data.staff.forEach(
+        person => {
+
+          const row =
+            document.createElement(
+              "tr"
+            );
+
+          row.innerHTML = `
+            <td>${escapeHtml(person.full_name)}</td>
+            <td>${escapeHtml(person.username)}</td>
+            <td>${escapeHtml(person.role)}</td>
+            <td>${person.active ? "ACTIVE" : "INACTIVE"}</td>
+            <td>
+              <button
+                class="${person.active ? "danger" : "success"}"
+                onclick="changeStatus(${person.id}, ${!person.active})"
+              >
+                ${person.active ? "Deactivate" : "Activate"}
+              </button>
+            </td>
+          `;
+
+          table.appendChild(
+            row
+          );
+        }
+      );
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  async function changeStatus(
+    id,
+    active
+  ) {
+
+    try {
+
+      await api(
+        `/api/admin/staff/${id}/status`,
+        {
+          method:
+            "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              active
+            })
+        }
+      );
+
+      loadStaff();
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  async function loadAttendance() {
+
+    try {
+
+      const data =
+        await api(
+          "/api/admin/gps/today"
+        );
+
+      const table =
+        document.getElementById(
+          "attendanceTable"
+        );
+
+      table.innerHTML = "";
+
+      data.gps.forEach(
+        record => {
+
+          const staff =
+            record.staff || {};
+
+          const row =
+            document.createElement(
+              "tr"
+            );
+
+          row.innerHTML = `
+            <td>${escapeHtml(staff.full_name || "")}</td>
+
+            <td>${record.attendance_date || ""}</td>
+
+            <td>${formatTime(record.clock_in)}</td>
+
+            <td>${formatTime(record.clock_out)}</td>
+
+            <td>${record.status || ""}</td>
+
+            <td>
+              ${formatGPS(
+                record.clock_in_lat,
+                record.clock_in_lon
+              )}
+            </td>
+
+            <td>
+              ${
+                record.clock_in_distance != null
+                  ? record.clock_in_distance + " m"
+                  : "—"
+              }
+            </td>
+
+            <td>
+              ${formatGPS(
+                record.clock_out_lat,
+                record.clock_out_lon
+              )}
+            </td>
+
+            <td>
+              ${
+                record.clock_out_distance != null
+                  ? record.clock_out_distance + " m"
+                  : "—"
+              }
+            </td>
+
+            <td class="gps-badge">
+              ${
+                record.gps_verified
+                  ? "VERIFIED"
+                  : "—"
+              }
+            </td>
+          `;
+
+          table.appendChild(
+            row
+          );
+        }
+      );
+
+    } catch (error) {
+
+      showMessage(
+        error.message
+      );
+    }
+  }
+
+  function formatTime(
+    value
+  ) {
+
+    if (!value) {
+      return "—";
+    }
+
+    return new Date(
+      value
+    ).toLocaleTimeString(
+      "en-KE",
+      {
+        hour:
+          "2-digit",
+        minute:
+          "2-digit"
+      }
+    );
+  }
+
+  function formatGPS(
+    lat,
+    lon
+  ) {
+
+    if (
+      lat == null ||
+      lon == null
+    ) {
+      return "—";
+    }
+
+    return `${Number(lat).toFixed(6)}, ${Number(lon).toFixed(6)}`;
+  }
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+  }
+
+  async function logout() {
+
+    try {
+
+      await api(
+        "/api/auth/logout",
+        {
+          method:
+            "POST"
+        }
+      );
+
+    } finally {
+
+      window.location.href =
+        "/";
+    }
+  }
+
+  async function start() {
+
+    await verifyAdmin();
+
+    await Promise.all([
+      loadSummary(),
+      loadGPS(),
+      loadStaff(),
+      loadAttendance()
+    ]);
+  }
+
+  start();
+
+</script>
+
+</body>
+</html>
