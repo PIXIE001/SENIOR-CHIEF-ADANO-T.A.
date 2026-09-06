@@ -7,19 +7,27 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 const app = express();
 
-app.use(helmet({
-  crossOriginResourcePolicy: false
-}));
+app.set("trust proxy", 1);
 
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false
+  })
+);
+
+app.use(
+  cors({
+    origin: true,
+    credentials: true
+  })
+);
 
 app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const limiter = rateLimit({
@@ -44,11 +52,6 @@ const SCHOOL_LAT = 1.735369;
 const SCHOOL_LON = 40.038490;
 const DEFAULT_RADIUS = 500;
 
-
-/* =========================================================
-   BASIC CHECKS
-========================================================= */
-
 if (!SUPABASE_URL) {
   console.error("Missing SUPABASE_URL");
 }
@@ -61,17 +64,65 @@ if (!JWT_SECRET) {
   console.error("Missing JWT_SECRET");
 }
 
-
 /* =========================================================
-   SUPABASE REST HELPER
+   BASIC HELPERS
 ========================================================= */
 
-async function supabaseRequest(
-  table,
-  options = {}
-) {
-  const url =
-    `${SUPABASE_URL}/rest/v1/${table}`;
+function kenyaDateString() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Nairobi",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(new Date());
+}
+
+function clean(value) {
+  return String(value ?? "").trim();
+}
+
+function lower(value) {
+  return clean(value).toLowerCase();
+}
+
+function validCoordinate(value) {
+  return Number.isFinite(Number(value));
+}
+
+function distanceInMeters(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+
+  const p1 = Number(lat1) * Math.PI / 180;
+  const p2 = Number(lat2) * Math.PI / 180;
+
+  const dp =
+    (Number(lat2) - Number(lat1)) * Math.PI / 180;
+
+  const dl =
+    (Number(lon2) - Number(lon1)) * Math.PI / 180;
+
+  const a =
+    Math.sin(dp / 2) ** 2 +
+    Math.cos(p1) *
+      Math.cos(p2) *
+      Math.sin(dl / 2) ** 2;
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+  return R * c;
+}
+
+async function supabaseRequest(pathname, options = {}) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    throw new Error("Supabase environment variables are missing.");
+  }
+
+  const url = `${SUPABASE_URL}/rest/v1/${pathname}`;
 
   const headers = {
     apikey: SUPABASE_KEY,
@@ -96,24 +147,24 @@ async function supabaseRequest(
   }
 
   if (!response.ok) {
-    const error =
+    const message =
       typeof data === "string"
         ? data
         : data?.message ||
           data?.error ||
           `Supabase error ${response.status}`;
 
-    const err = new Error(error);
-    err.status = response.status;
-    throw err;
+    const error = new Error(message);
+    error.status = response.status;
+
+    throw error;
   }
 
   return data;
 }
 
-
 /* =========================================================
-   JWT
+   AUTHENTICATION
 ========================================================= */
 
 function createToken(user) {
@@ -121,9 +172,7 @@ function createToken(user) {
     {
       id: user.id,
       username: user.username,
-      role: String(user.role || "")
-        .trim()
-        .toLowerCase()
+      role: lower(user.role)
     },
     JWT_SECRET,
     {
@@ -131,7 +180,6 @@ function createToken(user) {
     }
   );
 }
-
 
 function setAuthCookie(res, user) {
   const token = createToken(user);
@@ -146,14 +194,12 @@ function setAuthCookie(res, user) {
   return token;
 }
 
-
 function getToken(req) {
   if (req.cookies?.scagss_token) {
     return req.cookies.scagss_token;
   }
 
-  const header =
-    req.headers.authorization || "";
+  const header = req.headers.authorization || "";
 
   if (header.startsWith("Bearer ")) {
     return header.substring(7);
@@ -161,7 +207,6 @@ function getToken(req) {
 
   return null;
 }
-
 
 function requireAuth(req, res, next) {
   try {
@@ -174,13 +219,9 @@ function requireAuth(req, res, next) {
       });
     }
 
-    req.user = jwt.verify(
-      token,
-      JWT_SECRET
-    );
+    req.user = jwt.verify(token, JWT_SECRET);
 
     next();
-
   } catch {
     return res.status(401).json({
       success: false,
@@ -189,12 +230,8 @@ function requireAuth(req, res, next) {
   }
 }
 
-
 function requireAdmin(req, res, next) {
-  const role =
-    String(req.user?.role || "")
-      .trim()
-      .toLowerCase();
+  const role = lower(req.user?.role);
 
   if (role !== "admin") {
     return res.status(403).json({
@@ -206,78 +243,63 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-
 /* =========================================================
-   DISTANCE / GPS
+   STAFF HELPERS
 ========================================================= */
 
-function distanceInMeters(
-  lat1,
-  lon1,
-  lat2,
-  lon2
-) {
-  const R = 6371000;
-
-  const p1 =
-    Number(lat1) * Math.PI / 180;
-
-  const p2 =
-    Number(lat2) * Math.PI / 180;
-
-  const dp =
-    (Number(lat2) - Number(lat1))
-    * Math.PI / 180;
-
-  const dl =
-    (Number(lon2) - Number(lon1))
-    * Math.PI / 180;
-
-  const a =
-    Math.sin(dp / 2) ** 2 +
-    Math.cos(p1) *
-    Math.cos(p2) *
-    Math.sin(dl / 2) ** 2;
-
-  const c =
-    2 * Math.atan2(
-      Math.sqrt(a),
-      Math.sqrt(1 - a)
-    );
-
-  return R * c;
+function safeStaff(user) {
+  return {
+    id: user.id,
+    username: user.username,
+    full_name: user.full_name,
+    email: user.email || "",
+    phone: user.phone || "",
+    role: lower(user.role),
+    active: user.active,
+    created_at: user.created_at
+  };
 }
 
+async function getStaffRows() {
+  const rows = await supabaseRequest(
+    "staff?select=*&order=id.asc",
+    {
+      method: "GET"
+    }
+  );
 
-function validCoordinate(value) {
-  return Number.isFinite(Number(value));
+  return Array.isArray(rows) ? rows : [];
 }
-
 
 async function getSchoolSettings() {
   try {
-    const rows =
-      await supabaseRequest(
-        "school_settings",
-        {
-          method: "GET",
-          headers: {
-            Prefer: "return=representation"
-          }
-        }
-      );
+    const rows = await supabaseRequest(
+      "school_settings?select=*&order=id.asc&limit=1",
+      {
+        method: "GET"
+      }
+    );
 
-    if (
-      Array.isArray(rows) &&
-      rows.length > 0
-    ) {
-      return {
-        latitude: Number(rows[0].latitude),
-        longitude: Number(rows[0].longitude),
-        radius:
-          Number(rows[0].radius) ||
-          DEFAULT_RADIUS
-      };
+    if (Array.isArray(rows) && rows.length > 0) {
+      const item = rows[0];
+
+      const latitude = Number(item.latitude);
+      const longitude = Number(item.longitude);
+      const radius = Number(item.radius);
+
+      if (
+        Number.isFinite(latitude) &&
+        Number.isFinite(longitude) &&
+        Number.isFinite(radius) &&
+        radius > 0
+      ) {
+        return {
+          id: item.id,
+          latitude,
+          longitude,
+          radius
+        };
+      }
     }
   } catch (error) {
     console.error(
@@ -293,9 +315,36 @@ async function getSchoolSettings() {
   };
 }
 
+/* =========================================================
+   PAGE ROUTES
+========================================================= */
+
+app.get("/", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "Index.html")
+  );
+});
+
+app.get(
+  ["/admin", "/admin.html"],
+  (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "Admin.html")
+    );
+  }
+);
+
+app.get(
+  ["/staff", "/staff.html"],
+  (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "staff.html")
+    );
+  }
+);
 
 /* =========================================================
-   HEALTH
+   HEALTH CHECK
 ========================================================= */
 
 app.get("/api/health", (req, res) => {
@@ -303,143 +352,120 @@ app.get("/api/health", (req, res) => {
     success: true,
     status: "online",
     portal: "S.C.A.G.S.S Staff Portal",
-    version: "2.0",
+    version: "3.0",
     time: new Date().toISOString()
   });
 });
-
 
 /* =========================================================
    LOGIN
 ========================================================= */
 
-app.post(
-  "/api/auth/login",
-  async (req, res) => {
-    try {
-      const login = String(
-        req.body.login ||
-        req.body.username ||
-        req.body.email ||
-        ""
-      ).trim();
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const login = clean(
+      req.body.login ||
+      req.body.username ||
+      req.body.email
+    );
 
-      const password =
-        String(req.body.password || "");
+    const password = String(
+      req.body.password || ""
+    );
 
-      if (!login || !password) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Username/email and password are required."
-        });
-      }
-
-      let users =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET",
-            headers: {
-              Prefer: "return=representation"
-            }
-          }
-        );
-
-      users = Array.isArray(users)
-        ? users
-        : [];
-
-      const loginLower =
-        login.toLowerCase();
-
-      const user =
-        users.find(u =>
-          String(u.username || "")
-            .toLowerCase() === loginLower
-        ) ||
-        users.find(u =>
-          String(u.email || "")
-            .toLowerCase() === loginLower
-        ) ||
-        users.find(u =>
-          String(u.full_name || "")
-            .toLowerCase() === loginLower
-        );
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid login details."
-        });
-      }
-
-      const passwordOK =
-        await bcrypt.compare(
-          password,
-          user.password_hash
-        );
-
-      if (!passwordOK) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid login details."
-        });
-      }
-
-      const role =
-        String(user.role || "")
-          .trim()
-          .toLowerCase();
-
-      if (
-        role !== "admin" &&
-        user.active !== true
-      ) {
-        return res.status(403).json({
-          success: false,
-          pending: true,
-          message:
-            "Your registration is pending administrator approval."
-        });
-      }
-
-      const safeUser = {
-        id: user.id,
-        username: user.username,
-        full_name: user.full_name,
-        email: user.email || "",
-        phone: user.phone || "",
-        role,
-        active: user.active
-      };
-
-      setAuthCookie(res, safeUser);
-
-      return res.json({
-        success: true,
-        message: "Login successful.",
-        user: safeUser
+    if (!login || !password) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Username/email and password are required."
       });
+    }
 
-    } catch (error) {
-      console.error(
-        "LOGIN ERROR:",
-        error
+    const users = await getStaffRows();
+
+    const loginLower = login.toLowerCase();
+
+    const user =
+      users.find(
+        u =>
+          lower(u.username) === loginLower
+      ) ||
+      users.find(
+        u =>
+          lower(u.email) === loginLower
+      ) ||
+      users.find(
+        u =>
+          lower(u.full_name) === loginLower
       );
 
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid login details."
+      });
+    }
+
+    if (!user.password_hash) {
       return res.status(500).json({
         success: false,
         message:
-          "Server error while processing login."
+          "This account does not have a valid password."
       });
     }
-  }
-);
 
+    const passwordOK =
+      await bcrypt.compare(
+        password,
+        user.password_hash
+      );
+
+    if (!passwordOK) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid login details."
+      });
+    }
+
+    const role = lower(user.role);
+
+    if (
+      role !== "admin" &&
+      user.active !== true
+    ) {
+      return res.status(403).json({
+        success: false,
+        pending: true,
+        message:
+          "Your registration is pending administrator approval."
+      });
+    }
+
+    const safeUser = safeStaff(user);
+
+    setAuthCookie(res, safeUser);
+
+    return res.json({
+      success: true,
+      message: "Login successful.",
+      user: safeUser
+    });
+  } catch (error) {
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Server error while processing login."
+    });
+  }
+});
 
 /* =========================================================
-   TEACHER REGISTRATION
+   REGISTRATION
 ========================================================= */
 
 app.post(
@@ -447,17 +473,13 @@ app.post(
   async (req, res) => {
     try {
       const fullName =
-        String(req.body.full_name || "")
-          .trim();
+        clean(req.body.full_name);
 
       const email =
-        String(req.body.email || "")
-          .trim()
-          .toLowerCase();
+        lower(req.body.email);
 
       const phone =
-        String(req.body.phone || "")
-          .trim();
+        clean(req.body.phone);
 
       const password =
         String(req.body.password || "");
@@ -483,23 +505,13 @@ app.post(
         });
       }
 
-      const existing =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET"
-          }
-        );
-
       const users =
-        Array.isArray(existing)
-          ? existing
-          : [];
+        await getStaffRows();
 
       const emailExists =
-        users.some(u =>
-          String(u.email || "")
-            .toLowerCase() === email
+        users.some(
+          u =>
+            lower(u.email) === email
         );
 
       if (emailExists) {
@@ -523,14 +535,15 @@ app.post(
       let counter = 2;
 
       while (
-        users.some(u =>
-          String(u.username || "")
-            .toLowerCase() ===
-          username.toLowerCase()
+        users.some(
+          u =>
+            lower(u.username) ===
+            username.toLowerCase()
         )
       ) {
         username =
           `${baseUsername}.${counter}`;
+
         counter++;
       }
 
@@ -553,8 +566,7 @@ app.post(
               username,
               password_hash:
                 passwordHash,
-              full_name:
-                fullName,
+              full_name: fullName,
               email,
               phone,
               role: "teacher",
@@ -569,11 +581,11 @@ app.post(
         message:
           "Registration successful. Your account is pending administrator approval.",
         username,
-        staff: Array.isArray(created)
-          ? created[0]
-          : created
+        staff:
+          Array.isArray(created)
+            ? created[0]
+            : created
       });
-
     } catch (error) {
       console.error(
         "REGISTRATION ERROR:",
@@ -589,7 +601,6 @@ app.post(
   }
 );
 
-
 /* =========================================================
    CURRENT USER
 ========================================================= */
@@ -601,43 +612,29 @@ app.get(
     try {
       const rows =
         await supabaseRequest(
-          "staff",
+          `staff?id=eq.${encodeURIComponent(
+            req.user.id
+          )}`,
           {
             method: "GET"
           }
         );
 
-      const user =
-        (Array.isArray(rows)
-          ? rows
-          : []
-        ).find(
-          u => Number(u.id) ===
-            Number(req.user.id)
-        );
-
-      if (!user) {
+      if (
+        !Array.isArray(rows) ||
+        rows.length === 0
+      ) {
         return res.status(404).json({
           success: false,
-          message: "User account not found."
+          message:
+            "User account not found."
         });
       }
 
       res.json({
         success: true,
-        user: {
-          id: user.id,
-          username: user.username,
-          full_name: user.full_name,
-          email: user.email || "",
-          phone: user.phone || "",
-          role: String(user.role || "")
-            .trim()
-            .toLowerCase(),
-          active: user.active
-        }
+        user: safeStaff(rows[0])
       });
-
     } catch (error) {
       console.error(
         "ME ERROR:",
@@ -652,7 +649,6 @@ app.get(
     }
   }
 );
-
 
 /* =========================================================
    LOGOUT
@@ -674,14 +670,14 @@ app.post(
 
     res.json({
       success: true,
-      message: "Logged out successfully."
+      message:
+        "Logged out successfully."
     });
   }
 );
 
-
 /* =========================================================
-   ADMIN: ALL STAFF
+   ADMIN STAFF
 ========================================================= */
 
 app.get(
@@ -690,36 +686,15 @@ app.get(
   requireAdmin,
   async (req, res) => {
     try {
-      const rows =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET"
-          }
-        );
-
-      const staff =
-        (Array.isArray(rows)
-          ? rows
-          : []
-        ).map(u => ({
-          id: u.id,
-          username: u.username,
-          full_name: u.full_name,
-          email: u.email || "",
-          phone: u.phone || "",
-          role: String(u.role || "")
-            .trim()
-            .toLowerCase(),
-          active: u.active,
-          created_at: u.created_at
-        }));
+      const users =
+        await getStaffRows();
 
       res.json({
         success: true,
-        staff
+        staff: users.map(
+          safeStaff
+        )
       });
-
     } catch (error) {
       console.error(error);
 
@@ -732,11 +707,6 @@ app.get(
   }
 );
 
-
-/* =========================================================
-   ADMIN: APPROVE / DEACTIVATE
-========================================================= */
-
 app.patch(
   "/api/admin/staff/:id/status",
   requireAuth,
@@ -744,21 +714,22 @@ app.patch(
   async (req, res) => {
     try {
       const id =
-        Number(req.params.id);
+        String(req.params.id);
 
       const active =
         Boolean(req.body.active);
 
-      if (!Number.isFinite(id)) {
+      if (!id) {
         return res.status(400).json({
           success: false,
-          message: "Invalid staff ID."
+          message:
+            "Invalid staff ID."
         });
       }
 
       const updated =
         await supabaseRequest(
-          `staff?id=eq.${id}`,
+          `staff?id=eq.${encodeURIComponent(id)}`,
           {
             method: "PATCH",
             headers: {
@@ -773,16 +744,14 @@ app.patch(
 
       res.json({
         success: true,
-        message:
-          active
-            ? "Staff member approved/activated."
-            : "Staff member deactivated.",
+        message: active
+          ? "Staff member approved/activated."
+          : "Staff member deactivated.",
         staff:
           Array.isArray(updated)
             ? updated[0]
             : updated
       });
-
     } catch (error) {
       console.error(error);
 
@@ -795,11 +764,6 @@ app.patch(
   }
 );
 
-
-/* =========================================================
-   ADMIN: DELETE STAFF
-========================================================= */
-
 app.delete(
   "/api/admin/staff/:id",
   requireAuth,
@@ -807,17 +771,19 @@ app.delete(
   async (req, res) => {
     try {
       const id =
-        Number(req.params.id);
+        String(req.params.id);
 
-      if (!Number.isFinite(id)) {
+      if (!id) {
         return res.status(400).json({
           success: false,
-          message: "Invalid staff ID."
+          message:
+            "Invalid staff ID."
         });
       }
 
       if (
-        Number(req.user.id) === id
+        String(req.user.id) ===
+        id
       ) {
         return res.status(400).json({
           success: false,
@@ -827,7 +793,7 @@ app.delete(
       }
 
       await supabaseRequest(
-        `staff?id=eq.${id}`,
+        `staff?id=eq.${encodeURIComponent(id)}`,
         {
           method: "DELETE"
         }
@@ -838,7 +804,6 @@ app.delete(
         message:
           "Staff member deleted."
       });
-
     } catch (error) {
       console.error(error);
 
@@ -851,9 +816,8 @@ app.delete(
   }
 );
 
-
 /* =========================================================
-   TEACHER: PROFILE
+   STAFF PROFILE
 ========================================================= */
 
 app.get(
@@ -863,7 +827,9 @@ app.get(
     try {
       const rows =
         await supabaseRequest(
-          `staff?id=eq.${Number(req.user.id)}`,
+          `staff?id=eq.${encodeURIComponent(
+            req.user.id
+          )}`,
           {
             method: "GET"
           }
@@ -880,24 +846,11 @@ app.get(
         });
       }
 
-      const user = rows[0];
-
       res.json({
         success: true,
-        profile: {
-          id: user.id,
-          username: user.username,
-          full_name: user.full_name,
-          email: user.email || "",
-          phone: user.phone || "",
-          role: String(user.role || "")
-            .trim()
-            .toLowerCase(),
-          active: user.active,
-          created_at: user.created_at
-        }
+        profile:
+          safeStaff(rows[0])
       });
-
     } catch (error) {
       console.error(error);
 
@@ -910,9 +863,8 @@ app.get(
   }
 );
 
-
 /* =========================================================
-   GPS CLOCK IN
+   CLOCK IN
 ========================================================= */
 
 app.post(
@@ -931,7 +883,11 @@ app.post(
 
       if (
         !validCoordinate(lat) ||
-        !validCoordinate(lon)
+        !validCoordinate(lon) ||
+        lat < -90 ||
+        lat > 90 ||
+        lon < -180 ||
+        lon > 180
       ) {
         return res.status(400).json({
           success: false,
@@ -958,21 +914,27 @@ app.post(
         return res.status(403).json({
           success: false,
           gps_verified: false,
-          distance: Math.round(distance),
-          radius: school.radius,
+          distance:
+            Math.round(distance),
+          radius:
+            school.radius,
           message:
-            `Clock-in denied. You are approximately ${Math.round(distance)} metres from the school. You must be within ${school.radius} metres.`
+            `Clock-in denied. You are approximately ${Math.round(
+              distance
+            )} metres from the school. You must be within ${school.radius} metres.`
         });
       }
 
       const today =
-        new Date()
-          .toISOString()
-          .slice(0, 10);
+        kenyaDateString();
 
       const existing =
         await supabaseRequest(
-          `attendance?staff_id=eq.${Number(req.user.id)}&attendance_date=eq.${today}`,
+          `attendance?staff_id=eq.${encodeURIComponent(
+            req.user.id
+          )}&attendance_date=eq.${encodeURIComponent(
+            today
+          )}`,
           {
             method: "GET"
           }
@@ -987,14 +949,18 @@ app.post(
           success: false,
           message:
             "You have already clocked in today.",
-          attendance: existing[0]
+          attendance:
+            existing[0]
         });
       }
 
       const record = {
-        staff_id: Number(req.user.id),
-        attendance_date: today,
-        clock_in: new Date().toISOString(),
+        staff_id:
+          req.user.id,
+        attendance_date:
+          today,
+        clock_in:
+          new Date().toISOString(),
         status: "present",
         gps_verified: true,
         clock_in_lat: lat,
@@ -1015,7 +981,9 @@ app.post(
       ) {
         result =
           await supabaseRequest(
-            `attendance?id=eq.${existing[0].id}`,
+            `attendance?id=eq.${encodeURIComponent(
+              existing[0].id
+            )}`,
             {
               method: "PATCH",
               headers: {
@@ -1023,7 +991,9 @@ app.post(
                   "return=representation"
               },
               body:
-                JSON.stringify(record)
+                JSON.stringify(
+                  record
+                )
             }
           );
       } else {
@@ -1037,7 +1007,9 @@ app.post(
                   "return=representation"
               },
               body:
-                JSON.stringify(record)
+                JSON.stringify(
+                  record
+                )
             }
           );
       }
@@ -1047,14 +1019,15 @@ app.post(
         message:
           "Clock-in successful. GPS verified.",
         gps_verified: true,
-        distance: Math.round(distance),
-        radius: school.radius,
+        distance:
+          Math.round(distance),
+        radius:
+          school.radius,
         attendance:
           Array.isArray(result)
             ? result[0]
             : result
       });
-
     } catch (error) {
       console.error(
         "CLOCK IN ERROR:",
@@ -1070,9 +1043,8 @@ app.post(
   }
 );
 
-
 /* =========================================================
-   GPS CLOCK OUT
+   CLOCK OUT
 ========================================================= */
 
 app.post(
@@ -1091,7 +1063,11 @@ app.post(
 
       if (
         !validCoordinate(lat) ||
-        !validCoordinate(lon)
+        !validCoordinate(lon) ||
+        lat < -90 ||
+        lat > 90 ||
+        lon < -180 ||
+        lon > 180
       ) {
         return res.status(400).json({
           success: false,
@@ -1111,28 +1087,34 @@ app.post(
           school.longitude
         );
 
-      const verified =
-        distance <= school.radius;
-
-      if (!verified) {
+      if (
+        distance >
+        school.radius
+      ) {
         return res.status(403).json({
           success: false,
           gps_verified: false,
-          distance: Math.round(distance),
-          radius: school.radius,
+          distance:
+            Math.round(distance),
+          radius:
+            school.radius,
           message:
-            `Clock-out denied. You are approximately ${Math.round(distance)} metres from the school.`
+            `Clock-out denied. You are approximately ${Math.round(
+              distance
+            )} metres from the school.`
         });
       }
 
       const today =
-        new Date()
-          .toISOString()
-          .slice(0, 10);
+        kenyaDateString();
 
       const existing =
         await supabaseRequest(
-          `attendance?staff_id=eq.${Number(req.user.id)}&attendance_date=eq.${today}`,
+          `attendance?staff_id=eq.${encodeURIComponent(
+            req.user.id
+          )}&attendance_date=eq.${encodeURIComponent(
+            today
+          )}`,
           {
             method: "GET"
           }
@@ -1150,7 +1132,9 @@ app.post(
         });
       }
 
-      if (existing[0].clock_out) {
+      if (
+        existing[0].clock_out
+      ) {
         return res.status(409).json({
           success: false,
           message:
@@ -1160,28 +1144,33 @@ app.post(
 
       const result =
         await supabaseRequest(
-          `attendance?id=eq.${existing[0].id}`,
+          `attendance?id=eq.${encodeURIComponent(
+            existing[0].id
+          )}`,
           {
             method: "PATCH",
             headers: {
               Prefer:
                 "return=representation"
             },
-            body: JSON.stringify({
-              clock_out:
-                new Date().toISOString(),
-              clock_out_lat:
-                lat,
-              clock_out_lon:
-                lon,
-              clock_out_accuracy:
-                Number.isFinite(accuracy)
-                  ? accuracy
-                  : null,
-              clock_out_distance:
-                distance,
-              gps_verified: true
-            })
+            body:
+              JSON.stringify({
+                clock_out:
+                  new Date().toISOString(),
+                clock_out_lat:
+                  lat,
+                clock_out_lon:
+                  lon,
+                clock_out_accuracy:
+                  Number.isFinite(
+                    accuracy
+                  )
+                    ? accuracy
+                    : null,
+                clock_out_distance:
+                  distance,
+                gps_verified: true
+              })
           }
         );
 
@@ -1190,14 +1179,15 @@ app.post(
         message:
           "Clock-out successful. GPS verified.",
         gps_verified: true,
-        distance: Math.round(distance),
-        radius: school.radius,
+        distance:
+          Math.round(distance),
+        radius:
+          school.radius,
         attendance:
           Array.isArray(result)
             ? result[0]
             : result
       });
-
     } catch (error) {
       console.error(
         "CLOCK OUT ERROR:",
@@ -1213,9 +1203,8 @@ app.post(
   }
 );
 
-
 /* =========================================================
-   TEACHER ATTENDANCE
+   MY ATTENDANCE
 ========================================================= */
 
 app.get(
@@ -1225,7 +1214,9 @@ app.get(
     try {
       const rows =
         await supabaseRequest(
-          `attendance?staff_id=eq.${Number(req.user.id)}&order=attendance_date.desc`,
+          `attendance?staff_id=eq.${encodeURIComponent(
+            req.user.id
+          )}&order=attendance_date.desc`,
           {
             method: "GET"
           }
@@ -1238,7 +1229,6 @@ app.get(
             ? rows
             : []
       });
-
     } catch (error) {
       console.error(error);
 
@@ -1251,9 +1241,8 @@ app.get(
   }
 );
 
-
 /* =========================================================
-   ADMIN: ALL ATTENDANCE
+   ADMIN ATTENDANCE
 ========================================================= */
 
 app.get(
@@ -1264,55 +1253,60 @@ app.get(
     try {
       const attendance =
         await supabaseRequest(
-          "attendance?order=attendance_date.desc,clock_in.desc",
+          "attendance?select=*&order=attendance_date.desc,clock_in.desc",
           {
             method: "GET"
           }
         );
 
       const staff =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET"
-          }
-        );
+        await getStaffRows();
 
       const staffMap =
         new Map(
-          (Array.isArray(staff)
-            ? staff
-            : []
-          ).map(s => [
-            Number(s.id),
-            s
-          ])
+          staff.map(
+            s => [
+              String(s.id),
+              s
+            ]
+          )
         );
 
       const result =
-        (Array.isArray(attendance)
-          ? attendance
-          : []
+        (
+          Array.isArray(
+            attendance
+          )
+            ? attendance
+            : []
         ).map(a => {
           const s =
             staffMap.get(
-              Number(a.staff_id)
+              String(a.staff_id)
             );
 
           return {
             ...a,
+            staff: s
+              ? safeStaff(s)
+              : null,
             staff_name:
-              s?.full_name || "Unknown",
+              s?.full_name ||
+              "Unknown",
+            full_name:
+              s?.full_name ||
+              "Unknown",
             username:
-              s?.username || ""
+              s?.username ||
+              ""
           };
         });
 
       res.json({
         success: true,
-        attendance: result
+        attendance:
+          result
       });
-
     } catch (error) {
       console.error(error);
 
@@ -1325,9 +1319,8 @@ app.get(
   }
 );
 
-
 /* =========================================================
-   ADMIN: GPS MONITOR
+   ADMIN GPS
 ========================================================= */
 
 app.get(
@@ -1338,77 +1331,101 @@ app.get(
     try {
       const attendance =
         await supabaseRequest(
-          "attendance?order=attendance_date.desc,clock_in.desc",
+          "attendance?select=*&order=attendance_date.desc,clock_in.desc",
           {
             method: "GET"
           }
         );
 
       const staff =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET"
-          }
-        );
+        await getStaffRows();
 
       const staffMap =
         new Map(
-          (Array.isArray(staff)
-            ? staff
-            : []
-          ).map(s => [
-            Number(s.id),
-            s
-          ])
+          staff.map(
+            s => [
+              String(s.id),
+              s
+            ]
+          )
         );
 
       const gps =
-        (Array.isArray(attendance)
-          ? attendance
-          : []
+        (
+          Array.isArray(
+            attendance
+          )
+            ? attendance
+            : []
         )
-          .filter(a =>
-            a.clock_in_lat !== null ||
-            a.clock_out_lat !== null
+          .filter(
+            a =>
+              a.clock_in_lat !== null ||
+              a.clock_out_lat !== null
           )
           .map(a => {
             const s =
               staffMap.get(
-                Number(a.staff_id)
+                String(a.staff_id)
               );
 
             return {
-              attendance_id: a.id,
-              staff_id: a.staff_id,
+              attendance_id:
+                a.id,
+
+              staff_id:
+                a.staff_id,
+
+              staff:
+                s
+                  ? safeStaff(s)
+                  : null,
+
               staff_name:
                 s?.full_name ||
                 "Unknown",
+
+              full_name:
+                s?.full_name ||
+                "Unknown",
+
               username:
-                s?.username || "",
+                s?.username ||
+                "",
+
               date:
+                a.attendance_date,
+
+              attendance_date:
                 a.attendance_date,
 
               clock_in:
                 a.clock_in,
+
               clock_out:
                 a.clock_out,
 
               clock_in_lat:
                 a.clock_in_lat,
+
               clock_in_lon:
                 a.clock_in_lon,
+
               clock_in_accuracy:
                 a.clock_in_accuracy,
+
               clock_in_distance:
                 a.clock_in_distance,
 
               clock_out_lat:
                 a.clock_out_lat,
+
               clock_out_lon:
                 a.clock_out_lon,
+
               clock_out_accuracy:
                 a.clock_out_accuracy,
+
               clock_out_distance:
                 a.clock_out_distance,
 
@@ -1425,7 +1442,6 @@ app.get(
         school,
         gps
       });
-
     } catch (error) {
       console.error(error);
 
@@ -1438,10 +1454,124 @@ app.get(
   }
 );
 
-
 /* =========================================================
-   SCHOOL GPS SETTINGS
+   GPS SETTINGS
 ========================================================= */
+
+async function updateGPSSettings(
+  req,
+  res
+) {
+  try {
+    const latitude =
+      Number(req.body.latitude);
+
+    const longitude =
+      Number(req.body.longitude);
+
+    const radius =
+      Number(req.body.radius);
+
+    if (
+      !Number.isFinite(
+        latitude
+      ) ||
+      !Number.isFinite(
+        longitude
+      ) ||
+      !Number.isFinite(
+        radius
+      ) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180 ||
+      radius <= 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Valid latitude, longitude and radius are required."
+      });
+    }
+
+    const existing =
+      await supabaseRequest(
+        "school_settings?select=*&order=id.asc&limit=1",
+        {
+          method: "GET"
+        }
+      );
+
+    let result;
+
+    if (
+      Array.isArray(existing) &&
+      existing.length > 0
+    ) {
+      result =
+        await supabaseRequest(
+          `school_settings?id=eq.${encodeURIComponent(
+            existing[0].id
+          )}`,
+          {
+            method: "PATCH",
+            headers: {
+              Prefer:
+                "return=representation"
+            },
+            body:
+              JSON.stringify({
+                latitude,
+                longitude,
+                radius,
+                updated_at:
+                  new Date().toISOString()
+              })
+          }
+        );
+    } else {
+      result =
+        await supabaseRequest(
+          "school_settings",
+          {
+            method: "POST",
+            headers: {
+              Prefer:
+                "return=representation"
+            },
+            body:
+              JSON.stringify({
+                latitude,
+                longitude,
+                radius
+              })
+          }
+        );
+    }
+
+    res.json({
+      success: true,
+      message:
+        "School GPS settings updated.",
+      settings:
+        Array.isArray(result)
+          ? result[0]
+          : result
+    });
+  } catch (error) {
+    console.error(
+      "GPS SETTINGS ERROR:",
+      error
+    );
+
+    res.status(500).json({
+      success: false,
+      message:
+        "Unable to update GPS settings."
+    });
+  }
+}
 
 app.get(
   "/api/admin/settings/gps",
@@ -1449,14 +1579,13 @@ app.get(
   requireAdmin,
   async (req, res) => {
     try {
-      const school =
+      const settings =
         await getSchoolSettings();
 
       res.json({
         success: true,
-        settings: school
+        settings
       });
-
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -1467,111 +1596,22 @@ app.get(
   }
 );
 
-
 app.patch(
   "/api/admin/settings/gps",
   requireAuth,
   requireAdmin,
-  async (req, res) => {
-    try {
-      const latitude =
-        Number(req.body.latitude);
-
-      const longitude =
-        Number(req.body.longitude);
-
-      const radius =
-        Number(req.body.radius);
-
-      if (
-        !Number.isFinite(latitude) ||
-        !Number.isFinite(longitude) ||
-        !Number.isFinite(radius) ||
-        radius <= 0
-      ) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Valid latitude, longitude and radius are required."
-        });
-      }
-
-      const existing =
-        await supabaseRequest(
-          "school_settings",
-          {
-            method: "GET"
-          }
-        );
-
-      let result;
-
-      if (
-        Array.isArray(existing) &&
-        existing.length > 0
-      ) {
-        result =
-          await supabaseRequest(
-            `school_settings?id=eq.${existing[0].id}`,
-            {
-              method: "PATCH",
-              headers: {
-                Prefer:
-                  "return=representation"
-              },
-              body: JSON.stringify({
-                latitude,
-                longitude,
-                radius,
-                updated_at:
-                  new Date().toISOString()
-              })
-            }
-          );
-      } else {
-        result =
-          await supabaseRequest(
-            "school_settings",
-            {
-              method: "POST",
-              headers: {
-                Prefer:
-                  "return=representation"
-              },
-              body: JSON.stringify({
-                latitude,
-                longitude,
-                radius
-              })
-            }
-          );
-      }
-
-      res.json({
-        success: true,
-        message:
-          "School GPS settings updated.",
-        settings:
-          Array.isArray(result)
-            ? result[0]
-            : result
-      });
-
-    } catch (error) {
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to update GPS settings."
-      });
-    }
-  }
+  updateGPSSettings
 );
 
+app.put(
+  "/api/admin/settings/gps",
+  requireAuth,
+  requireAdmin,
+  updateGPSSettings
+);
 
 /* =========================================================
-   REPORTS
+   TEACHER REPORT
 ========================================================= */
 
 app.get(
@@ -1581,32 +1621,31 @@ app.get(
   async (req, res) => {
     try {
       const staffId =
-        Number(req.params.id);
+        String(req.params.id);
 
       const from =
-        String(req.query.from || "");
+        clean(req.query.from);
 
       const to =
-        String(req.query.to || "");
-
-      if (!Number.isFinite(staffId)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid teacher ID."
-        });
-      }
+        clean(req.query.to);
 
       let query =
-        `attendance?staff_id=eq.${staffId}&order=attendance_date.desc`;
+        `attendance?staff_id=eq.${encodeURIComponent(
+          staffId
+        )}&order=attendance_date.desc`;
 
       if (from) {
         query +=
-          `&attendance_date=gte.${encodeURIComponent(from)}`;
+          `&attendance_date=gte.${encodeURIComponent(
+            from
+          )}`;
       }
 
       if (to) {
         query +=
-          `&attendance_date=lte.${encodeURIComponent(to)}`;
+          `&attendance_date=lte.${encodeURIComponent(
+            to
+          )}`;
       }
 
       const attendance =
@@ -1619,7 +1658,9 @@ app.get(
 
       const staff =
         await supabaseRequest(
-          `staff?id=eq.${staffId}`,
+          `staff?id=eq.${encodeURIComponent(
+            staffId
+          )}`,
           {
             method: "GET"
           }
@@ -1639,22 +1680,29 @@ app.get(
       }
 
       const records =
-        Array.isArray(attendance)
+        Array.isArray(
+          attendance
+        )
           ? attendance
           : [];
 
       const present =
         records.filter(
-          r => r.status === "present"
+          r =>
+            r.status ===
+            "present"
         ).length;
 
       const gpsVerified =
         records.filter(
-          r => r.gps_verified === true
+          r =>
+            r.gps_verified ===
+            true
         ).length;
 
       res.json({
         success: true,
+
         teacher: {
           id: teacher.id,
           full_name:
@@ -1666,6 +1714,7 @@ app.get(
           phone:
             teacher.phone || ""
         },
+
         summary: {
           total_days:
             records.length,
@@ -1673,9 +1722,10 @@ app.get(
           gps_verified:
             gpsVerified
         },
-        attendance: records
-      });
 
+        attendance:
+          records
+      });
     } catch (error) {
       console.error(error);
 
@@ -1688,9 +1738,8 @@ app.get(
   }
 );
 
-
 /* =========================================================
-   ADMIN: DASHBOARD SUMMARY
+   ADMIN DASHBOARD SUMMARY
 ========================================================= */
 
 app.get(
@@ -1699,49 +1748,39 @@ app.get(
   requireAdmin,
   async (req, res) => {
     try {
-      const staff =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET"
-          }
-        );
+      const users =
+        await getStaffRows();
 
       const attendance =
         await supabaseRequest(
-          "attendance",
+          "attendance?select=*",
           {
             method: "GET"
           }
         );
 
-      const users =
-        Array.isArray(staff)
-          ? staff
-          : [];
-
       const records =
-        Array.isArray(attendance)
+        Array.isArray(
+          attendance
+        )
           ? attendance
           : [];
 
       const teachers =
         users.filter(
           u =>
-            String(u.role || "")
-              .toLowerCase() ===
+            lower(u.role) ===
             "teacher"
         );
 
       const pending =
         teachers.filter(
-          u => u.active !== true
+          u =>
+            u.active !== true
         );
 
       const today =
-        new Date()
-          .toISOString()
-          .slice(0, 10);
+        kenyaDateString();
 
       const todayRecords =
         records.filter(
@@ -1750,35 +1789,66 @@ app.get(
             today
         );
 
-      const clockedIn =
-        todayRecords.filter(
+      const gpsRecords =
+        records.filter(
           r =>
-            r.clock_in &&
-            !r.clock_out
+            r.clock_in_lat !==
+              null ||
+            r.clock_out_lat !==
+              null
         );
 
-      const gpsVerified =
-        todayRecords.filter(
-          r =>
-            r.gps_verified === true
-        );
+      const summary = {
+        total_staff:
+          teachers.length,
+
+        pending:
+          pending.length,
+
+        pending_staff:
+          pending.length,
+
+        clocked_in:
+          todayRecords.filter(
+            r =>
+              r.clock_in &&
+              !r.clock_out
+          ).length,
+
+        gps_verified:
+          todayRecords.filter(
+            r =>
+              r.gps_verified ===
+              true
+          ).length,
+
+        gps_records:
+          gpsRecords.length,
+
+        today:
+          todayRecords.length,
+
+        today_attendance:
+          todayRecords.length
+      };
 
       res.json({
         success: true,
-        summary: {
-          total_staff:
-            teachers.length,
-          pending:
-            pending.length,
-          clocked_in:
-            clockedIn.length,
-          gps_verified:
-            gpsVerified.length,
-          today:
-            todayRecords.length
-        }
-      });
 
+        total_staff:
+          summary.total_staff,
+
+        pending_staff:
+          summary.pending_staff,
+
+        today_attendance:
+          summary.today_attendance,
+
+        gps_records:
+          summary.gps_records,
+
+        summary
+      });
     } catch (error) {
       console.error(error);
 
@@ -1791,137 +1861,8 @@ app.get(
   }
 );
 
-
 /* =========================================================
-   LESSON ATTENDANCE
-========================================================= */
-
-app.get(
-  "/api/admin/lessons",
-  requireAuth,
-  requireAdmin,
-  async (req, res) => {
-    try {
-      const tableExists =
-        await supabaseRequest(
-          "lesson_attendance",
-          {
-            method: "GET"
-          }
-        );
-
-      res.json({
-        success: true,
-        lessons:
-          Array.isArray(tableExists)
-            ? tableExists
-            : []
-      });
-
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message:
-          "Lesson attendance table has not been created yet."
-      });
-    }
-  }
-);
-
-
-app.post(
-  "/api/admin/lessons",
-  requireAuth,
-  requireAdmin,
-  async (req, res) => {
-    try {
-      const record = {
-        teacher_name:
-          String(
-            req.body.teacher_name || ""
-          ).trim(),
-
-        class_name:
-          String(
-            req.body.class_name || ""
-          ).trim(),
-
-        subject:
-          String(
-            req.body.subject || ""
-          ).trim(),
-
-        attendance_date:
-          String(
-            req.body.attendance_date ||
-            new Date()
-              .toISOString()
-              .slice(0, 10)
-          ),
-
-        present:
-          Number(req.body.present || 0),
-
-        absent:
-          Number(req.body.absent || 0),
-
-        notes:
-          String(
-            req.body.notes || ""
-          ).trim()
-      };
-
-      if (
-        !record.teacher_name ||
-        !record.class_name ||
-        !record.subject
-      ) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Teacher, class and subject are required."
-        });
-      }
-
-      const result =
-        await supabaseRequest(
-          "lesson_attendance",
-          {
-            method: "POST",
-            headers: {
-              Prefer:
-                "return=representation"
-            },
-            body:
-              JSON.stringify(record)
-          }
-        );
-
-      res.status(201).json({
-        success: true,
-        message:
-          "Lesson attendance saved.",
-        lesson:
-          Array.isArray(result)
-            ? result[0]
-            : result
-      });
-
-    } catch (error) {
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to save lesson attendance. Make sure the lesson_attendance table exists."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   AI ASSISTANT — LOCAL ANALYSIS
+   SIMPLE ADMIN AI ANALYSIS
 ========================================================= */
 
 app.post(
@@ -1931,41 +1872,37 @@ app.post(
   async (req, res) => {
     try {
       const question =
-        String(
-          req.body.question || ""
-        ).trim();
+        clean(req.body.question);
 
       const attendance =
         await supabaseRequest(
-          "attendance",
+          "attendance?select=*",
           {
             method: "GET"
           }
         );
 
       const staff =
-        await supabaseRequest(
-          "staff",
-          {
-            method: "GET"
-          }
-        );
+        await getStaffRows();
 
       const records =
-        Array.isArray(attendance)
+        Array.isArray(
+          attendance
+        )
           ? attendance
           : [];
 
       const users =
-        Array.isArray(staff)
+        Array.isArray(
+          staff
+        )
           ? staff
           : [];
 
       const teachers =
         users.filter(
           u =>
-            String(u.role || "")
-              .toLowerCase() ===
+            lower(u.role) ===
             "teacher"
         );
 
@@ -1975,7 +1912,8 @@ app.post(
       const gpsVerified =
         records.filter(
           r =>
-            r.gps_verified === true
+            r.gps_verified ===
+            true
         ).length;
 
       const clockedOut =
@@ -1984,36 +1922,57 @@ app.post(
             r.clock_out
         ).length;
 
-      const clockedIn =
+      const currentlyIn =
         records.filter(
           r =>
             r.clock_in &&
             !r.clock_out
         ).length;
 
-      const response = {
-        question,
+      const overview =
+        `There are currently ${teachers.length} registered teachers and ${totalRecords} attendance records.`;
 
-        overview:
-          `There are currently ${teachers.length} registered teachers and ${totalRecords} attendance records.`,
+      const attendanceText =
+        `${currentlyIn} record(s) currently show staff clocked in, while ${clockedOut} record(s) contain a clock-out time.`;
 
-        attendance:
-          `${clockedIn} attendance record(s) show staff currently clocked in, while ${clockedOut} record(s) contain a clock-out time.`,
+      const gpsText =
+        `${gpsVerified} attendance record(s) have GPS verification.`;
 
-        gps:
-          `${gpsVerified} attendance record(s) have GPS verification.`,
+      const recommendation =
+        gpsVerified <
+        totalRecords
+          ? "Review attendance records without GPS verification."
+          : "GPS verification is recorded for all available attendance records.";
 
-        recommendation:
-          gpsVerified < totalRecords
-            ? "Review attendance records without GPS verification."
-            : "GPS verification is recorded for all available attendance records."
-      };
+      const analysis =
+        [
+          question
+            ? `Question: ${question}`
+            : "",
+          "",
+          overview,
+          attendanceText,
+          gpsText,
+          "",
+          `Recommendation: ${recommendation}`
+        ]
+          .filter(Boolean)
+          .join("\n");
 
       res.json({
         success: true,
-        analysis: response
+        analysis,
+        details: {
+          question,
+          teachers:
+            teachers.length,
+          totalRecords,
+          gpsVerified,
+          clockedOut,
+          currentlyIn,
+          recommendation
+        }
       });
-
     } catch (error) {
       console.error(error);
 
@@ -2026,9 +1985,8 @@ app.post(
   }
 );
 
-
 /* =========================================================
-   404 API
+   API 404
 ========================================================= */
 
 app.use(
@@ -2042,9 +2000,8 @@ app.use(
   }
 );
 
-
 /* =========================================================
-   ERROR HANDLER
+   GENERAL ERROR HANDLER
 ========================================================= */
 
 app.use(
@@ -2062,7 +2019,6 @@ app.use(
   }
 );
 
-
 /* =========================================================
    LOCAL SERVER
 ========================================================= */
@@ -2075,11 +2031,10 @@ if (require.main === module) {
     PORT,
     () => {
       console.log(
-        `S.C.A.G.S.S Staff Portal API running on port ${PORT}`
+        `S.C.A.G.S.S Staff Portal running on port ${PORT}`
       );
     }
   );
 }
-
 
 module.exports = app;
