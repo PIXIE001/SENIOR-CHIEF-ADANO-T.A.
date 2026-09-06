@@ -10,1722 +10,2464 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.use(helmet());
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
+/* =========================================================
+CONFIGURATION
+========================================================= */
+
+const PORT = process.env.PORT || 3000;
+
+const SUPABASE_URL =
+(process.env.SUPABASE_URL || "").replace(//+$/, "");
+
+const SUPABASE_SERVICE_ROLE_KEY =
+process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+const JWT_SECRET =
+process.env.JWT_SECRET || "";
+
+const FRONTEND_URL =
+process.env.FRONTEND_URL || "";
+
+const SCHOOL_TIMEZONE =
+"Africa/Nairobi";
+
+const DEFAULT_RADIUS =
+500;
+
+/* =========================================================
+SECURITY / MIDDLEWARE
+========================================================= */
+
+app.use(
+helmet({
+crossOriginResourcePolicy: false
+})
+);
+
+app.use(
+cors({
+origin: FRONTEND_URL || true,
+credentials: true
+})
+);
+
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false
+windowMs: 15 * 60 * 1000,
+limit: 30,
+standardHeaders: true,
+legacyHeaders: false,
+message: {
+success: false,
+message: "Too many login attempts. Please try again later."
+}
 });
 
-const API_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const JWT_SECRET = process.env.JWT_SECRET;
+app.use("/api/auth/login", loginLimiter);
+
+/* =========================================================
+BASIC CHECKS
+========================================================= */
 
 function databaseReady() {
-  return Boolean(API_URL && SUPABASE_KEY);
+return Boolean(
+SUPABASE_URL &&
+SUPABASE_SERVICE_ROLE_KEY
+);
 }
 
 function jwtReady() {
-  return Boolean(JWT_SECRET);
+return Boolean(JWT_SECRET);
 }
 
-async function supabase(path, options = {}) {
-  if (!databaseReady()) {
-    throw new Error("Database is not configured.");
+/* =========================================================
+SUPABASE REST
+========================================================= */
+
+async function supabaseRequest(
+path,
+options = {}
+) {
+
+if (!databaseReady()) {
+throw new Error(
+"Database environment variables are not configured."
+);
+}
+
+const url =
+"${SUPABASE_URL}/rest/v1/${path}";
+
+const response =
+await fetch(url, {
+...options,
+headers: {
+apikey:
+SUPABASE_SERVICE_ROLE_KEY,
+
+    Authorization:
+      `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+
+    "Content-Type":
+      "application/json",
+
+    Prefer:
+      options.prefer ||
+      "return=representation",
+
+    ...(options.headers || {})
   }
+});
 
-  const url =
-    `${API_URL.replace(/\/$/, "")}/rest/v1/${path}`;
+const text =
+await response.text();
 
-  const response = await fetch(url, {
-    method: options.method || "GET",
+let data = null;
 
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: options.prefer || "return=representation"
-    },
-
-    body: options.body
-      ? JSON.stringify(options.body)
-      : undefined
-  });
-
-  const text = await response.text();
-
-  let data;
-
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = text;
-  }
-
-  if (!response.ok) {
-    const message =
-      data?.message ||
-      data?.error_description ||
-      data?.hint ||
-      "Supabase request failed.";
-
-    const error = new Error(message);
-    error.status = response.status;
-    error.data = data;
-
-    throw error;
-  }
-
-  return data;
+try {
+data = text
+? JSON.parse(text)
+: null;
+} catch {
+data = text;
 }
 
-function signToken(user) {
-  if (!jwtReady()) {
-    throw new Error("JWT_SECRET is not configured.");
-  }
+if (!response.ok) {
 
-  return jwt.sign(
-    {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      full_name: user.full_name
-    },
-    JWT_SECRET,
-    {
-      expiresIn: "8h"
-    }
-  );
+console.error(
+  "Supabase error:",
+  response.status,
+  data
+);
+
+const errorMessage =
+  data?.message ||
+  data?.hint ||
+  data?.details ||
+  data?.error ||
+  `Database request failed (${response.status})`;
+
+const error =
+  new Error(errorMessage);
+
+error.status =
+  response.status;
+
+throw error;
+
 }
 
-function authRequired(req, res, next) {
-  try {
-    if (!jwtReady()) {
-      return res.status(500).json({
-        success: false,
-        message: "Authentication is not configured."
-      });
-    }
-
-    const token = req.cookies?.scagss_token;
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required."
-      });
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET);
-
-    req.user = decoded;
-
-    next();
-
-  } catch {
-    return res.status(401).json({
-      success: false,
-      message: "Your session has expired. Please log in again."
-    });
-  }
+return data;
 }
 
-function adminRequired(req, res, next) {
-  if (req.user?.role !== "admin") {
-    return res.status(403).json({
-      success: false,
-      message: "Administrator access required."
-    });
-  }
+/* =========================================================
+DATE / TIME
+========================================================= */
 
-  next();
+function getKenyaDate() {
+
+return new Intl.DateTimeFormat(
+"en-CA",
+{
+timeZone: SCHOOL_TIMEZONE,
+year: "numeric",
+month: "2-digit",
+day: "2-digit"
+}
+).format(new Date());
+
 }
 
-function validGPS(latitude, longitude, accuracy) {
-  return (
-    typeof latitude === "number" &&
-    typeof longitude === "number" &&
-    typeof accuracy === "number" &&
-    Number.isFinite(latitude) &&
-    Number.isFinite(longitude) &&
-    Number.isFinite(accuracy) &&
-    latitude >= -90 &&
-    latitude <= 90 &&
-    longitude >= -180 &&
-    longitude <= 180 &&
-    accuracy >= 0
-  );
+function getKenyaHour() {
+
+return Number(
+new Intl.DateTimeFormat(
+"en-US",
+{
+timeZone: SCHOOL_TIMEZONE,
+hour: "2-digit",
+hour12: false
+}
+).format(new Date())
+);
+
 }
 
-function kenyaDate() {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Nairobi",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).format(new Date());
-}
+/* =========================================================
+GPS
+========================================================= */
 
-function kenyaHour() {
-  return Number(
-    new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Africa/Nairobi",
-      hour: "2-digit",
-      hour12: false
-    }).format(new Date())
-  );
+function isValidGPS(
+latitude,
+longitude,
+accuracy
+) {
+
+return (
+Number.isFinite(latitude) &&
+Number.isFinite(longitude) &&
+Number.isFinite(accuracy) &&
+latitude >= -90 &&
+latitude <= 90 &&
+longitude >= -180 &&
+longitude <= 180 &&
+accuracy >= 0
+);
+
 }
 
 function haversineDistance(
-  lat1,
-  lon1,
-  lat2,
-  lon2
+lat1,
+lon1,
+lat2,
+lon2
 ) {
-  const R = 6371000;
 
-  const dLat =
-    ((lat2 - lat1) * Math.PI) / 180;
+const R = 6371000;
 
-  const dLon =
-    ((lon2 - lon1) * Math.PI) / 180;
+const toRad =
+degrees =>
+degrees * Math.PI / 180;
 
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-    Math.cos((lat2 * Math.PI) / 180) *
-    Math.sin(dLon / 2) ** 2;
+const dLat =
+toRad(lat2 - lat1);
 
-  return (
-    2 *
-    R *
-    Math.atan2(
-      Math.sqrt(a),
-      Math.sqrt(1 - a)
-    )
-  );
-}
+const dLon =
+toRad(lon2 - lon1);
 
+const a =
+Math.sin(dLat / 2) ** 2 +
+Math.cos(toRad(lat1)) *
+Math.cos(toRad(lat2)) *
+Math.sin(dLon / 2) ** 2;
 
-/* =========================================================
-   HEALTH
-========================================================= */
-
-app.get("/api/health", (req, res) => {
-  res.json({
-    success: true,
-    service: "S.C.A.G.S.S Staff Portal",
-    databaseConfigured: databaseReady(),
-    authenticationConfigured: jwtReady(),
-    time: new Date().toISOString()
-  });
-});
-
-
-/* =========================================================
-   AUTH LOGIN
-========================================================= */
-
-app.post(
-  "/api/auth/login",
-  loginLimiter,
-  async (req, res) => {
-
-    try {
-
-      const username =
-        String(req.body?.username || "").trim();
-
-      const password =
-        String(req.body?.password || "");
-
-      if (!username || !password) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Username and password are required."
-        });
-      }
-
-      if (!databaseReady()) {
-        return res.status(500).json({
-          success: false,
-          message:
-            "Database is not configured."
-        });
-      }
-
-      if (!jwtReady()) {
-        return res.status(500).json({
-          success: false,
-          message:
-            "Authentication is not configured."
-        });
-      }
-
-      const rows = await supabase(
-        `staff?username=eq.${encodeURIComponent(username)}&select=id,username,password_hash,full_name,role,active`
-      );
-
-      if (!rows.length) {
-        return res.status(401).json({
-          success: false,
-          message:
-            "Invalid username or password."
-        });
-      }
-
-      const user = rows[0];
-
-      if (!user.active) {
-        return res.status(403).json({
-          success: false,
-          message:
-            "This account has been deactivated."
-        });
-      }
-
-      const validPassword =
-        await bcrypt.compare(
-          password,
-          user.password_hash
-        );
-
-      if (!validPassword) {
-        return res.status(401).json({
-          success: false,
-          message:
-            "Invalid username or password."
-        });
-      }
-
-      const token = signToken(user);
-
-      res.cookie(
-        "scagss_token",
-        token,
-        {
-          httpOnly: true,
-          secure:
-            process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 8 * 60 * 60 * 1000,
-          path: "/"
-        }
-      );
-
-      res.json({
-        success: true,
-        user: {
-          id: user.id,
-          username: user.username,
-          full_name: user.full_name,
-          role: user.role
-        }
-      });
-
-    } catch (error) {
-
-      console.error(
-        "LOGIN ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message: "Login failed."
-      });
-    }
-  }
+const c =
+2 * Math.atan2(
+Math.sqrt(a),
+Math.sqrt(1 - a)
 );
 
+return R * c;
+
+}
 
 /* =========================================================
-   AUTH LOGOUT
+JWT
+========================================================= */
+
+function createToken(user) {
+
+if (!jwtReady()) {
+throw new Error(
+"JWT_SECRET is not configured."
+);
+}
+
+return jwt.sign(
+{
+id: user.id,
+username: user.username,
+role: user.role
+},
+JWT_SECRET,
+{
+expiresIn: "8h"
+}
+);
+
+}
+
+function setAuthCookie(
+res,
+token
+) {
+
+res.cookie(
+"scagss_token",
+token,
+{
+httpOnly: true,
+secure:
+process.env.NODE_ENV === "production",
+sameSite: "lax",
+maxAge:
+8 * 60 * 60 * 1000,
+path: "/"
+}
+);
+
+}
+
+function clearAuthCookie(res) {
+
+res.clearCookie(
+"scagss_token",
+{
+httpOnly: true,
+secure:
+process.env.NODE_ENV === "production",
+sameSite: "lax",
+path: "/"
+}
+);
+
+}
+
+/* =========================================================
+AUTH MIDDLEWARE
+========================================================= */
+
+function authenticate(
+req,
+res,
+next
+) {
+
+try {
+
+const token =
+  req.cookies?.scagss_token;
+
+if (!token) {
+
+  return res.status(401).json({
+    success: false,
+    message: "Authentication required."
+  });
+
+}
+
+if (!jwtReady()) {
+
+  return res.status(500).json({
+    success: false,
+    message: "JWT authentication is not configured."
+  });
+
+}
+
+const decoded =
+  jwt.verify(
+    token,
+    JWT_SECRET
+  );
+
+req.user =
+  decoded;
+
+next();
+
+} catch {
+
+return res.status(401).json({
+  success: false,
+  message: "Session expired. Please log in again."
+});
+
+}
+
+}
+
+function requireAdmin(
+req,
+res,
+next
+) {
+
+if (
+!req.user ||
+req.user.role !== "admin"
+) {
+
+return res.status(403).json({
+  success: false,
+  message: "Administrator access required."
+});
+
+}
+
+next();
+
+}
+
+function requireTeacher(
+req,
+res,
+next
+) {
+
+if (
+!req.user ||
+req.user.role !== "teacher"
+) {
+
+return res.status(403).json({
+  success: false,
+  message: "Teacher access required."
+});
+
+}
+
+next();
+
+}
+
+/* =========================================================
+HEALTH
+========================================================= */
+
+app.get(
+"/api/health",
+async (req, res) => {
+
+res.json({
+  success: true,
+  service:
+    "S.C.A.G.S.S Staff Portal",
+  databaseConfigured:
+    databaseReady(),
+  time:
+    new Date().toISOString()
+});
+
+}
+);
+
+/* =========================================================
+LOGIN
 ========================================================= */
 
 app.post(
-  "/api/auth/logout",
-  (req, res) => {
+"/api/auth/login",
+async (req, res) => {
 
-    res.clearCookie(
-      "scagss_token",
+try {
+
+  const {
+    username,
+    password
+  } = req.body || {};
+
+  if (
+    typeof username !== "string" ||
+    typeof password !== "string" ||
+    !username.trim() ||
+    !password
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Username and password are required."
+    });
+
+  }
+
+  const cleanUsername =
+    username.trim();
+
+  const rows =
+    await supabaseRequest(
+      `staff?select=id,username,password_hash,full_name,email,phone,role,active,created_at&username=eq.${encodeURIComponent(cleanUsername)}&limit=1`,
       {
-        httpOnly: true,
-        secure:
-          process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path: "/"
+        method: "GET"
       }
     );
 
-    res.json({
-      success: true
+  if (
+    !Array.isArray(rows) ||
+    rows.length === 0
+  ) {
+
+    return res.status(401).json({
+      success: false,
+      message:
+        "Invalid username or password."
     });
+
   }
-);
 
+  const user =
+    rows[0];
 
-/* =========================================================
-   CURRENT USER
-========================================================= */
+  if (!user.active) {
 
-app.get(
-  "/api/me",
-  authRequired,
-  async (req, res) => {
-
-    res.json({
-      success: true,
-      user: req.user
+    return res.status(403).json({
+      success: false,
+      message:
+        "This account has been deactivated."
     });
+
   }
-);
 
+  const valid =
+    await bcrypt.compare(
+      password,
+      user.password_hash
+    );
 
-/* =========================================================
-   GPS SETTINGS — GET
-========================================================= */
+  if (!valid) {
 
-app.get(
-  "/api/settings/gps",
-  authRequired,
-  async (req, res) => {
+    return res.status(401).json({
+      success: false,
+      message:
+        "Invalid username or password."
+    });
 
-    try {
+  }
 
-      const rows = await supabase(
-        "school_settings?select=id,latitude,longitude,radius,updated_at&order=id.asc&limit=1"
-      );
+  const token =
+    createToken(user);
 
-      res.json({
-        success: true,
-        settings: rows[0] || null
-      });
+  setAuthCookie(
+    res,
+    token
+  );
 
-    } catch (error) {
-
-      console.error(
-        "GPS SETTINGS ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load GPS settings."
-      });
+  return res.json({
+    success: true,
+    message: "Login successful.",
+    user: {
+      id: user.id,
+      username: user.username,
+      full_name: user.full_name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      active: user.active
     }
-  }
+  });
+
+} catch (error) {
+
+  console.error(
+    "Login error:",
+    error
+  );
+
+  return res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message ||
+      "Login failed."
+  });
+
+}
+
+}
 );
 
+/* =========================================================
+LOGOUT
+========================================================= */
+
+app.post(
+"/api/auth/logout",
+(req, res) => {
+
+clearAuthCookie(res);
+
+res.json({
+  success: true,
+  message:
+    "Logged out successfully."
+});
+
+}
+);
 
 /* =========================================================
-   GPS SETTINGS — UPDATE
+CURRENT USER
+========================================================= */
+
+app.get(
+"/api/me",
+authenticate,
+async (req, res) => {
+
+try {
+
+  const rows =
+    await supabaseRequest(
+      `staff?select=id,username,full_name,email,phone,role,active,created_at&id=eq.${encodeURIComponent(req.user.id)}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !Array.isArray(rows) ||
+    !rows.length
+  ) {
+
+    return res.status(404).json({
+      success: false,
+      message:
+        "User account not found."
+    });
+
+  }
+
+  res.json({
+    success: true,
+    user: rows[0]
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+GPS SETTINGS - GET
+========================================================= */
+
+app.get(
+"/api/settings/gps",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const rows =
+    await supabaseRequest(
+      "school_settings?select=id,latitude,longitude,radius,updated_at&order=id.asc&limit=1",
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !Array.isArray(rows) ||
+    !rows.length
+  ) {
+
+    return res.json({
+      success: true,
+      settings: {
+        latitude: null,
+        longitude: null,
+        radius:
+          DEFAULT_RADIUS
+      }
+    });
+
+  }
+
+  res.json({
+    success: true,
+    settings:
+      rows[0]
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+GPS SETTINGS - UPDATE
 ========================================================= */
 
 app.put(
-  "/api/settings/gps",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
+"/api/settings/gps",
+authenticate,
+requireAdmin,
+async (req, res) => {
 
-    try {
+try {
 
-      const latitude =
-        Number(req.body?.latitude);
+  const latitude =
+    Number(req.body?.latitude);
 
-      const longitude =
-        Number(req.body?.longitude);
+  const longitude =
+    Number(req.body?.longitude);
 
-      const radius =
-        Number(req.body?.radius);
+  const radius =
+    Number(req.body?.radius);
 
-      if (
-        !Number.isFinite(latitude) ||
-        !Number.isFinite(longitude) ||
-        !Number.isFinite(radius) ||
-        latitude < -90 ||
-        latitude > 90 ||
-        longitude < -180 ||
-        longitude > 180 ||
-        radius <= 0
-      ) {
+  if (
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    !Number.isFinite(radius)
+  ) {
 
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid GPS settings."
-        });
-      }
-
-      const existing =
-        await supabase(
-          "school_settings?select=id&order=id.asc&limit=1"
-        );
-
-      let rows;
-
-      if (existing.length) {
-
-        rows = await supabase(
-          `school_settings?id=eq.${existing[0].id}`,
-          {
-            method: "PATCH",
-            body: {
-              latitude,
-              longitude,
-              radius,
-              updated_at:
-                new Date().toISOString()
-            }
-          }
-        );
-
-      } else {
-
-        rows = await supabase(
-          "school_settings",
-          {
-            method: "POST",
-            body: {
-              latitude,
-              longitude,
-              radius
-            }
-          }
-        );
-      }
-
-      res.json({
-        success: true,
-        settings: rows[0]
-      });
-
-    } catch (error) {
-
-      console.error(
-        "GPS SAVE ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to save GPS settings."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   STAFF — TODAY ATTENDANCE
-========================================================= */
-
-app.get(
-  "/api/attendance/today",
-  authRequired,
-  async (req, res) => {
-
-    try {
-
-      if (req.user.role === "admin") {
-
-        return res.json({
-          success: true,
-          attendance: null
-        });
-      }
-
-      const date = kenyaDate();
-
-      const rows =
-        await supabase(
-          `attendance?staff_id=eq.${req.user.id}&attendance_date=eq.${date}&select=*`
-        );
-
-      res.json({
-        success: true,
-        attendance:
-          rows[0] || null
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load today's attendance."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   STAFF — CLOCK IN
-========================================================= */
-
-app.post(
-  "/api/attendance/clock-in",
-  authRequired,
-  async (req, res) => {
-
-    try {
-
-      if (req.user.role === "admin") {
-
-        return res.status(403).json({
-          success: false,
-          message:
-            "Administrators do not clock in through staff attendance."
-        });
-      }
-
-      const latitude =
-        Number(req.body?.latitude);
-
-      const longitude =
-        Number(req.body?.longitude);
-
-      const accuracy =
-        Number(req.body?.accuracy);
-
-      if (
-        !validGPS(
-          latitude,
-          longitude,
-          accuracy
-        )
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Valid GPS coordinates and accuracy are required."
-        });
-      }
-
-      const settingsRows =
-        await supabase(
-          "school_settings?select=latitude,longitude,radius&order=id.asc&limit=1"
-        );
-
-      if (!settingsRows.length) {
-
-        return res.status(500).json({
-          success: false,
-          message:
-            "School GPS settings are not configured."
-        });
-      }
-
-      const settings =
-        settingsRows[0];
-
-      const distance =
-        haversineDistance(
-          latitude,
-          longitude,
-          settings.latitude,
-          settings.longitude
-        );
-
-      if (accuracy > 500) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "GPS accuracy is too low. Please move to an open area and try again."
-        });
-      }
-
-      if (distance > settings.radius) {
-
-        return res.status(403).json({
-          success: false,
-          message:
-            `You are outside the school attendance zone. Distance: ${Math.round(distance)} metres.`
-        });
-      }
-
-      const date = kenyaDate();
-
-      const existing =
-        await supabase(
-          `attendance?staff_id=eq.${req.user.id}&attendance_date=eq.${date}&select=id,clock_in,clock_out`
-        );
-
-      if (
-        existing.length &&
-        existing[0].clock_in
-      ) {
-
-        return res.status(409).json({
-          success: false,
-          message:
-            "You have already clocked in today."
-        });
-      }
-
-      const status =
-        kenyaHour() >= 8
-          ? "Late"
-          : "Present";
-
-      let rows;
-
-      if (existing.length) {
-
-        rows =
-          await supabase(
-            `attendance?id=eq.${existing[0].id}`,
-            {
-              method: "PATCH",
-              body: {
-                clock_in:
-                  new Date().toISOString(),
-                status,
-                gps_verified: true,
-                clock_in_lat: latitude,
-                clock_in_lon: longitude,
-                clock_in_accuracy:
-                  accuracy,
-                clock_in_distance:
-                  distance
-              }
-            }
-          );
-
-      } else {
-
-        rows =
-          await supabase(
-            "attendance",
-            {
-              method: "POST",
-              body: {
-                staff_id:
-                  req.user.id,
-                attendance_date:
-                  date,
-                clock_in:
-                  new Date().toISOString(),
-                status,
-                gps_verified: true,
-                clock_in_lat:
-                  latitude,
-                clock_in_lon:
-                  longitude,
-                clock_in_accuracy:
-                  accuracy,
-                clock_in_distance:
-                  distance
-              }
-            }
-          );
-      }
-
-      res.json({
-        success: true,
-        attendance: rows[0]
-      });
-
-    } catch (error) {
-
-      console.error(
-        "CLOCK IN ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Clock-in failed."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   STAFF — CLOCK OUT
-========================================================= */
-
-app.post(
-  "/api/attendance/clock-out",
-  authRequired,
-  async (req, res) => {
-
-    try {
-
-      if (req.user.role === "admin") {
-
-        return res.status(403).json({
-          success: false,
-          message:
-            "Administrators do not clock out through staff attendance."
-        });
-      }
-
-      const latitude =
-        Number(req.body?.latitude);
-
-      const longitude =
-        Number(req.body?.longitude);
-
-      const accuracy =
-        Number(req.body?.accuracy);
-
-      if (
-        !validGPS(
-          latitude,
-          longitude,
-          accuracy
-        )
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Valid GPS coordinates and accuracy are required."
-        });
-      }
-
-      const settingsRows =
-        await supabase(
-          "school_settings?select=latitude,longitude,radius&order=id.asc&limit=1"
-        );
-
-      if (!settingsRows.length) {
-
-        return res.status(500).json({
-          success: false,
-          message:
-            "School GPS settings are not configured."
-        });
-      }
-
-      const settings =
-        settingsRows[0];
-
-      const distance =
-        haversineDistance(
-          latitude,
-          longitude,
-          settings.latitude,
-          settings.longitude
-        );
-
-      if (accuracy > 500) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "GPS accuracy is too low."
-        });
-      }
-
-      if (distance > settings.radius) {
-
-        return res.status(403).json({
-          success: false,
-          message:
-            `You are outside the school attendance zone. Distance: ${Math.round(distance)} metres.`
-        });
-      }
-
-      const date = kenyaDate();
-
-      const rows =
-        await supabase(
-          `attendance?staff_id=eq.${req.user.id}&attendance_date=eq.${date}&select=*`
-        );
-
-      if (
-        !rows.length ||
-        !rows[0].clock_in
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "You must clock in before clocking out."
-        });
-      }
-
-      if (rows[0].clock_out) {
-
-        return res.status(409).json({
-          success: false,
-          message:
-            "You have already clocked out today."
-        });
-      }
-
-      const updated =
-        await supabase(
-          `attendance?id=eq.${rows[0].id}`,
-          {
-            method: "PATCH",
-            body: {
-              clock_out:
-                new Date().toISOString(),
-              clock_out_lat:
-                latitude,
-              clock_out_lon:
-                longitude,
-              clock_out_accuracy:
-                accuracy,
-              clock_out_distance:
-                distance
-            }
-          }
-        );
-
-      res.json({
-        success: true,
-        attendance:
-          updated[0]
-      });
-
-    } catch (error) {
-
-      console.error(
-        "CLOCK OUT ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Clock-out failed."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   STAFF — ATTENDANCE HISTORY
-========================================================= */
-
-app.get(
-  "/api/attendance/history",
-  authRequired,
-  async (req, res) => {
-
-    try {
-
-      if (req.user.role === "admin") {
-
-        return res.json({
-          success: true,
-          attendance: []
-        });
-      }
-
-      const rows =
-        await supabase(
-          `attendance?staff_id=eq.${req.user.id}&select=*&order=attendance_date.desc&limit=100`
-        );
-
-      res.json({
-        success: true,
-        attendance: rows
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load attendance history."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — STAFF LIST
-========================================================= */
-
-app.get(
-  "/api/admin/staff",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const rows =
-        await supabase(
-          "staff?select=id,username,full_name,role,active,created_at&order=full_name.asc"
-        );
-
-      res.json({
-        success: true,
-        staff: rows
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load staff."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — CREATE STAFF
-========================================================= */
-
-app.post(
-  "/api/admin/staff",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const fullName =
-        String(
-          req.body?.full_name || ""
-        ).trim();
-
-      const username =
-        String(
-          req.body?.username || ""
-        ).trim();
-
-      const password =
-        String(
-          req.body?.password || ""
-        );
-
-      const role =
-        req.body?.role === "admin"
-          ? "admin"
-          : "teacher";
-
-      if (
-        !fullName ||
-        !username ||
-        !password
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Full name, username and password are required."
-        });
-      }
-
-      if (password.length < 8) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Password must contain at least 8 characters."
-        });
-      }
-
-      const existing =
-        await supabase(
-          `staff?username=eq.${encodeURIComponent(username)}&select=id`
-        );
-
-      if (existing.length) {
-
-        return res.status(409).json({
-          success: false,
-          message:
-            "Username already exists."
-        });
-      }
-
-      const passwordHash =
-        await bcrypt.hash(
-          password,
-          12
-        );
-
-      const rows =
-        await supabase(
-          "staff",
-          {
-            method: "POST",
-            body: {
-              username,
-              password_hash:
-                passwordHash,
-              full_name:
-                fullName,
-              role,
-              active: true
-            }
-          }
-        );
-
-      res.status(201).json({
-        success: true,
-        staff: rows[0]
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to create staff account."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — ACTIVATE / DEACTIVATE
-========================================================= */
-
-app.patch(
-  "/api/admin/staff/:id/status",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const id =
-        Number(req.params.id);
-
-      if (!Number.isInteger(id)) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid staff ID."
-        });
-      }
-
-      if (id === req.user.id) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "You cannot deactivate your own administrator account."
-        });
-      }
-
-      const active =
-        Boolean(req.body?.active);
-
-      const rows =
-        await supabase(
-          `staff?id=eq.${id}`,
-          {
-            method: "PATCH",
-            body: {
-              active
-            }
-          }
-        );
-
-      if (!rows.length) {
-
-        return res.status(404).json({
-          success: false,
-          message:
-            "Staff member not found."
-        });
-      }
-
-      res.json({
-        success: true,
-        staff: rows[0]
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to update account status."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — STAFF PROFILE
-========================================================= */
-
-app.get(
-  "/api/admin/staff/:id",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const id =
-        Number(req.params.id);
-
-      if (!Number.isInteger(id)) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid staff ID."
-        });
-      }
-
-      const staffRows =
-        await supabase(
-          `staff?id=eq.${id}&select=id,username,full_name,role,active,created_at`
-        );
-
-      if (!staffRows.length) {
-
-        return res.status(404).json({
-          success: false,
-          message:
-            "Staff member not found."
-        });
-      }
-
-      const attendanceRows =
-        await supabase(
-          `attendance?staff_id=eq.${id}&select=*&order=attendance_date.desc&limit=100`
-        );
-
-      res.json({
-        success: true,
-        staff: staffRows[0],
-        attendance:
-          attendanceRows
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load staff profile."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — RESET STAFF PASSWORD
-========================================================= */
-
-app.patch(
-  "/api/admin/staff/:id/password",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const id =
-        Number(req.params.id);
-
-      const password =
-        String(
-          req.body?.password || ""
-        );
-
-      if (!Number.isInteger(id)) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid staff ID."
-        });
-      }
-
-      if (password.length < 8) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Password must contain at least 8 characters."
-        });
-      }
-
-      const passwordHash =
-        await bcrypt.hash(
-          password,
-          12
-        );
-
-      const rows =
-        await supabase(
-          `staff?id=eq.${id}`,
-          {
-            method: "PATCH",
-            body: {
-              password_hash:
-                passwordHash
-            }
-          }
-        );
-
-      if (!rows.length) {
-
-        return res.status(404).json({
-          success: false,
-          message:
-            "Staff member not found."
-        });
-      }
-
-      res.json({
-        success: true,
-        message:
-          "Password reset successfully."
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to reset password."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — TODAY ATTENDANCE
-========================================================= */
-
-app.get(
-  "/api/admin/attendance/today",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const date = kenyaDate();
-
-      const rows =
-        await supabase(
-          "staff?select=id,username,full_name,role,active,attendance:attendance!left(attendance_date,clock_in,clock_out,status,gps_verified,clock_in_lat,clock_in_lon,clock_in_accuracy,clock_in_distance,clock_out_lat,clock_out_lon,clock_out_accuracy,clock_out_distance)&order=full_name.asc"
-        );
-
-      const attendance =
-        rows.map(staff => {
-
-          const record =
-            Array.isArray(staff.attendance)
-              ? staff.attendance.find(
-                  item =>
-                    item.attendance_date === date
-                )
-              : null;
-
-          return {
-            ...staff,
-            attendance:
-              record || null
-          };
-        });
-
-      res.json({
-        success: true,
-        date,
-        attendance
-      });
-
-    } catch (error) {
-
-      console.error(
-        "ADMIN ATTENDANCE ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load today's attendance."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — GPS TODAY
-========================================================= */
-
-app.get(
-  "/api/admin/gps/today",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const date = kenyaDate();
-
-      const rows =
-        await supabase(
-          `attendance?attendance_date=eq.${date}&select=id,staff_id,attendance_date,clock_in,clock_out,status,gps_verified,clock_in_lat,clock_in_lon,clock_in_accuracy,clock_in_distance,clock_out_lat,clock_out_lon,clock_out_accuracy,clock_out_distance,staff:staff(id,username,full_name,role,active)&order=clock_in.desc`
-        );
-
-      res.json({
-        success: true,
-        date,
-        attendance:
-          rows
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load GPS attendance."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — SUMMARY
-========================================================= */
-
-app.get(
-  "/api/admin/summary",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const date =
-        kenyaDate();
-
-      const staff =
-        await supabase(
-          "staff?select=id,active,role"
-        );
-
-      const attendance =
-        await supabase(
-          `attendance?attendance_date=eq.${date}&select=id,staff_id,clock_in,clock_out,status`
-        );
-
-      const teachers =
-        staff.filter(
-          person =>
-            person.role === "teacher" &&
-            person.active
-        );
-
-      const teacherIds =
-        new Set(
-          teachers.map(
-            teacher => teacher.id
-          )
-        );
-
-      const teacherAttendance =
-        attendance.filter(
-          item =>
-            teacherIds.has(
-              item.staff_id
-            )
-        );
-
-      const clockedIn =
-        teacherAttendance.filter(
-          item =>
-            item.clock_in &&
-            !item.clock_out
-        );
-
-      const clockedOut =
-        teacherAttendance.filter(
-          item =>
-            item.clock_out
-        );
-
-      const late =
-        teacherAttendance.filter(
-          item =>
-            item.status === "Late"
-        );
-
-      res.json({
-        success: true,
-
-        summary: {
-          total_staff:
-            teachers.length,
-
-          clocked_in:
-            clockedIn.length,
-
-          clocked_out:
-            clockedOut.length,
-
-          not_clocked_in:
-            Math.max(
-              teachers.length -
-              teacherAttendance.length,
-              0
-            ),
-
-          late:
-            late.length
-        }
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load summary."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — ATTENDANCE DETAIL
-========================================================= */
-
-app.get(
-  "/api/admin/attendance/:id",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const id =
-        Number(req.params.id);
-
-      if (!Number.isInteger(id)) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid attendance ID."
-        });
-      }
-
-      const rows =
-        await supabase(
-          `attendance?id=eq.${id}&select=*,staff:staff(id,username,full_name,role,active)`
-        );
-
-      if (!rows.length) {
-
-        return res.status(404).json({
-          success: false,
-          message:
-            "Attendance record not found."
-        });
-      }
-
-      res.json({
-        success: true,
-        attendance:
-          rows[0]
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to load attendance record."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   ADMIN — REPORT
-========================================================= */
-
-app.get(
-  "/api/admin/report",
-  authRequired,
-  adminRequired,
-  async (req, res) => {
-
-    try {
-
-      const from =
-        String(
-          req.query.from || ""
-        );
-
-      const to =
-        String(
-          req.query.to || ""
-        );
-
-      const staffId =
-        String(
-          req.query.staff_id || ""
-        );
-
-      let query =
-        "attendance?select=*,staff:staff(id,username,full_name,role)&order=attendance_date.desc";
-
-      const filters = [];
-
-      if (from) {
-        filters.push(
-          `attendance_date=gte.${from}`
-        );
-      }
-
-      if (to) {
-        filters.push(
-          `attendance_date=lte.${to}`
-        );
-      }
-
-      if (staffId) {
-
-        const id =
-          Number(staffId);
-
-        if (Number.isInteger(id)) {
-
-          filters.push(
-            `staff_id=eq.${id}`
-          );
-        }
-      }
-
-      if (filters.length) {
-
-        query +=
-          "&" +
-          filters.join("&");
-      }
-
-      const rows =
-        await supabase(query);
-
-      res.json({
-        success: true,
-        attendance:
-          rows
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Unable to generate report."
-      });
-    }
-  }
-);
-
-
-/* =========================================================
-   API 404
-========================================================= */
-
-app.use(
-  (req, res, next) => {
-
-    if (
-      req.path.startsWith("/api/")
-    ) {
-
-      return res.status(404).json({
-        success: false,
-        message:
-          "API endpoint not found."
-      });
-    }
-
-    next();
-  }
-);
-
-
-/* =========================================================
-   ERROR HANDLER
-========================================================= */
-
-app.use(
-  (error, req, res, next) => {
-
-    console.error(
-      "SERVER ERROR:",
-      error
-    );
-
-    res.status(500).json({
+    return res.status(400).json({
       success: false,
       message:
-        "Internal server error."
+        "Latitude, longitude and radius must be valid numbers."
     });
+
   }
+
+  if (
+    latitude < -90 ||
+    latitude > 90 ||
+    longitude < -180 ||
+    longitude > 180 ||
+    radius <= 0
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Invalid GPS settings."
+    });
+
+  }
+
+  const existing =
+    await supabaseRequest(
+      "school_settings?select=id&order=id.asc&limit=1",
+      {
+        method: "GET"
+      }
+    );
+
+  let rows;
+
+  if (
+    Array.isArray(existing) &&
+    existing.length
+  ) {
+
+    rows =
+      await supabaseRequest(
+        `school_settings?id=eq.${existing[0].id}`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            latitude,
+            longitude,
+            radius,
+            updated_at:
+              new Date().toISOString()
+          })
+        }
+      );
+
+  } else {
+
+    rows =
+      await supabaseRequest(
+        "school_settings",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            latitude,
+            longitude,
+            radius
+          })
+        }
+      );
+
+  }
+
+  res.json({
+    success: true,
+    message:
+      "GPS settings updated successfully.",
+    settings:
+      Array.isArray(rows)
+        ? rows[0]
+        : rows
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
 );
 
+/* =========================================================
+GET TODAY ATTENDANCE - TEACHER
+========================================================= */
+
+app.get(
+"/api/attendance/today",
+authenticate,
+requireTeacher,
+async (req, res) => {
+
+try {
+
+  const date =
+    getKenyaDate();
+
+  const rows =
+    await supabaseRequest(
+      `attendance?select=*&staff_id=eq.${req.user.id}&attendance_date=eq.${date}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  res.json({
+    success: true,
+    attendance:
+      rows?.[0] || null
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
 
 /* =========================================================
-   VERCEL EXPORT
+CLOCK IN
+========================================================= */
+
+app.post(
+"/api/attendance/clock-in",
+authenticate,
+requireTeacher,
+async (req, res) => {
+
+try {
+
+  const latitude =
+    Number(req.body?.latitude);
+
+  const longitude =
+    Number(req.body?.longitude);
+
+  const accuracy =
+    Number(req.body?.accuracy);
+
+  if (
+    !isValidGPS(
+      latitude,
+      longitude,
+      accuracy
+    )
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Valid GPS coordinates and accuracy are required."
+    });
+
+  }
+
+  if (accuracy > 500) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "GPS accuracy is too low. Please move to an open area and try again."
+    });
+
+  }
+
+  const settingsRows =
+    await supabaseRequest(
+      "school_settings?select=latitude,longitude,radius&order=id.asc&limit=1",
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !settingsRows ||
+    !settingsRows.length
+  ) {
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "School GPS settings have not been configured."
+    });
+
+  }
+
+  const settings =
+    settingsRows[0];
+
+  const distance =
+    haversineDistance(
+      latitude,
+      longitude,
+      Number(settings.latitude),
+      Number(settings.longitude)
+    );
+
+  const radius =
+    Number(settings.radius) ||
+    DEFAULT_RADIUS;
+
+  if (distance > radius) {
+
+    return res.status(403).json({
+      success: false,
+      message:
+        `You are outside the school attendance area. Distance: ${Math.round(distance)} metres. Allowed: ${Math.round(radius)} metres.`,
+      distance: Math.round(distance),
+      radius
+    });
+
+  }
+
+  const date =
+    getKenyaDate();
+
+  const existing =
+    await supabaseRequest(
+      `attendance?select=id,clock_in,clock_out&staff_id=eq.${req.user.id}&attendance_date=eq.${date}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    Array.isArray(existing) &&
+    existing.length
+  ) {
+
+    return res.status(409).json({
+      success: false,
+      message:
+        "You have already clocked in today."
+    });
+
+  }
+
+  const now =
+    new Date().toISOString();
+
+  const status =
+    getKenyaHour() >= 8
+      ? "Late"
+      : "Present";
+
+  const rows =
+    await supabaseRequest(
+      "attendance",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          staff_id:
+            req.user.id,
+          attendance_date:
+            date,
+          clock_in:
+            now,
+          status,
+          gps_verified:
+            true,
+          clock_in_lat:
+            latitude,
+          clock_in_lon:
+            longitude,
+          clock_in_accuracy:
+            accuracy,
+          clock_in_distance:
+            distance
+        })
+      }
+    );
+
+  res.json({
+    success: true,
+    message:
+      "Clock-in recorded successfully.",
+    attendance:
+      Array.isArray(rows)
+        ? rows[0]
+        : rows
+  });
+
+} catch (error) {
+
+  console.error(
+    "Clock-in error:",
+    error
+  );
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+CLOCK OUT
+========================================================= */
+
+app.post(
+"/api/attendance/clock-out",
+authenticate,
+requireTeacher,
+async (req, res) => {
+
+try {
+
+  const latitude =
+    Number(req.body?.latitude);
+
+  const longitude =
+    Number(req.body?.longitude);
+
+  const accuracy =
+    Number(req.body?.accuracy);
+
+  if (
+    !isValidGPS(
+      latitude,
+      longitude,
+      accuracy
+    )
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Valid GPS coordinates and accuracy are required."
+    });
+
+  }
+
+  if (accuracy > 500) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "GPS accuracy is too low. Please try again."
+    });
+
+  }
+
+  const settingsRows =
+    await supabaseRequest(
+      "school_settings?select=latitude,longitude,radius&order=id.asc&limit=1",
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !settingsRows ||
+    !settingsRows.length
+  ) {
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "School GPS settings have not been configured."
+    });
+
+  }
+
+  const settings =
+    settingsRows[0];
+
+  const distance =
+    haversineDistance(
+      latitude,
+      longitude,
+      Number(settings.latitude),
+      Number(settings.longitude)
+    );
+
+  const radius =
+    Number(settings.radius) ||
+    DEFAULT_RADIUS;
+
+  if (distance > radius) {
+
+    return res.status(403).json({
+      success: false,
+      message:
+        `You are outside the school attendance area. Distance: ${Math.round(distance)} metres.`,
+      distance:
+        Math.round(distance),
+      radius
+    });
+
+  }
+
+  const date =
+    getKenyaDate();
+
+  const existing =
+    await supabaseRequest(
+      `attendance?select=*&staff_id=eq.${req.user.id}&attendance_date=eq.${date}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !Array.isArray(existing) ||
+    !existing.length
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "You must clock in before clocking out."
+    });
+
+  }
+
+  const attendance =
+    existing[0];
+
+  if (attendance.clock_out) {
+
+    return res.status(409).json({
+      success: false,
+      message:
+        "You have already clocked out today."
+    });
+
+  }
+
+  const now =
+    new Date().toISOString();
+
+  const rows =
+    await supabaseRequest(
+      `attendance?id=eq.${attendance.id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          clock_out:
+            now,
+          clock_out_lat:
+            latitude,
+          clock_out_lon:
+            longitude,
+          clock_out_accuracy:
+            accuracy,
+          clock_out_distance:
+            distance
+        })
+      }
+    );
+
+  res.json({
+    success: true,
+    message:
+      "Clock-out recorded successfully.",
+    attendance:
+      Array.isArray(rows)
+        ? rows[0]
+        : rows
+  });
+
+} catch (error) {
+
+  console.error(
+    "Clock-out error:",
+    error
+  );
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+TEACHER HISTORY
+========================================================= */
+
+app.get(
+"/api/attendance/history",
+authenticate,
+requireTeacher,
+async (req, res) => {
+
+try {
+
+  const rows =
+    await supabaseRequest(
+      `attendance?select=*&staff_id=eq.${req.user.id}&order=attendance_date.desc`,
+      {
+        method: "GET"
+      }
+    );
+
+  res.json({
+    success: true,
+    attendance:
+      rows || []
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - STAFF LIST
+========================================================= */
+
+app.get(
+"/api/admin/staff",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const rows =
+    await supabaseRequest(
+      "staff?select=id,username,full_name,email,phone,role,active,created_at&order=full_name.asc",
+      {
+        method: "GET"
+      }
+    );
+
+  res.json({
+    success: true,
+    staff:
+      rows || []
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - REGISTER TEACHER
+========================================================= */
+
+app.post(
+"/api/admin/staff",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const {
+    full_name,
+    email,
+    phone,
+    password,
+    role
+  } = req.body || {};
+
+  /* -----------------------------------------------
+     VALIDATION
+  ------------------------------------------------ */
+
+  if (
+    typeof full_name !== "string" ||
+    !full_name.trim()
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Teacher's full name is required."
+    });
+
+  }
+
+  if (
+    typeof email !== "string" ||
+    !email.trim()
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Teacher's email address is required."
+    });
+
+  }
+
+  if (
+    typeof phone !== "string" ||
+    !phone.trim()
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Teacher's contact number is required."
+    });
+
+  }
+
+  if (
+    typeof password !== "string" ||
+    password.length < 8
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Password must contain at least 8 characters."
+    });
+
+  }
+
+  const cleanName =
+    full_name.trim();
+
+  const cleanEmail =
+    email.trim().toLowerCase();
+
+  const cleanPhone =
+    phone.trim();
+
+  /*
+    For the internal username we create a safe
+    unique identifier based on the teacher's name.
+
+    The portal displays the actual full name to the
+    teacher and administrator.
+  */
+
+  const baseUsername =
+    cleanName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ".")
+      .replace(/^\.|\.$/g, "")
+      .slice(0, 40) ||
+    "teacher";
+
+  let username =
+    baseUsername;
+
+  let suffix = 1;
+
+  while (true) {
+
+    const existing =
+      await supabaseRequest(
+        `staff?select=id&username=eq.${encodeURIComponent(username)}&limit=1`,
+        {
+          method: "GET"
+        }
+      );
+
+    if (
+      !Array.isArray(existing) ||
+      existing.length === 0
+    ) {
+      break;
+    }
+
+    suffix++;
+
+    username =
+      `${baseUsername}.${suffix}`;
+
+  }
+
+  /* -----------------------------------------------
+     EMAIL DUPLICATE CHECK
+  ------------------------------------------------ */
+
+  const emailRows =
+    await supabaseRequest(
+      `staff?select=id&email=ilike.${encodeURIComponent(cleanEmail)}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    Array.isArray(emailRows) &&
+    emailRows.length
+  ) {
+
+    return res.status(409).json({
+      success: false,
+      message:
+        "A staff account already uses this email address."
+    });
+
+  }
+
+  /* -----------------------------------------------
+     PASSWORD HASH
+  ------------------------------------------------ */
+
+  const passwordHash =
+    await bcrypt.hash(
+      password,
+      12
+    );
+
+  /* -----------------------------------------------
+     ROLE
+     Registration from admin page defaults to teacher.
+  ------------------------------------------------ */
+
+  const cleanRole =
+    role === "admin"
+      ? "admin"
+      : "teacher";
+
+  /* -----------------------------------------------
+     CREATE ACCOUNT
+  ------------------------------------------------ */
+
+  const rows =
+    await supabaseRequest(
+      "staff",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          password_hash:
+            passwordHash,
+          full_name:
+            cleanName,
+          email:
+            cleanEmail,
+          phone:
+            cleanPhone,
+          role:
+            cleanRole,
+          active:
+            true
+        })
+      }
+    );
+
+  const created =
+    Array.isArray(rows)
+      ? rows[0]
+      : rows;
+
+  res.status(201).json({
+    success: true,
+    message:
+      "Teacher registered successfully.",
+    staff: {
+      id:
+        created?.id,
+      username:
+        created?.username ||
+        username,
+      full_name:
+        created?.full_name ||
+        cleanName,
+      email:
+        created?.email ||
+        cleanEmail,
+      phone:
+        created?.phone ||
+        cleanPhone,
+      role:
+        created?.role ||
+        cleanRole,
+      active:
+        created?.active ??
+        true,
+      created_at:
+        created?.created_at
+    }
+  });
+
+} catch (error) {
+
+  console.error(
+    "Staff registration error:",
+    error
+  );
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message ||
+      "Unable to register teacher."
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - ACTIVATE / DEACTIVATE STAFF
+========================================================= */
+
+app.patch(
+"/api/admin/staff/:id/status",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const id =
+    Number(req.params.id);
+
+  const active =
+    Boolean(req.body?.active);
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Invalid staff ID."
+    });
+
+  }
+
+  const rows =
+    await supabaseRequest(
+      `staff?id=eq.${id}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          active
+        })
+      }
+    );
+
+  res.json({
+    success: true,
+    message:
+      active
+        ? "Staff account activated."
+        : "Staff account deactivated.",
+    staff:
+      Array.isArray(rows)
+        ? rows[0]
+        : rows
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - STAFF PROFILE
+========================================================= */
+
+app.get(
+"/api/admin/staff/:id",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const id =
+    Number(req.params.id);
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Invalid staff ID."
+    });
+
+  }
+
+  const staffRows =
+    await supabaseRequest(
+      `staff?select=id,username,full_name,email,phone,role,active,created_at&id=eq.${id}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !staffRows ||
+    !staffRows.length
+  ) {
+
+    return res.status(404).json({
+      success: false,
+      message:
+        "Staff member not found."
+    });
+
+  }
+
+  const attendanceRows =
+    await supabaseRequest(
+      `attendance?select=*&staff_id=eq.${id}&order=attendance_date.desc`,
+      {
+        method: "GET"
+      }
+    );
+
+  res.json({
+    success: true,
+    staff:
+      staffRows[0],
+    attendance:
+      attendanceRows || []
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - RESET PASSWORD
+========================================================= */
+
+app.patch(
+"/api/admin/staff/:id/password",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const id =
+    Number(req.params.id);
+
+  const password =
+    req.body?.password;
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Invalid staff ID."
+    });
+
+  }
+
+  if (
+    typeof password !== "string" ||
+    password.length < 8
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Password must contain at least 8 characters."
+    });
+
+  }
+
+  const passwordHash =
+    await bcrypt.hash(
+      password,
+      12
+    );
+
+  await supabaseRequest(
+    `staff?id=eq.${id}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        password_hash:
+          passwordHash
+      })
+    }
+  );
+
+  res.json({
+    success: true,
+    message:
+      "Password reset successfully."
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - TODAY ATTENDANCE
+========================================================= */
+
+app.get(
+"/api/admin/attendance/today",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const date =
+    getKenyaDate();
+
+  const staffRows =
+    await supabaseRequest(
+      "staff?select=id,username,full_name,email,phone,role,active&role=eq.teacher&order=full_name.asc",
+      {
+        method: "GET"
+      }
+    );
+
+  const attendanceRows =
+    await supabaseRequest(
+      `attendance?select=*&attendance_date=eq.${date}`,
+      {
+        method: "GET"
+      }
+    );
+
+  const attendanceMap =
+    new Map(
+      (attendanceRows || [])
+        .map(row =>
+          [
+            Number(row.staff_id),
+            row
+          ]
+        )
+    );
+
+  const result =
+    (staffRows || []).map(
+      staff => {
+
+        const attendance =
+          attendanceMap.get(
+            Number(staff.id)
+          ) || null;
+
+        return {
+          ...staff,
+          ...(attendance || {}),
+          staff_id:
+            staff.id
+        };
+
+      }
+    );
+
+  res.json({
+    success: true,
+    date,
+    attendance:
+      result
+  });
+
+} catch (error) {
+
+  console.error(
+    "Admin attendance error:",
+    error
+  );
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - GPS TODAY
+========================================================= */
+
+app.get(
+"/api/admin/gps/today",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const date =
+    getKenyaDate();
+
+  const staffRows =
+    await supabaseRequest(
+      "staff?select=id,full_name,email,phone&role=eq.teacher",
+      {
+        method: "GET"
+      }
+    );
+
+  const attendanceRows =
+    await supabaseRequest(
+      `attendance?select=*&attendance_date=eq.${date}&order=created_at.desc`,
+      {
+        method: "GET"
+      }
+    );
+
+  const staffMap =
+    new Map(
+      (staffRows || [])
+        .map(
+          staff =>
+            [
+              Number(staff.id),
+              staff
+            ]
+        )
+    );
+
+  const result = [];
+
+  for (
+    const row of attendanceRows || []
+  ) {
+
+    const staff =
+      staffMap.get(
+        Number(row.staff_id)
+      );
+
+    if (
+      row.clock_in_lat !== null &&
+      row.clock_in_lat !== undefined
+    ) {
+
+      result.push({
+        id:
+          row.id,
+        staff_id:
+          row.staff_id,
+        full_name:
+          staff?.full_name ||
+          "Unknown",
+        email:
+          staff?.email ||
+          null,
+        phone:
+          staff?.phone ||
+          null,
+        event:
+          "Clock In",
+        latitude:
+          row.clock_in_lat,
+        longitude:
+          row.clock_in_lon,
+        accuracy:
+          row.clock_in_accuracy,
+        distance:
+          row.clock_in_distance,
+        gps_verified:
+          row.gps_verified,
+        time:
+          row.clock_in
+      });
+
+    }
+
+    if (
+      row.clock_out_lat !== null &&
+      row.clock_out_lat !== undefined
+    ) {
+
+      result.push({
+        id:
+          `${row.id}-out`,
+        staff_id:
+          row.staff_id,
+        full_name:
+          staff?.full_name ||
+          "Unknown",
+        email:
+          staff?.email ||
+          null,
+        phone:
+          staff?.phone ||
+          null,
+        event:
+          "Clock Out",
+        latitude:
+          row.clock_out_lat,
+        longitude:
+          row.clock_out_lon,
+        accuracy:
+          row.clock_out_accuracy,
+        distance:
+          row.clock_out_distance,
+        gps_verified:
+          true,
+        time:
+          row.clock_out
+      });
+
+    }
+
+  }
+
+  res.json({
+    success: true,
+    date,
+    gps:
+      result
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - SUMMARY
+========================================================= */
+
+app.get(
+"/api/admin/summary",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const date =
+    getKenyaDate();
+
+  const staffRows =
+    await supabaseRequest(
+      "staff?select=id&role=eq.teacher&active=eq.true",
+      {
+        method: "GET"
+      }
+    );
+
+  const attendanceRows =
+    await supabaseRequest(
+      `attendance?select=status,clock_in,clock_out&attendance_date=eq.${date}`,
+      {
+        method: "GET"
+      }
+    );
+
+  const totalStaff =
+    staffRows?.length || 0;
+
+  let present = 0;
+  let late = 0;
+  let clockedOut = 0;
+
+  for (
+    const row of attendanceRows || []
+  ) {
+
+    if (row.clock_in) {
+      present++;
+    }
+
+    if (row.status === "Late") {
+      late++;
+    }
+
+    if (row.clock_out) {
+      clockedOut++;
+    }
+
+  }
+
+  res.json({
+    success: true,
+    date,
+    summary: {
+      totalStaff,
+      totalTeachers:
+        totalStaff,
+      present,
+      presentToday:
+        present,
+      late,
+      lateToday:
+        late,
+      clockedOut,
+      clockedOutToday:
+        clockedOut
+    }
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - ATTENDANCE DETAIL
+========================================================= */
+
+app.get(
+"/api/admin/attendance/:id",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const id =
+    Number(req.params.id);
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Invalid attendance ID."
+    });
+
+  }
+
+  const rows =
+    await supabaseRequest(
+      `attendance?select=*&id=eq.${id}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !rows ||
+    !rows.length
+  ) {
+
+    return res.status(404).json({
+      success: false,
+      message:
+        "Attendance record not found."
+    });
+
+  }
+
+  res.json({
+    success: true,
+    attendance:
+      rows[0]
+  });
+
+} catch (error) {
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+ADMIN - INDIVIDUAL REPORT
+========================================================= */
+
+app.get(
+"/api/admin/report",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const staffId =
+    Number(req.query.staff_id);
+
+  if (
+    !Number.isInteger(staffId) ||
+    staffId <= 0
+  ) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "A valid staff_id is required."
+    });
+
+  }
+
+  const from =
+    req.query.from ||
+    null;
+
+  const to =
+    req.query.to ||
+    null;
+
+  const staffRows =
+    await supabaseRequest(
+      `staff?select=id,username,full_name,email,phone,role,active,created_at&id=eq.${staffId}&limit=1`,
+      {
+        method: "GET"
+      }
+    );
+
+  if (
+    !staffRows ||
+    !staffRows.length
+  ) {
+
+    return res.status(404).json({
+      success: false,
+      message:
+        "Teacher not found."
+    });
+
+  }
+
+  let attendancePath =
+    `attendance?select=*&staff_id=eq.${staffId}&order=attendance_date.asc`;
+
+  if (from) {
+    attendancePath +=
+      `&attendance_date=gte.${encodeURIComponent(from)}`;
+  }
+
+  if (to) {
+    attendancePath +=
+      `&attendance_date=lte.${encodeURIComponent(to)}`;
+  }
+
+  const attendanceRows =
+    await supabaseRequest(
+      attendancePath,
+      {
+        method: "GET"
+      }
+    );
+
+  const rows =
+    attendanceRows || [];
+
+  let daysPresent = 0;
+  let lateDays = 0;
+  let missingClockOut = 0;
+
+  for (
+    const row of rows
+  ) {
+
+    if (row.clock_in) {
+      daysPresent++;
+    }
+
+    if (
+      row.status === "Late"
+    ) {
+      lateDays++;
+    }
+
+    if (
+      row.clock_in &&
+      !row.clock_out
+    ) {
+      missingClockOut++;
+    }
+
+  }
+
+  const attendancePercentage =
+    rows.length
+      ? Number(
+          (
+            daysPresent /
+            rows.length *
+            100
+          ).toFixed(1)
+        )
+      : 0;
+
+  res.json({
+    success: true,
+
+    report: {
+
+      staff:
+        staffRows[0],
+
+      from,
+      to,
+
+      attendance:
+        rows,
+
+      days_present:
+        daysPresent,
+
+      late_days:
+        lateDays,
+
+      missing_clock_out:
+        missingClockOut,
+
+      attendance_percentage:
+        attendancePercentage
+
+    }
+
+  });
+
+} catch (error) {
+
+  console.error(
+    "Report error:",
+    error
+  );
+
+  res.status(
+    error.status || 500
+  ).json({
+    success: false,
+    message:
+      error.message
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+AI ASSISTANT PLACEHOLDER
+========================================================= */
+
+app.post(
+"/api/ai/assistant",
+authenticate,
+requireAdmin,
+async (req, res) => {
+
+try {
+
+  const message =
+    String(
+      req.body?.message || ""
+    ).trim();
+
+  if (!message) {
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "Please enter a question."
+    });
+
+  }
+
+  /*
+    AI will be securely connected here.
+
+    The browser will NEVER receive:
+    - SUPABASE_SERVICE_ROLE_KEY
+    - JWT_SECRET
+    - AI provider secret
+
+    The next development step will connect
+    this endpoint to the selected AI service.
+  */
+
+  res.json({
+    success: true,
+    reply:
+      "The S.C.A.G.S.S AI Assistant interface is ready. Secure AI analysis will be connected in the next step."
+  });
+
+} catch (error) {
+
+  res.status(500).json({
+    success: false,
+    message:
+      "AI Assistant error."
+  });
+
+}
+
+}
+);
+
+/* =========================================================
+UNKNOWN API ROUTE
+========================================================= */
+
+app.use(
+"/api",
+(req, res) => {
+
+res.status(404).json({
+  success: false,
+  message:
+    "API endpoint not found."
+});
+
+}
+);
+
+/* =========================================================
+GLOBAL ERROR HANDLER
+========================================================= */
+
+app.use(
+(error, req, res, next) => {
+
+console.error(
+  "Server error:",
+  error
+);
+
+res.status(
+  error.status || 500
+).json({
+  success: false,
+  message:
+    error.message ||
+    "Internal server error."
+});
+
+}
+);
+
+/* =========================================================
+VERCEL EXPORT
 ========================================================= */
 
 module.exports = app;
