@@ -3,21 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>S.C.A.G.S.S Staff Portal</title>
-
 <meta name="theme-color" content="#0b5ed7">
+
+<title>S.C.A.G.S.S Staff Attendance Portal</title>
 
 <style>
 *{
   box-sizing:border-box;
 }
 
-body{
+html,body{
   margin:0;
+  min-height:100%;
+}
+
+body{
   min-height:100vh;
   font-family:Arial,Helvetica,sans-serif;
-  background:linear-gradient(135deg,#eaf4ff,#ffffff);
+  background:
+    radial-gradient(circle at top left,#dcebff 0%,transparent 38%),
+    linear-gradient(135deg,#eef7ff,#ffffff 55%,#e9f3ff);
   color:#17324d;
   display:flex;
   align-items:center;
@@ -27,69 +32,88 @@ body{
 
 .container{
   width:100%;
-  max-width:460px;
+  max-width:470px;
 }
 
 .card{
-  background:#fff;
-  border-radius:22px;
-  padding:28px;
-  box-shadow:0 18px 50px rgba(0,0,0,.12);
-  border:1px solid #dcecff;
+  background:rgba(255,255,255,.97);
+  border:1px solid #d9e9fb;
+  border-radius:24px;
+  padding:30px;
+  box-shadow:0 20px 60px rgba(13,65,115,.15);
 }
 
 .logo{
-  width:76px;
-  height:76px;
+  width:82px;
+  height:82px;
+  margin:0 auto 15px;
   border-radius:50%;
-  margin:0 auto 14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#0b5ed7;
-  color:white;
+  background:linear-gradient(145deg,#0b5ed7,#084b9b);
+  color:#fff;
+  font-size:24px;
   font-weight:900;
-  font-size:23px;
-  box-shadow:0 10px 25px rgba(11,94,215,.3);
+  letter-spacing:1px;
+  box-shadow:0 12px 30px rgba(11,94,215,.30);
 }
 
-h1{
+.school-name{
   text-align:center;
   margin:0;
-  font-size:25px;
   color:#084b9b;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+
+.portal-name{
+  text-align:center;
+  margin:7px 0 4px;
+  color:#284c6c;
+  font-size:16px;
+  font-weight:800;
 }
 
 .subtitle{
   text-align:center;
-  color:#6a7f95;
-  margin:8px 0 24px;
-  font-size:14px;
+  color:#72869a;
+  font-size:13px;
+  line-height:1.5;
+  margin:0 0 24px;
 }
 
 .tabs{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:8px;
-  background:#eef6ff;
+  gap:7px;
+  background:#edf5ff;
   padding:6px;
-  border-radius:12px;
+  border-radius:13px;
   margin-bottom:22px;
 }
 
 .tab{
   border:0;
-  padding:12px;
   border-radius:9px;
+  padding:12px 8px;
   background:transparent;
-  color:#50708f;
-  font-weight:700;
+  color:#55728d;
+  font-weight:800;
+  font-size:13px;
   cursor:pointer;
+  transition:.2s;
+}
+
+.tab:hover{
+  background:#dcecff;
 }
 
 .tab.active{
   background:#0b5ed7;
   color:#fff;
+  box-shadow:0 5px 14px rgba(11,94,215,.22);
 }
 
 .form{
@@ -102,47 +126,64 @@ h1{
 
 label{
   display:block;
-  font-size:13px;
-  font-weight:700;
   margin:14px 0 7px;
   color:#36546f;
+  font-size:13px;
+  font-weight:800;
 }
 
 input{
   width:100%;
-  padding:13px 14px;
+  height:48px;
+  padding:0 14px;
   border:1px solid #cbdced;
-  border-radius:10px;
+  border-radius:11px;
   outline:none;
+  background:#fff;
+  color:#17324d;
   font-size:15px;
+  transition:.2s;
+}
+
+input::placeholder{
+  color:#9aabba;
 }
 
 input:focus{
   border-color:#0b5ed7;
-  box-shadow:0 0 0 3px rgba(11,94,215,.1);
+  box-shadow:0 0 0 3px rgba(11,94,215,.10);
 }
 
-button.primary{
+.primary{
   width:100%;
-  margin-top:20px;
-  padding:14px;
+  min-height:49px;
+  margin-top:21px;
   border:0;
   border-radius:11px;
-  background:#0b5ed7;
+  background:linear-gradient(135deg,#0b5ed7,#084b9b);
   color:#fff;
-  font-size:15px;
-  font-weight:800;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.3px;
   cursor:pointer;
+  transition:.2s;
 }
 
-button.primary:disabled{
-  opacity:.6;
+.primary:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(11,94,215,.20);
+}
+
+.primary:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .message{
   display:none;
-  margin-top:15px;
-  padding:12px;
+  margin-top:16px;
+  padding:12px 13px;
   border-radius:10px;
   font-size:13px;
   line-height:1.5;
@@ -153,22 +194,76 @@ button.primary:disabled{
 }
 
 .message.success{
-  background:#e9f9ef;
+  background:#eaf9ef;
   color:#176b39;
   border:1px solid #bde8ca;
 }
 
 .message.error{
-  background:#fff0f0;
-  color:#9a2525;
-  border:1px solid #f0c3c3;
+  background:#fff1f1;
+  color:#982626;
+  border:1px solid #f0c6c6;
+}
+
+.message.info{
+  background:#edf6ff;
+  color:#185a91;
+  border:1px solid #c9e2fa;
+}
+
+.security{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  margin-top:18px;
+  color:#71869a;
+  font-size:11px;
+}
+
+.security-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#22a05a;
 }
 
 .footer{
   text-align:center;
-  margin-top:20px;
-  font-size:12px;
+  margin-top:19px;
   color:#8193a5;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:420px){
+
+  body{
+    padding:12px;
+  }
+
+  .card{
+    padding:23px 18px;
+    border-radius:20px;
+  }
+
+  .school-name{
+    font-size:22px;
+  }
+
+  .portal-name{
+    font-size:15px;
+  }
+
+  .logo{
+    width:72px;
+    height:72px;
+    font-size:21px;
+  }
 }
 </style>
 </head>
@@ -181,15 +276,24 @@ button.primary:disabled{
 
     <div class="logo">SAG</div>
 
-    <h1>S.C.A.G.S.S</h1>
+    <h1 class="school-name">
+      S.C.A.G.S.S
+    </h1>
 
-    <div class="subtitle">
+    <div class="portal-name">
       Staff Attendance Portal
     </div>
+
+    <div class="subtitle">
+      Secure staff authentication and GPS-verified attendance
+    </div>
+
+    <!-- TABS -->
 
     <div class="tabs">
 
       <button
+        type="button"
         class="tab active"
         id="loginTab"
         onclick="showForm('login')">
@@ -197,6 +301,7 @@ button.primary:disabled{
       </button>
 
       <button
+        type="button"
         class="tab"
         id="registerTab"
         onclick="showForm('register')">
@@ -205,28 +310,40 @@ button.primary:disabled{
 
     </div>
 
-    <!-- LOGIN -->
+
+    <!-- ========================= -->
+    <!-- LOGIN FORM -->
+    <!-- ========================= -->
 
     <form
       id="loginForm"
       class="form active"
-      onsubmit="login(event)">
+      onsubmit="login(event)"
+      autocomplete="on">
 
-      <label>Username or Email</label>
+      <label for="login">
+        Username or Email
+      </label>
 
       <input
         id="login"
+        name="username"
         type="text"
         placeholder="Enter username or email"
         autocomplete="username"
+        autocapitalize="none"
+        spellcheck="false"
         required>
 
-      <label>Password</label>
+      <label for="password">
+        Password
+      </label>
 
       <input
         id="password"
+        name="password"
         type="password"
-        placeholder="Enter password"
+        placeholder="Enter your password"
         autocomplete="current-password"
         required>
 
@@ -239,45 +356,70 @@ button.primary:disabled{
 
     </form>
 
-    <!-- REGISTER -->
+
+    <!-- ========================= -->
+    <!-- REGISTRATION FORM -->
+    <!-- ========================= -->
 
     <form
       id="registerForm"
       class="form"
-      onsubmit="registerStaff(event)">
+      onsubmit="registerStaff(event)"
+      autocomplete="on">
 
-      <label>Full Name</label>
+      <label for="full_name">
+        Full Name
+      </label>
 
       <input
         id="full_name"
+        name="name"
         type="text"
-        placeholder="Enter full name"
+        placeholder="Enter your full name"
+        autocomplete="name"
         required>
 
-      <label>Email</label>
+
+      <label for="email">
+        Email Address
+      </label>
 
       <input
         id="email"
+        name="email"
         type="email"
-        placeholder="Enter email"
+        placeholder="Enter email address"
+        autocomplete="email"
+        autocapitalize="none"
         required>
 
-      <label>Phone Number</label>
+
+      <label for="phone">
+        Phone Number
+      </label>
 
       <input
         id="phone"
+        name="phone"
         type="tel"
         placeholder="Enter phone number"
+        autocomplete="tel"
         required>
 
-      <label>Password</label>
+
+      <label for="regPassword">
+        Password
+      </label>
 
       <input
         id="regPassword"
+        name="new-password"
         type="password"
-        placeholder="Create password"
+        placeholder="Create a password"
+        autocomplete="new-password"
         minlength="6"
         required>
+
 
       <button
         class="primary"
@@ -288,22 +430,55 @@ button.primary:disabled{
 
     </form>
 
+
+    <!-- MESSAGE -->
+
     <div
       id="message"
-      class="message">
+      class="message"
+      role="alert"
+      aria-live="polite">
+    </div>
+
+
+    <div class="security">
+      <span class="security-dot"></span>
+      Secure S.C.A.G.S.S staff portal
     </div>
 
     <div class="footer">
       S.C.A.G.S.S Staff Attendance Portal
       <br>
-      GPS-verified staff attendance
+      GPS verification is required for attendance
     </div>
 
   </div>
 
 </div>
 
+
 <script>
+
+/* =====================================================
+   CONFIGURATION
+   ===================================================== */
+
+/*
+   Keep this as "/api".
+
+   This allows the frontend and backend to work from
+   the same Vercel domain.
+
+   Example:
+   https://your-site.vercel.app/api/auth/login
+*/
+
+const API_BASE = "/api";
+
+
+/* =====================================================
+   FORM SWITCHING
+   ===================================================== */
 
 function showForm(type){
 
@@ -318,6 +493,7 @@ function showForm(type){
 
   const registerTab =
     document.getElementById("registerTab");
+
 
   if(type === "login"){
 
@@ -340,10 +516,12 @@ function showForm(type){
   clearMessage();
 }
 
-function showMessage(
-  text,
-  type="error"
-){
+
+/* =====================================================
+   MESSAGE SYSTEM
+   ===================================================== */
+
+function showMessage(text,type="error"){
 
   const box =
     document.getElementById("message");
@@ -351,21 +529,65 @@ function showMessage(
   box.textContent = text;
 
   box.className =
-    `message show ${type}`;
-
+    "message show " + type;
 }
+
 
 function clearMessage(){
 
   const box =
     document.getElementById("message");
 
-  box.className =
-    "message";
-
   box.textContent = "";
 
+  box.className =
+    "message";
 }
+
+
+/* =====================================================
+   SAFE JSON RESPONSE
+   ===================================================== */
+
+async function readResponse(response){
+
+  const contentType =
+    response.headers.get("content-type") || "";
+
+  if(
+    contentType
+      .toLowerCase()
+      .includes("application/json")
+  ){
+
+    try{
+      return await response.json();
+    }catch{
+      return {};
+    }
+
+  }
+
+  try{
+
+    const text =
+      await response.text();
+
+    return {
+      message:text
+    };
+
+  }catch{
+
+    return {};
+
+  }
+}
+
+
+/* =====================================================
+   LOGIN
+   ===================================================== */
 
 async function login(event){
 
@@ -376,61 +598,127 @@ async function login(event){
   const button =
     document.getElementById("loginButton");
 
+  const loginValue =
+    document
+      .getElementById("login")
+      .value
+      .trim();
+
+  const passwordValue =
+    document
+      .getElementById("password")
+      .value;
+
+
+  if(!loginValue || !passwordValue){
+
+    showMessage(
+      "Please enter your username/email and password."
+    );
+
+    return;
+  }
+
+
   button.disabled = true;
   button.textContent = "LOGGING IN...";
+
 
   try{
 
     const response =
       await fetch(
-        "/api/auth/login",
+        API_BASE + "/auth/login",
         {
           method:"POST",
+
           headers:{
             "Content-Type":
+              "application/json",
+            "Accept":
               "application/json"
           },
-          credentials:"include",
-          body:JSON.stringify({
-            login:
-              document
-                .getElementById("login")
-                .value
-                .trim(),
 
-            password:
-              document
-                .getElementById("password")
-                .value
+          credentials:"include",
+
+          body:JSON.stringify({
+
+            login:loginValue,
+
+            password:passwordValue
+
           })
         }
       );
 
+
     const data =
-      await response.json();
+      await readResponse(response);
+
 
     if(!response.ok){
 
       showMessage(
         data.message ||
-        "Login failed."
+        data.error ||
+        "Login failed. Please check your details."
       );
 
       return;
     }
 
+
+    /*
+       Store only non-sensitive information.
+
+       The authentication cookie/session should be
+       handled by the backend.
+    */
+
+    if(data.user){
+
+      try{
+
+        sessionStorage.setItem(
+          "sag_user",
+          JSON.stringify({
+            id:data.user.id || null,
+            username:data.user.username || null,
+            role:data.user.role || "staff",
+            full_name:data.user.full_name || null
+          })
+        );
+
+      }catch(error){
+
+        console.log(
+          "Session storage unavailable."
+        );
+
+      }
+
+    }
+
+
     showMessage(
-      "Login successful. Opening portal...",
+      "Login successful. Opening your portal...",
       "success"
     );
+
+
+    const role =
+      String(
+        data.user?.role ||
+        data.role ||
+        "staff"
+      ).toLowerCase();
+
 
     setTimeout(() => {
 
       if(
-        String(
-          data.user?.role || ""
-        ).toLowerCase()
-        === "admin"
+        role === "admin" ||
+        role === "administrator"
       ){
 
         window.location.href =
@@ -443,12 +731,18 @@ async function login(event){
 
       }
 
-    },500);
+    },700);
+
 
   }catch(error){
 
+    console.error(
+      "Login error:",
+      error
+    );
+
     showMessage(
-      "Unable to connect to the server."
+      "Unable to connect to the server. Please check your internet connection or try again."
     );
 
   }finally{
@@ -458,6 +752,11 @@ async function login(event){
 
   }
 }
+
+
+/* =====================================================
+   STAFF REGISTRATION
+   ===================================================== */
 
 async function registerStaff(event){
 
@@ -470,95 +769,226 @@ async function registerStaff(event){
       "registerButton"
     );
 
+
+  const fullName =
+    document
+      .getElementById("full_name")
+      .value
+      .trim();
+
+  const email =
+    document
+      .getElementById("email")
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById("phone")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("regPassword")
+      .value;
+
+
+  if(!fullName){
+
+    showMessage(
+      "Please enter your full name."
+    );
+
+    return;
+  }
+
+
+  if(!email){
+
+    showMessage(
+      "Please enter your email address."
+    );
+
+    return;
+  }
+
+
+  if(!phone){
+
+    showMessage(
+      "Please enter your phone number."
+    );
+
+    return;
+  }
+
+
+  if(password.length < 6){
+
+    showMessage(
+      "Password must contain at least 6 characters."
+    );
+
+    return;
+  }
+
+
   button.disabled = true;
   button.textContent =
     "CREATING ACCOUNT...";
+
 
   try{
 
     const response =
       await fetch(
-        "/api/auth/register",
+        API_BASE + "/auth/register",
         {
           method:"POST",
+
           headers:{
             "Content-Type":
+              "application/json",
+            "Accept":
               "application/json"
           },
+
           credentials:"include",
+
           body:JSON.stringify({
 
-            full_name:
-              document
-                .getElementById(
-                  "full_name"
-                )
-                .value
-                .trim(),
+            full_name:fullName,
 
-            email:
-              document
-                .getElementById(
-                  "email"
-                )
-                .value
-                .trim(),
+            email:email,
 
-            phone:
-              document
-                .getElementById(
-                  "phone"
-                )
-                .value
-                .trim(),
+            phone:phone,
 
-            password:
-              document
-                .getElementById(
-                  "regPassword"
-                )
-                .value
+            password:password
 
           })
         }
       );
 
+
     const data =
-      await response.json();
+      await readResponse(response);
+
 
     if(!response.ok){
 
       showMessage(
         data.message ||
-        "Registration failed."
+        data.error ||
+        "Registration failed. Please try again."
       );
 
       return;
     }
 
+
+    /*
+       Username may be returned by the backend.
+
+       If the backend does not return one, we still
+       show a valid success message.
+    */
+
+    let successText =
+      "Registration successful. Your account has been created and is awaiting administrator approval.";
+
+
+    if(data.username){
+
+      successText =
+        "Registration successful. Your username is " +
+        data.username +
+        ". Please wait for administrator approval.";
+
+    }
+
+
     showMessage(
-      `Registration successful. Your username is ${data.username}. Please wait for administrator approval.`,
+      successText,
       "success"
     );
+
 
     document
       .getElementById("registerForm")
       .reset();
 
+
+    /*
+       After registration, return to login after
+       a short delay.
+    */
+
+    setTimeout(() => {
+
+      showForm("login");
+
+      const loginInput =
+        document.getElementById("login");
+
+      if(data.username){
+
+        loginInput.value =
+          data.username;
+
+      }else{
+
+        loginInput.value =
+          email;
+
+      }
+
+      loginInput.focus();
+
+    },1600);
+
+
   }catch(error){
 
+    console.error(
+      "Registration error:",
+      error
+    );
+
     showMessage(
-      "Unable to connect to the server."
+      "Unable to connect to the server. Please check your internet connection or try again."
     );
 
   }finally{
 
     button.disabled = false;
+
     button.textContent =
       "CREATE STAFF ACCOUNT";
 
   }
 }
+
+
+/* =====================================================
+   PREVENT ACCIDENTAL DOUBLE SUBMISSION
+   ===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const loginInput =
+      document.getElementById("login");
+
+    if(loginInput){
+
+      loginInput.focus();
+
+    }
+
+  }
+);
 
 </script>
 
